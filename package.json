@@ -1,0 +1,30 @@
+{
+  "name": "spotify-copy-playlist",
+  "version": "1.0.0",
+  "description": "Copy playlist info (title, artist)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress -p",
+    "watch": "webpack --progress --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cazyw/spotify-copy-playlist.git"
+  },
+  "author": "Carol W (cazyw)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cazyw/spotify-copy-playlist/issues"
+  },
+  "homepage": "https://github.com/cazyw/spotify-copy-playlist#readme",
+  "dependencies": {
+    "spotify-web-api-js": "^0.23.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^3.10.0"
+  }
+}
