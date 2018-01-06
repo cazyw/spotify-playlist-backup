@@ -2,8 +2,7 @@ console.log('starting console log');
 let userPlaylists = [];
 let noPlaylists = 0;
 var SpotifyWebApi = require('spotify-web-api-js');
-var q = require('Q');
-var promises = [];
+
 
 var spotifyApi = new SpotifyWebApi();
 spotifyApi.setAccessToken('fill in');
@@ -28,16 +27,14 @@ function doCalls(message) {
   })
   .then(function (result) {
     return Promise.resolve(
-      getNames(++step)
+      getAllUserPlaylists(++step)
     )
   })
-      .then(function (result) {
-          return Promise.resolve(
-              // rp(req3, function (err, resp) {
-                  console.log('step: ', ++step, ' UHub')
-              // })
-          )
-      })
+  .then(function (result) {
+    return Promise.resolve(
+      printAllUserPlaylists(++step)
+    )
+  })
       .then(function (result) {
           console.log('Ending demo ');
           return Promise.resolve(step);
@@ -50,30 +47,13 @@ doCalls('Starting calls')
   });
 
 
-// spotifyApi.getUserPlaylists('elliedub')
-//   .then(function(data) {
-//     console.log('User playlists', data, data.total);
-//     let loops = data.total / 20;
-//     console.log(`loops: ${loops}`);
-//     return noPlaylists = data.total;
-//   }, function(err){
-//     console.error(err);
-//   })
-//   .then(function(){
-//     getNames();
-//   })
-//   .then(printEnd);
-
-// function printEnd(){
-//   console.log('end');
-// }
-
-function getNames(step) {
+function getAllUserPlaylists(step) {
   console.log(`== Resolve ${step} ==`);
   var promises = [];
-  for(var i = 0; i < (noPlaylists) ; i += 20){
+  for(let i = 0; i < (noPlaylists) ; i += 20){
     promises.push(spotifyApi.getUserPlaylists('elliedub', {offset: i})
     .then(function(data){
+      console.log(i);
       console.log(data.items);
       const playlists = data.items;
       playlists.forEach(function(playlist) {
@@ -94,23 +74,22 @@ function getNames(step) {
   });
 }
 
-// spotifyApi.getUserPlaylists('elliedub', {offset: i})
-//         .then(function(data) {
-//           let playlists = data.items;
-//           playlists.forEach(playlist => {
-//             console.log(playlist.name, playlist.id);
-//           });
-//         }, function(err) {
-//           console.error(err);
-//         });
+function printAllUserPlaylists(step){
+  console.log(`== Resolve ${step} ==`);
+  console.log(`== start playlists: ${userPlaylists.length} playlists ==`);
+  userPlaylists.forEach((playlist) => console.log(playlist.name, playlist.id));
+  console.log(`== end playlists ==`);
+}
 
-      // spotifyApi.getPlaylistTracks('elliedub', playlist.id)
-      // .then(function(data){
-      //   let tracks = data.items;
-      //   tracks.forEach((track) => {
-      //     let name = track.track.name;
-      //     let album = track.track.album.name;
-      //     let artists = track.track.artists.map((artist) => artist.name);
-      //     console.log(name, album, artists);
-      //   });
-      // });
+
+
+// spotifyApi.getPlaylistTracks('elliedub', playlist.id)
+// .then(function(data){
+//   let tracks = data.items;
+//   tracks.forEach((track) => {
+//     let name = track.track.name;
+//     let album = track.track.album.name;
+//     let artists = track.track.artists.map((artist) => artist.name);
+//     console.log(name, album, artists);
+//   });
+// });
