@@ -71,20 +71,95 @@
 
 
 console.log('starting console log');
-var userPlaylists = [];
-var noPlaylists = 0;
+(function () {
+
+  /**
+   * Obtains parameters from the hash of the URL
+   * @return Object
+   */
+  function getHashParams() {
+    var hashParams = {};
+    var e,
+        r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    while (e = r.exec(q)) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+    }
+    return hashParams;
+  }
+
+  var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+      userProfileTemplate = Handlebars.compile(userProfileSource),
+      userProfilePlaceholder = document.getElementById('user-profile');
+
+  var oauthSource = document.getElementById('oauth-template').innerHTML,
+      oauthTemplate = Handlebars.compile(oauthSource),
+      oauthPlaceholder = document.getElementById('oauth');
+
+  var params = getHashParams();
+
+  var access_token = params.access_token,
+      refresh_token = params.refresh_token,
+      error = params.error;
+
+  if (error) {
+    alert('There was an error during the authentication');
+  } else {
+    if (access_token) {
+      // render oauth info
+      oauthPlaceholder.innerHTML = oauthTemplate({
+        access_token: access_token,
+        refresh_token: refresh_token
+      });
+
+      $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        },
+        success: function success(response) {
+          userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+          inPlaylist(access_token, response.id);
+          $('#login').hide();
+          $('#loggedin').show();
+        }
+      });
+    } else {
+      // render initial screen
+      $('#login').show();
+      $('#loggedin').hide();
+    }
+
+    document.getElementById('obtain-new-token').addEventListener('click', function () {
+      $.ajax({
+        url: '/refresh_token',
+        data: {
+          'refresh_token': refresh_token
+        }
+      }).done(function (data) {
+        access_token = data.access_token;
+        oauthPlaceholder.innerHTML = oauthTemplate({
+          access_token: access_token,
+          refresh_token: refresh_token
+        });
+      });
+    }, false);
+  }
+})();
+
 var SpotifyWebApi = __webpack_require__(1);
 
+var userPlaylists = [];
+var noPlaylists = 0;
 var spotifyApi = new SpotifyWebApi();
-spotifyApi.setAccessToken('fill in');
 
-function doCalls(message) {
+function inPlaylist(token, id) {
+  spotifyApi.setAccessToken(token);
   var step = 0;
-  console.log(message);
   return new Promise(function (resolve, reject) {
     resolve(1);
   }).then(function (result) {
-    return Promise.resolve(spotifyApi.getUserPlaylists('elliedub').then(function (data) {
+    return Promise.resolve(spotifyApi.getUserPlaylists(id).then(function (data) {
       console.log('== Resolve ' + ++step + ' ==');
       console.log('Number of playlists: ' + data.total + ', ' + Math.ceil(data.total / 20) + ' loops');
       noPlaylists = data.total;
@@ -92,7 +167,7 @@ function doCalls(message) {
       console.error(err);
     }));
   }).then(function (result) {
-    return Promise.resolve(getAllUserPlaylists(++step));
+    return Promise.resolve(getAllUserPlaylists(++step, id));
   }).then(function (result) {
     return Promise.resolve(printAllUserPlaylists(++step));
   }).then(function (result) {
@@ -101,16 +176,12 @@ function doCalls(message) {
   });
 }
 
-doCalls('Starting calls').then(function (steps) {
-  console.log('Completed in step ', steps);
-});
-
-function getAllUserPlaylists(step) {
+function getAllUserPlaylists(step, id) {
   console.log('== Resolve ' + step + ' ==');
   var promises = [];
 
   var _loop = function _loop(i) {
-    promises.push(spotifyApi.getUserPlaylists('elliedub', { offset: i }).then(function (data) {
+    promises.push(spotifyApi.getUserPlaylists(id, { offset: i }).then(function (data) {
       console.log(i);
       console.log(data.items);
       var playlists = data.items;

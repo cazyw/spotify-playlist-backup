@@ -1,7 +1,7 @@
 module.exports = {
-  entry: './index.js',
+  entry: './playlist.js',
   output: {
-    filename: './bundle.js'
+    filename: './public/bundle.js'
   },
   module: {
     rules: [

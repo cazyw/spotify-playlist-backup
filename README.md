@@ -8,21 +8,52 @@ The app will allow users to:
 * display their playlists
 * display the details (name, album, artist(s)) of the songs in that playlist
 
+# Setup/Running
+
+***will not work as environment variables used***
+
+`app.js` server file. Start the server with:
+
+```
+$ node app.js
+```
+
+Then navigate to `http://localhost:8888`. Select to log in. Log into Spotify. This will then display a page with some user details (based off the example code from Spotify).
+
+However the console should then display a list of the user's playlists.
+
+`playlist.js` the js file retrieving the music data from Spotify (also currently includes code from the Spotify example that renders the page) 
+
+`public/index.html` the html file
+
+`public/bundle.js` javascript file created useing webpack and referred to in the html file
+
+
 # Status
 
-In progress. 
+In progress. Working out how to interact with Spotify's Web API.
 
-Working out how to interact with Spotify's Web API.
+## Done
 
-Currently obtaining the `access token` via a separate process (not in this repo - using Spotify's tutorial). The token is then manually added to the code here so that it will run. The `client id`, `client secret`, and `redirect uri` are stored as environment variables.
+The `client id`, `client secret`, and `redirect uri` are currently stored as environment variables (not accessable from github).
 
-Having roughly worked out how to retrieve data from Spotify (displaying in console), the next step is to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded.
+Having roughly worked out how to retrieve data from Spotify (displaying in console), I used the example authorisation code from Spotify to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded.
 
-To do:
+## To do
+
 * link up the authorisation
 * refactor the code to retrieve playlists and tracks
 * display it all nicely in html (rather than console)
 * add functionality to search for a playlist within the list of playlists 
+
+# Discussion
+
+tbc...
+
+Reviewed the info on the Spotify Developer website and their examples on how to log in and get the access token to connect to the API.
+
+Then researched how to fetch data from them (using https://github.com/jmperez/spotify-web-api-js). There are limits to the data returned (only 20 playlists at a time) so needed to loop and use offset to return all the playlists. Since these calls are synchronous, I had to look into how to wait until all the playlists had been retrieved before moving on. This involved looking at promises.
+
 
 # Resources
 https://developer.spotify.com/web-api/
