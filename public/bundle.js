@@ -181,7 +181,7 @@ function getAllUserPlaylists(step, id) {
       console.log(data.items);
       var playlists = data.items;
       playlists.forEach(function (playlist) {
-        userPlaylists.push({ name: playlist.name, id: playlist.id });
+        userPlaylists.push({ name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
       });
     }).catch(function (e) {
       // handle errors here
@@ -204,7 +204,7 @@ function displayUserPlaylists(playlists, step) {
   document.querySelector('.number-of-playlists').textContent = playlists.length;
   var displayLI = playlists.map(function (playlist) {
     console.log(playlist.name, playlist.id);
-    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + '</li>\n    ';
+    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + ' (' + playlist.totalTracks + ' tracks)</li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
   console.log('== end playlists ==');
@@ -234,7 +234,7 @@ var filterPlaylist = function filterPlaylist(word) {
 
 function getInput() {
   if (this.value === "") {
-    displayAllUserPlaylists(userPlaylists, 0);
+    displayUserPlaylists(userPlaylists, 0);
   } else {
     displayUserPlaylists(filterPlaylist(this.value), 0);
   }
