@@ -71,30 +71,43 @@
 
 
 console.log('starting console log');
-(function () {
 
-  /**
+/**
    * Obtains parameters from the hash of the URL
    * @return Object
    */
-  function getHashParams() {
-    var hashParams = {};
-    var e,
-        r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while (e = r.exec(q)) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
+function getHashParams() {
+  var hashParams = {};
+  var e,
+      r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+  while (e = r.exec(q)) {
+    hashParams[e[1]] = decodeURIComponent(e[2]);
   }
+  return hashParams;
+}
 
-  var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-      userProfileTemplate = Handlebars.compile(userProfileSource),
-      userProfilePlaceholder = document.getElementById('user-profile');
+function addClass(section) {
+  document.getElementById(section).classList.add('active');
+}
 
-  var oauthSource = document.getElementById('oauth-template').innerHTML,
-      oauthTemplate = Handlebars.compile(oauthSource),
-      oauthPlaceholder = document.getElementById('oauth');
+function removeClass(section, callback, param) {
+  document.getElementById(section).classList.remove('active');
+  callback(param);
+}
+
+/**
+   * Authentication with Spotify
+   */
+
+function authenticate() {
+  // var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+  //     userProfileTemplate = Handlebars.compile(userProfileSource),
+  // var userProfilePlaceholder = document.getElementById('user-profile');
+
+  // var oauthSource = document.getElementById('oauth-template').innerHTML,
+  //     oauthTemplate = Handlebars.compile(oauthSource),
+  // var oauthPlaceholder = document.getElementById('oauth');
 
   var params = getHashParams();
 
@@ -107,10 +120,12 @@ console.log('starting console log');
   } else {
     if (access_token) {
       // render oauth info
-      oauthPlaceholder.innerHTML = oauthTemplate({
-        access_token: access_token,
-        refresh_token: refresh_token
-      });
+      // oauthPlaceholder.innerHTML = oauthTemplate({
+      //   access_token: access_token,
+      //   refresh_token: refresh_token
+      // });
+
+      removeClass('login', addClass, 'loading');
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
@@ -118,34 +133,41 @@ console.log('starting console log');
           'Authorization': 'Bearer ' + access_token
         },
         success: function success(response) {
-          userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
           inPlaylist(access_token, response.id);
-          $('#login').hide();
-          $('#loggedin').show();
+          document.getElementById('loading').classList.remove('active');
+          document.querySelector('.display-name').textContent = response.id;
+          document.getElementById('loggedin').classList.add('active');
         }
       });
     } else {
       // render initial screen
-      $('#login').show();
-      $('#loggedin').hide();
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
     }
 
-    document.getElementById('obtain-new-token').addEventListener('click', function () {
-      $.ajax({
-        url: '/refresh_token',
-        data: {
-          'refresh_token': refresh_token
-        }
-      }).done(function (data) {
-        access_token = data.access_token;
-        oauthPlaceholder.innerHTML = oauthTemplate({
-          access_token: access_token,
-          refresh_token: refresh_token
-        });
-      });
-    }, false);
+    // document.getElementById('obtain-new-token').addEventListener('click', function() {
+    //   $.ajax({
+    //     url: '/refresh_token',
+    //     data: {
+    //       'refresh_token': refresh_token
+    //     }
+    //   }).done(function(data) {
+    //     access_token = data.access_token;
+    //     // oauthPlaceholder.innerHTML = oauthTemplate({
+    //     //   access_token: access_token,
+    //     //   refresh_token: refresh_token
+    //     // });
+    //   });
+    // }, false);
   }
-})();
+}
+
+authenticate();
+
+/**
+   * Retrieve data from Spotify
+   */
 
 var SpotifyWebApi = __webpack_require__(1);
 

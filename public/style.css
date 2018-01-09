@@ -1,0 +1,25 @@
+#login, #loggedin, #loading {
+  display: none;
+}
+
+#login {
+  padding-top: 50px;
+  text-align: center;
+}
+
+#login.active, #loggedin.active, #loading.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#login h1{
+  padding: 20px;
+}
+
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 500px;
+}
