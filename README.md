@@ -1,4 +1,4 @@
-# Music Listing Backup App
+# Spotify Playlist Backup App
 Personal project to create an app that displays playlist track details from Spotify. This project came about as users can no longer easily copy the details of the songs on their playlists from Spotify (and I'd really really like a list of my songs fo when I forget). Also a great way to learn about fetching data from external sources where authorisation is required.
 
 # Objective
