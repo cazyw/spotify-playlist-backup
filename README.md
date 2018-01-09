@@ -10,7 +10,7 @@ The app will allow users to:
 
 # Setup/Running
 
-***will not work as environment variables used to set `client id`, `client secret`, and `redirect uri`***
+***will not work for others as environment variables used to set `client id`, `client secret`, and `redirect uri` and the app is run on a local server***
 
 
 `app.js` server file. Start the server with:
@@ -46,6 +46,7 @@ A search functionality has also been added so users can search for a particular 
 
 * add code to retrieve tracks for a selected playlist
 * refactor how the information is displayed
+* add logout feature and handle authorisation timeouts
 * deploy online
 
 # Discussion
