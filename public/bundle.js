@@ -204,7 +204,7 @@ function displayUserPlaylists(playlists, step) {
   document.querySelector('.number-of-playlists').textContent = playlists.length;
   var displayLI = playlists.map(function (playlist) {
     console.log(playlist.name, playlist.id);
-    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + ' (' + playlist.totalTracks + ' tracks)</li>\n    ';
+    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + ' (' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + ')</li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
   console.log('== end playlists ==');
