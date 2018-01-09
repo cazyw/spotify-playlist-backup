@@ -1,27 +1,33 @@
 console.log('starting console log');
-(function() {
 
-  /**
+/**
    * Obtains parameters from the hash of the URL
    * @return Object
    */
-  function getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while ( e = r.exec(q)) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
+function getHashParams() {
+  var hashParams = {};
+  var e, r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+  while ( e = r.exec(q)) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
   }
+  return hashParams;
+}
 
-  var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-      userProfileTemplate = Handlebars.compile(userProfileSource),
-      userProfilePlaceholder = document.getElementById('user-profile');
+function addClass(section){
+  document.getElementById(section).classList.add('active');
+}
 
-  var oauthSource = document.getElementById('oauth-template').innerHTML,
-      oauthTemplate = Handlebars.compile(oauthSource),
-      oauthPlaceholder = document.getElementById('oauth');
+function removeClass(section, callback, param){
+  document.getElementById(section).classList.remove('active');
+  callback(param);
+}
+
+/**
+   * Authentication with Spotify
+   */
+
+function authenticate() {
 
   var params = getHashParams();
 
@@ -33,46 +39,35 @@ console.log('starting console log');
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-      // render oauth info
-      oauthPlaceholder.innerHTML = oauthTemplate({
-        access_token: access_token,
-        refresh_token: refresh_token
-      });
+
+      removeClass('login', addClass, 'loading');
 
       $.ajax({
-          url: 'https://api.spotify.com/v1/me',
-          headers: {
-            'Authorization': 'Bearer ' + access_token
-          },
-          success: function(response) {
-            userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-            inPlaylist(access_token, response.id);
-            $('#login').hide();
-            $('#loggedin').show();
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {
+          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+          inPlaylist(access_token, response.id);
+          document.getElementById('loading').classList.remove('active');
+          document.querySelector('.display-name').textContent = response.id;
+          document.getElementById('loggedin').classList.add('active');
           }
-      });
-    } else {
-        // render initial screen
-        $('#login').show();
-        $('#loggedin').hide();
-    }
-
-    document.getElementById('obtain-new-token').addEventListener('click', function() {
-      $.ajax({
-        url: '/refresh_token',
-        data: {
-          'refresh_token': refresh_token
-        }
-      }).done(function(data) {
-        access_token = data.access_token;
-        oauthPlaceholder.innerHTML = oauthTemplate({
-          access_token: access_token,
-          refresh_token: refresh_token
         });
-      });
-    }, false);
+      } else {
+        // render initial screen
+        document.getElementById('loggedin').classList.remove('active');
+        document.getElementById('login').classList.add('active');
+    }
   }
-})();
+}
+
+authenticate();
+
+/**
+   * Retrieve data from Spotify
+   */
 
 var SpotifyWebApi = require('spotify-web-api-js');
 
@@ -105,7 +100,7 @@ function inPlaylist(token, id){
   })
   .then(function (result) {
     return Promise.resolve(
-      printAllUserPlaylists(++step)
+      displayUserPlaylists(userPlaylists, ++step)
     )
   })
       .then(function (result) {
@@ -141,10 +136,17 @@ function getAllUserPlaylists(step, id) {
   });
 }
 
-function printAllUserPlaylists(step){
+function displayUserPlaylists(playlists, step){
   console.log(`== Resolve ${step} ==`);
-  console.log(`== start playlists: ${userPlaylists.length} playlists ==`);
-  userPlaylists.forEach((playlist) => console.log(playlist.name, playlist.id));
+  console.log(`== start playlists: ${playlists.length} playlists ==`);
+  document.querySelector('.number-of-playlists').textContent = playlists.length;
+  let displayLI = playlists.map((playlist) => {
+    console.log(playlist.name, playlist.id);
+    return `
+      <li id='${playlist.id}'>${playlist.name}</li>
+    `;
+  }).join('');
+  document.querySelector('.playlists').innerHTML = displayLI;
   console.log(`== end playlists ==`);
 }
 
@@ -160,3 +162,24 @@ function printAllUserPlaylists(step){
 //     console.log(name, album, artists);
 //   });
 // });
+
+
+
+/**
+   * Search playlists for a particular playlist
+   */
+
+const filterPlaylist = (word) =>{
+  return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word));
+}
+
+function getInput() {
+  if (this.value === ""){
+    displayAllUserPlaylists(userPlaylists, 0);
+  } else {
+    displayUserPlaylists(filterPlaylist(this.value), 0);
+  }
+}
+
+const input = document.querySelector('input');
+input.addEventListener('keyup', getInput);

@@ -1,4 +1,4 @@
-# Spotify Playlist Details App
+# Music Listing Backup App
 Personal project to create an app that displays playlist track details from Spotify. This project came about as users can no longer easily copy the details of the songs on their playlists from Spotify (and I'd really really like a list of my songs fo when I forget). Also a great way to learn about fetching data from external sources where authorisation is required.
 
 # Objective
@@ -10,7 +10,8 @@ The app will allow users to:
 
 # Setup/Running
 
-***will not work as environment variables used***
+***will not work as environment variables used to set `client id`, `client secret`, and `redirect uri`***
+
 
 `app.js` server file. Start the server with:
 
@@ -31,20 +32,21 @@ However the console should then display a list of the user's playlists.
 
 # Status
 
-In progress. Working out how to interact with Spotify's Web API.
+In progress. Working out how to interact with Spotify's Web API and display the data.
 
 ## Done
 
 The `client id`, `client secret`, and `redirect uri` are currently stored as environment variables (not accessable from github).
 
-Having roughly worked out how to retrieve data from Spotify (displaying in console), I used the example authorisation code from Spotify to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded.
+Having roughly worked out how to retrieve data from Spotify (displaying in console), I used the example authorisation code from Spotify to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded. I then reviewed their example code and modified it so it displayed the data I needed (playlists rather than user details).
+
+A search functionality has also been added so users can search for a particular playlist.
 
 ## To do
 
-* link up the authorisation
-* refactor the code to retrieve playlists and tracks
-* display it all nicely in html (rather than console)
-* add functionality to search for a playlist within the list of playlists 
+* add code to retrieve tracks for a selected playlist
+* refactor how the information is displayed
+* deploy online
 
 # Discussion
 
