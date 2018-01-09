@@ -101,13 +101,6 @@ function removeClass(section, callback, param) {
    */
 
 function authenticate() {
-  // var userProfileSource = document.getElementById('user-profile-template').innerHTML,
-  //     userProfileTemplate = Handlebars.compile(userProfileSource),
-  // var userProfilePlaceholder = document.getElementById('user-profile');
-
-  // var oauthSource = document.getElementById('oauth-template').innerHTML,
-  //     oauthTemplate = Handlebars.compile(oauthSource),
-  // var oauthPlaceholder = document.getElementById('oauth');
 
   var params = getHashParams();
 
@@ -119,11 +112,6 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-      // render oauth info
-      // oauthPlaceholder.innerHTML = oauthTemplate({
-      //   access_token: access_token,
-      //   refresh_token: refresh_token
-      // });
 
       removeClass('login', addClass, 'loading');
 
@@ -145,21 +133,6 @@ function authenticate() {
       document.getElementById('loggedin').classList.remove('active');
       document.getElementById('login').classList.add('active');
     }
-
-    // document.getElementById('obtain-new-token').addEventListener('click', function() {
-    //   $.ajax({
-    //     url: '/refresh_token',
-    //     data: {
-    //       'refresh_token': refresh_token
-    //     }
-    //   }).done(function(data) {
-    //     access_token = data.access_token;
-    //     // oauthPlaceholder.innerHTML = oauthTemplate({
-    //     //   access_token: access_token,
-    //     //   refresh_token: refresh_token
-    //     // });
-    //   });
-    // }, false);
   }
 }
 
@@ -191,7 +164,7 @@ function inPlaylist(token, id) {
   }).then(function (result) {
     return Promise.resolve(getAllUserPlaylists(++step, id));
   }).then(function (result) {
-    return Promise.resolve(printAllUserPlaylists(++step));
+    return Promise.resolve(displayUserPlaylists(userPlaylists, ++step));
   }).then(function (result) {
     console.log('Ending demo ');
     return Promise.resolve(step);
@@ -225,12 +198,15 @@ function getAllUserPlaylists(step, id) {
   });
 }
 
-function printAllUserPlaylists(step) {
+function displayUserPlaylists(playlists, step) {
   console.log('== Resolve ' + step + ' ==');
-  console.log('== start playlists: ' + userPlaylists.length + ' playlists ==');
-  userPlaylists.forEach(function (playlist) {
-    return console.log(playlist.name, playlist.id);
-  });
+  console.log('== start playlists: ' + playlists.length + ' playlists ==');
+  document.querySelector('.number-of-playlists').textContent = playlists.length;
+  var displayLI = playlists.map(function (playlist) {
+    console.log(playlist.name, playlist.id);
+    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + '</li>\n    ';
+  }).join('');
+  document.querySelector('.playlists').innerHTML = displayLI;
   console.log('== end playlists ==');
 }
 
@@ -244,6 +220,28 @@ function printAllUserPlaylists(step) {
 //     console.log(name, album, artists);
 //   });
 // });
+
+
+/**
+   * Search playlists for a particular playlist
+   */
+
+var filterPlaylist = function filterPlaylist(word) {
+  return userPlaylists.filter(function (playlist) {
+    return playlist.name.toLowerCase().includes(word);
+  });
+};
+
+function getInput() {
+  if (this.value === "") {
+    displayAllUserPlaylists(userPlaylists, 0);
+  } else {
+    displayUserPlaylists(filterPlaylist(this.value), 0);
+  }
+}
+
+var input = document.querySelector('input');
+input.addEventListener('keyup', getInput);
 
 /***/ }),
 /* 1 */

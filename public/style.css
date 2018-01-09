@@ -1,5 +1,43 @@
+html, body {
+  background-color: rgb(215, 211, 200);
+  border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+input {
+  width: 100%;
+}
+
+.search-form {
+  margin:10px auto;
+  display: flex;
+
+}
+
+input.search {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+  outline:0;
+  border: 10px solid #F7F7F7;
+  padding: 2px 20px;
+  z-index: 2;
+  border-radius: 5px;
+  font-size: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.19);
+}
+
 #login, #loggedin, #loading {
   display: none;
+}
+
+#loading {
+  margin-top: 50px;
+
 }
 
 #login {
@@ -13,13 +51,48 @@
   align-items: center;
 }
 
-#login h1{
+
+#user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  padding: 20px;
+  text-align: center;
+}
+
+.intro {
   padding: 20px;
 }
 
-.text-overflow {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 500px;
+ul {
+  padding: 0;
+  margin: 0;
+  width: 800px;
+}
+
+.playlists li {
+  /* width: 100%; */
+  background:white;
+  list-style: none;
+  border-bottom: 1px solid #D8D8D8;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+  margin:0;
+  padding:20px;
+  transition:background 0.2s;
+  display:flex;
+  justify-content:space-between;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.playlists li:nth-child(even) {
+  /* transform: perspective(100px) rotateX(3deg) translateY(2px) scale(1.001); */
+  background: linear-gradient(to bottom,  #ffffff 0%,#EFEFEF 100%);
+}
+.playlists li:nth-child(odd) {
+  /* transform: perspective(100px) rotateX(-3deg) translateY(3px); */
+  background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
 }
