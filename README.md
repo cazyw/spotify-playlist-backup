@@ -5,7 +5,7 @@ Personal project to create an app that displays playlist track details from Spot
 
 The app will allow users to: 
 * log in
-* display their playlists
+* display their playlists (and number of tracks in each playlist)
 * display the details (name, album, artist(s)) of the songs in that playlist
 
 # Setup/Running
@@ -38,7 +38,7 @@ In progress. Working out how to interact with Spotify's Web API and display the 
 
 The `client id`, `client secret`, and `redirect uri` are currently stored as environment variables (not accessable from github).
 
-Having roughly worked out how to retrieve data from Spotify (displaying in console), I used the example authorisation code from Spotify to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded. I then reviewed their example code and modified it so it displayed the data I needed (playlists rather than user details).
+Having roughly worked out how to retrieve data from Spotify (displaying in console), I used the example authorisation code from Spotify to integrate the authorisation/log in step so the `access token` and `username` is dynamic rather than hard coded. I then reviewed their example code and modified it so it displayed the data I needed (playlists rather than user details). The list of playlists also shows the number of tracks in each playlist.
 
 A search functionality has also been added so users can search for a particular playlist.
 
@@ -56,6 +56,8 @@ tbc...
 Reviewed the info on the Spotify Developer website and their examples on how to log in and get the access token to connect to the API.
 
 Then researched how to fetch data from them (using https://github.com/jmperez/spotify-web-api-js). There are limits to the data returned (only 20 playlists at a time) so needed to loop and use offset to return all the playlists. Since these calls are synchronous, I had to look into how to wait until all the playlists had been retrieved before moving on. This involved looking at promises.
+
+During development, the `client id`, `client secret`, and `redirect uri` values was set using environment variables. I used the `dotenv` package so that in a development environment, the values were obtained from a `.env` file (which isn't uploaded to GitHub).
 
 
 # Resources

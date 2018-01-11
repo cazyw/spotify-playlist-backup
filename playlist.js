@@ -119,7 +119,7 @@ function getAllUserPlaylists(step, id) {
       console.log(data.items);
       const playlists = data.items;
       playlists.forEach(function(playlist) {
-        userPlaylists.push({name:playlist.name, id:playlist.id});
+        userPlaylists.push({name:playlist.name, id:playlist.id, totalTracks: playlist.tracks.total});
       });
     })
     .catch((e) => {
@@ -143,7 +143,7 @@ function displayUserPlaylists(playlists, step){
   let displayLI = playlists.map((playlist) => {
     console.log(playlist.name, playlist.id);
     return `
-      <li id='${playlist.id}'>${playlist.name}</li>
+      <li id='${playlist.id}'>${playlist.name} (${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''})</li>
     `;
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
@@ -175,7 +175,7 @@ const filterPlaylist = (word) =>{
 
 function getInput() {
   if (this.value === ""){
-    displayAllUserPlaylists(userPlaylists, 0);
+    displayUserPlaylists(userPlaylists, 0);
   } else {
     displayUserPlaylists(filterPlaylist(this.value), 0);
   }
