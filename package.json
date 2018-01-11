@@ -1,9 +1,10 @@
 {
   "name": "spotify-copy-playlist",
   "version": "1.0.0",
-  "description": "Copy playlist info (title, artist)",
+  "description": "Copy playlist info (title, artist) from Spotify",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --progress -p",
     "watch": "webpack --progress --watch"
@@ -31,5 +32,8 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "webpack": "^3.10.0"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }
