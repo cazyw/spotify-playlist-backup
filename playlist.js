@@ -115,8 +115,8 @@ function getAllUserPlaylists(step, id) {
   for(let i = 0; i < (noPlaylists) ; i += 20){
     promises.push(spotifyApi.getUserPlaylists(id, {offset: i})
     .then(function(data){
-      console.log(i);
-      console.log(data.items);
+      // console.log(i);
+      // console.log(data.items);
       const playlists = data.items;
       playlists.forEach(function(playlist) {
         userPlaylists.push({name:playlist.name, id:playlist.id, totalTracks: playlist.tracks.total});
@@ -136,21 +136,29 @@ function getAllUserPlaylists(step, id) {
   });
 }
 
+
 function displayUserPlaylists(playlists, step){
   console.log(`== Resolve ${step} ==`);
   console.log(`== start playlists: ${playlists.length} playlists ==`);
   document.querySelector('.number-of-playlists').textContent = playlists.length;
   let displayLI = playlists.map((playlist) => {
     console.log(playlist.name, playlist.id);
+    
     return `
-      <li id='${playlist.id}'>${playlist.name} (${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''})</li>
+      <li id='${playlist.id}' class='playlist'>${playlist.name} (${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''})</li>
     `;
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
+  const lists = document.querySelectorAll('.playlist');
+  lists.forEach((list) => {
+    list.addEventListener('click', showTracks.bind(this, list.id));
+  } );
   console.log(`== end playlists ==`);
 }
 
-
+function showTracks(id){
+  console.log(`tracks for ${id}`);
+}
 
 // spotifyApi.getPlaylistTracks('elliedub', playlist.id)
 // .then(function(data){

@@ -174,11 +174,10 @@ function inPlaylist(token, id) {
 function getAllUserPlaylists(step, id) {
   console.log('== Resolve ' + step + ' ==');
   var promises = [];
-
-  var _loop = function _loop(i) {
+  for (var i = 0; i < noPlaylists; i += 20) {
     promises.push(spotifyApi.getUserPlaylists(id, { offset: i }).then(function (data) {
-      console.log(i);
-      console.log(data.items);
+      // console.log(i);
+      // console.log(data.items);
       var playlists = data.items;
       playlists.forEach(function (playlist) {
         userPlaylists.push({ name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
@@ -187,10 +186,6 @@ function getAllUserPlaylists(step, id) {
       // handle errors here
       console.error(e);
     }));
-  };
-
-  for (var i = 0; i < noPlaylists; i += 20) {
-    _loop(i);
   }
   return Promise.all(promises).then('finished').catch(function (e) {
     // handle errors here
@@ -199,15 +194,26 @@ function getAllUserPlaylists(step, id) {
 }
 
 function displayUserPlaylists(playlists, step) {
+  var _this = this;
+
   console.log('== Resolve ' + step + ' ==');
   console.log('== start playlists: ' + playlists.length + ' playlists ==');
   document.querySelector('.number-of-playlists').textContent = playlists.length;
   var displayLI = playlists.map(function (playlist) {
     console.log(playlist.name, playlist.id);
-    return '\n      <li id=\'' + playlist.id + '\'>' + playlist.name + ' (' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + ')</li>\n    ';
+
+    return '\n      <li id=\'' + playlist.id + '\' class=\'playlist\'>' + playlist.name + ' (' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + ')</li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
+  var lists = document.querySelectorAll('.playlist');
+  lists.forEach(function (list) {
+    list.addEventListener('click', showTracks.bind(_this, list.id));
+  });
   console.log('== end playlists ==');
+}
+
+function showTracks(id) {
+  console.log('tracks for ' + id);
 }
 
 // spotifyApi.getPlaylistTracks('elliedub', playlist.id)
