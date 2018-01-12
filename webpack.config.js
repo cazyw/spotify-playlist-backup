@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './playlist.js',
+  entry: './working_js/authentication.js',
   output: {
     filename: './public/bundle.js'
   },

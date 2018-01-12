@@ -70,7 +70,7 @@
 "use strict";
 
 
-console.log('starting console log');
+var playlist = __webpack_require__(1);
 
 /**
    * Obtains parameters from the hash of the URL
@@ -122,7 +122,7 @@ function authenticate() {
         },
         success: function success(response) {
           // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-          inPlaylist(access_token, response.id);
+          playlist.inPlaylist(access_token, response.id);
           document.getElementById('loading').classList.remove('active');
           document.querySelector('.display-name').textContent = response.id;
           document.getElementById('loggedin').classList.add('active');
@@ -138,11 +138,20 @@ function authenticate() {
 
 authenticate();
 
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+console.log('starting console log');
+
 /**
    * Retrieve data from Spotify
    */
 
-var SpotifyWebApi = __webpack_require__(1);
+var SpotifyWebApi = __webpack_require__(2);
 
 var userPlaylists = [];
 var noPlaylists = 0;
@@ -165,9 +174,6 @@ function inPlaylist(token, id) {
     return Promise.resolve(getAllUserPlaylists(++step, id));
   }).then(function (result) {
     return Promise.resolve(displayUserPlaylists(userPlaylists, ++step));
-  }).then(function (result) {
-    console.log('Ending demo ');
-    return Promise.resolve(step);
   });
 }
 
@@ -249,8 +255,12 @@ function getInput() {
 var input = document.querySelector('input');
 input.addEventListener('keyup', getInput);
 
+module.exports = {
+  inPlaylist: inPlaylist
+};
+
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
