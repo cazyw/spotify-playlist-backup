@@ -154,16 +154,20 @@ console.log('starting console log');
 var SpotifyWebApi = __webpack_require__(2);
 
 var userPlaylists = [];
+// var username = "";
+// var access_token = "";
 var noPlaylists = 0;
+var noTracks = 0;
 var spotifyApi = new SpotifyWebApi();
 
 function inPlaylist(token, id) {
   spotifyApi.setAccessToken(token);
+  // username = id;
   var step = 0;
   return new Promise(function (resolve, reject) {
     resolve(1);
   }).then(function (result) {
-    return Promise.resolve(spotifyApi.getUserPlaylists(id).then(function (data) {
+    return Promise.resolve(spotifyApi.getUserPlaylists().then(function (data) {
       console.log('== Resolve ' + ++step + ' ==');
       console.log('Number of playlists: ' + data.total + ', ' + Math.ceil(data.total / 20) + ' loops');
       noPlaylists = data.total;
@@ -183,10 +187,10 @@ function getAllUserPlaylists(step, id) {
   for (var i = 0; i < noPlaylists; i += 20) {
     promises.push(spotifyApi.getUserPlaylists(id, { offset: i }).then(function (data) {
       // console.log(i);
-      // console.log(data.items);
+      console.log(data.items);
       var playlists = data.items;
       playlists.forEach(function (playlist) {
-        userPlaylists.push({ name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
+        userPlaylists.push({ owner: playlist.owner.id, name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
       });
     }).catch(function (e) {
       // handle errors here
@@ -206,9 +210,9 @@ function displayUserPlaylists(playlists, step) {
   console.log('== start playlists: ' + playlists.length + ' playlists ==');
   document.querySelector('.number-of-playlists').textContent = playlists.length;
   var displayLI = playlists.map(function (playlist) {
-    console.log(playlist.name, playlist.id);
+    console.log(playlist.owner, playlist.name, playlist.id);
 
-    return '\n      <li id=\'' + playlist.id + '\' class=\'playlist\'>' + playlist.name + ' (' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + ')</li>\n    ';
+    return '\n      <li id=\'' + playlist.id + '---' + playlist.owner + '\' class=\'playlist\'>' + playlist.owner + ', ' + playlist.name + ' (' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + ')</li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
   var lists = document.querySelectorAll('.playlist');
@@ -220,6 +224,25 @@ function displayUserPlaylists(playlists, step) {
 
 function showTracks(id) {
   console.log('tracks for ' + id);
+  var listOwner = id.split('---')[1];
+  var listID = id.split('---')[0];
+  return new Promise(function (resolve, reject) {
+    resolve(1);
+  }).then(function (result) {
+    return Promise.resolve(spotifyApi.getPlaylistTracks(listOwner, listID).then(function (data) {
+      var tracks = data.items;
+      tracks.forEach(function (track) {
+        var name = track.track.name;
+        var album = track.track.album.name;
+        var artists = track.track.artists.map(function (artist) {
+          return artist.name;
+        });
+        console.log(name, album, artists);
+      });
+    }, function (err) {
+      console.error(err);
+    }));
+  });
 }
 
 // spotifyApi.getPlaylistTracks('elliedub', playlist.id)
