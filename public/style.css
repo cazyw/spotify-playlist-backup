@@ -33,7 +33,7 @@ input.search {
   margin: 0;
   text-align: center;
   outline:0;
-  border: 10px solid #F7F7F7;
+  border: 10px solid rgb(247, 247, 247);
   padding: 2px 20px;
   z-index: 2;
   border-radius: 5px;
@@ -88,7 +88,8 @@ ul {
 }
 
 .playlistOwner {
-  width: 100px;
+  width: 100%;
+  max-width: 100px;
   margin: -20px;
   padding: 20px;
   background: rgb(252, 228, 178);
@@ -102,7 +103,8 @@ ul {
 }
 
 .playlistNoTracks {
-  width: 100px;
+  width: 100%;
+  max-width: 100px;
   margin: -20px;
   padding: 20px;
   background: rgb(252, 228, 178);
@@ -112,5 +114,13 @@ ul {
   background: linear-gradient(to bottom,  #ffffff 0%,#EFEFEF 100%);
 }
 .playlists li:nth-child(odd) {
+  background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
+}
+
+.playlistHeader .playlistOwner,
+.playlistHeader .playlistName,
+.playlistHeader .playlistNoTracks
+ {
+  font-size: 1.5em;
   background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
 }
