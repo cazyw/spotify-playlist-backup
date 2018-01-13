@@ -87,6 +87,27 @@ ul {
   cursor: pointer;
 }
 
+.playlistOwner {
+  width: 100px;
+  margin: -20px;
+  padding: 20px;
+  background: rgb(252, 228, 178);
+}
+
+.playlistName {
+  /* width: 50%; */
+  margin: -20px;
+  padding: 20px;
+  overflow: scroll;
+}
+
+.playlistNoTracks {
+  width: 100px;
+  margin: -20px;
+  padding: 20px;
+  background: rgb(252, 228, 178);
+}
+
 .playlists li:nth-child(even) {
   background: linear-gradient(to bottom,  #ffffff 0%,#EFEFEF 100%);
 }

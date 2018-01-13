@@ -7,13 +7,14 @@ console.log('starting console log');
 var SpotifyWebApi = require('spotify-web-api-js');
 
 var userPlaylists = [];
+var playlistTracks = [];
 // var username = "";
 // var access_token = "";
 var noPlaylists = 0;
 var noTracks = 0;
 var spotifyApi = new SpotifyWebApi();
 
-function inPlaylist(token, id){
+function inPlaylist(token, userID){
   spotifyApi.setAccessToken(token);
   // username = id;
   var step = 0;
@@ -34,7 +35,7 @@ function inPlaylist(token, id){
   })
   .then(function (result) {
     return Promise.resolve(
-      getAllUserPlaylists(++step, id)
+      getAllUserPlaylists(++step, userID)
     )
   })
   .then(function (result) {
@@ -44,11 +45,11 @@ function inPlaylist(token, id){
   })
 }
 
-function getAllUserPlaylists(step, id) {
+function getAllUserPlaylists(step, userID) {
   console.log(`== Resolve ${step} ==`);
   var promises = [];
-  for(let i = 0; i < (noPlaylists) ; i += 20){
-    promises.push(spotifyApi.getUserPlaylists(id, {offset: i})
+  for(let i = 0; i < 30 ; i += 20){
+    promises.push(spotifyApi.getUserPlaylists(userID, {offset: i})
     .then(function(data){
       // console.log(i);
       console.log(data.items);
@@ -64,13 +65,12 @@ function getAllUserPlaylists(step, id) {
     )
   }
   return Promise.all(promises)
-  .then('finished')
+  .then('finished getting all the playlists')
   .catch((e) => {
     // handle errors here
     console.error(e);
   });
 }
-
 
 function displayUserPlaylists(playlists, step){
   console.log(`== Resolve ${step} ==`);
@@ -80,7 +80,11 @@ function displayUserPlaylists(playlists, step){
     console.log(playlist.owner, playlist.name, playlist.id);
     
     return `
-      <li id='${playlist.id}---${playlist.owner}' class='playlist'>${playlist.owner}, ${playlist.name} (${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''})</li>
+      <li id='${playlist.id}---${playlist.owner}' class='playlist'>
+        <div class="playlistOwner">${playlist.owner}</div> 
+        <div class="playlistName">${playlist.name}</div> 
+        <div class="playlistNoTracks">${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''}</div>
+      </li>
     `;
   }).join('');
   document.querySelector('.playlists').innerHTML = displayLI;
@@ -89,6 +93,30 @@ function displayUserPlaylists(playlists, step){
     list.addEventListener('click', showTracks.bind(this, list.id));
   } );
   console.log(`== end playlists ==`);
+}
+
+function retrieveTracks(listOwner, listID) {
+  console.log('getting tracks');
+  return Promise.resolve(
+    spotifyApi.getPlaylistTracks(listOwner, listID)
+    .then(function(data){
+      let tracks = data.items;
+      console.log(tracks);
+      tracks.forEach((track) => {
+        let name = track.track.name;
+        let album = track.track.album.name;
+        let artists = track.track.artists.map((artist) => artist.name);
+        playlistTracks.push({name: name, album: album, artists: artists});
+      });
+    }, function(err){
+      console.error(err);
+    })
+    .then(function(data){
+      console.log(playlistTracks);
+      console.log('finished getting the tracks');
+      // return playlistTracks;
+    })
+  )
 }
 
 function showTracks(id){
@@ -100,18 +128,38 @@ function showTracks(id){
   })
   .then(function (result) {
     return Promise.resolve(
-      spotifyApi.getPlaylistTracks(listOwner, listID)
-      .then(function(data) {
-        let tracks = data.items;
-        tracks.forEach((track) => {
-          let name = track.track.name;
-          let album = track.track.album.name;
-          let artists = track.track.artists.map((artist) => artist.name);
-          console.log(name, album, artists);
-        });
-      }, function(err){
-        console.error(err);
-      })
+      retrieveTracks(listOwner, listID)
+      
+      // spotifyApi.getPlaylistTracks(listOwner, listID)
+      // .then(function(data) {
+      //   let tracks = data.items;
+      //   tracks.forEach((track) => {
+      //     let name = track.track.name;
+      //     let album = track.track.album.name;
+      //     let artists = track.track.artists.map((artist) => artist.name);
+      //     console.log(name, album, artists);
+      //   });
+      // }, function(err){
+      //   console.error(err);
+      // })
+    )
+  })
+  .then(function (result) {
+    return Promise.resolve(
+      console.log('got tracks')
+      
+      // spotifyApi.getPlaylistTracks(listOwner, listID)
+      // .then(function(data) {
+      //   let tracks = data.items;
+      //   tracks.forEach((track) => {
+      //     let name = track.track.name;
+      //     let album = track.track.album.name;
+      //     let artists = track.track.artists.map((artist) => artist.name);
+      //     console.log(name, album, artists);
+      //   });
+      // }, function(err){
+      //   console.error(err);
+      // })
     )
   })
 }
