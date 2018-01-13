@@ -145,7 +145,7 @@ function displayUserTracks(playlist, tracks){
   tracks.forEach((track) => {
       console.log(track.id, track.name, track,name, track.artists);
       var newLI = document.createElement('li');
-      newLI.setAttribute("class", `${playlist}` );
+      newLI.setAttribute("class", `${playlist} tracks` );
 
       newLI.innerHTML = `
         <div class="trackName">${track.name}</div> 

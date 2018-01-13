@@ -124,3 +124,7 @@ ul {
   font-size: 1.5em;
   background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
 }
+
+.playlists li.tracks {
+  cursor: text;
+}

@@ -267,7 +267,7 @@ function displayUserTracks(playlist, tracks) {
   tracks.forEach(function (track) {
     console.log(track.id, track.name, track, name, track.artists);
     var newLI = document.createElement('li');
-    newLI.setAttribute("class", '' + playlist);
+    newLI.setAttribute("class", playlist + ' tracks');
 
     newLI.innerHTML = '\n        <div class="trackName">' + track.name + '</div> \n        <div class="trackAlbum">' + track.album + '</div> \n        <div class="trackArtists">' + track.artists + '</div>\n      ';
     insertAfter(playlistSelected, newLI);
