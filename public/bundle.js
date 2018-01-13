@@ -214,12 +214,12 @@ function displayUserPlaylists(playlists, step) {
   var displayLI = playlists.map(function (playlist) {
     console.log(playlist.owner, playlist.name, playlist.id);
 
-    return '\n      <li id=\'' + playlist.id + '---' + playlist.owner + '\' class=\'playlist\'>\n        <div class="playlistOwner">' + playlist.owner + '</div> \n        <div class="playlistName">' + playlist.name + '</div> \n        <div class="playlistNoTracks">' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + '</div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlistInfo">\n          <div class="playlistOwner">' + playlist.owner + '</div> \n          <div class="playlistName">' + playlist.name + '</div> \n          <div class="playlistNoTracks">' + playlist.totalTracks + ' track' + (playlist.totalTracks !== 1 ? 's' : '') + '</div>\n        </div>\n        <div id="trackInfo-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML = header + ' ' + displayLI;
-  var lists = document.querySelectorAll('.playlist');
+  var lists = document.querySelectorAll('.playlistInfo');
   lists.forEach(function (list) {
-    list.addEventListener('click', showOrHideTracks.bind(_this, list.id));
+    list.addEventListener('click', showOrHideTracks.bind(_this, list.parentNode.id));
   });
   console.log('== end playlists ==');
 }
@@ -247,11 +247,13 @@ function retrieveTracks(listOwner, listID) {
   }));
 }
 
-function removeTracks(tracks) {
+function toggleTracks(tracks) {
   // const tracks = document.getElementsByClassName(playlist);
-  Array.from(tracks).forEach(function (track) {
-    track.parentNode.removeChild(track);
-  });
+  // Array.from(tracks).forEach((track) => {
+  //   // track.parentNode.removeChild(track);
+  //   track.parentNode.classList.toggle('hide');
+  // });
+  tracks[0].parentNode.classList.toggle('hide');
 }
 
 function insertAfter(node, nodeToInsert) {
@@ -260,27 +262,29 @@ function insertAfter(node, nodeToInsert) {
 
 function displayUserTracks(playlist, tracks) {
   console.log('== start tracks: ' + tracks.length + ' tracks ==');
-  var playlistSelected = document.getElementById(playlist);
+  var playlistSelected = document.getElementById('trackinfo-' + playlist);
+  console.log(playlist);
   // example
   // 
 
-  tracks.forEach(function (track) {
+  var displayLI = tracks.map(function (track) {
     console.log(track.id, track.name, track, name, track.artists);
-    var newLI = document.createElement('li');
-    newLI.setAttribute("class", playlist + ' tracks');
+    // var newLI = document.createElement('li');
+    // newLI.setAttribute("class", `${playlist} tracks` );
 
-    newLI.innerHTML = '\n        <div class="trackName">' + track.name + '</div> \n        <div class="trackAlbum">' + track.album + '</div> \n        <div class="trackArtists">' + track.artists + '</div>\n      ';
+    return '<li class="tracks-' + playlist + '">\n        <div class="trackName">' + track.name + '</div> \n        <div class="trackAlbum">' + track.album + '</div> \n        <div class="trackArtists">' + track.artists + '</div>\n      </li>';
     insertAfter(playlistSelected, newLI);
-  });
-
+  }).join('');
+  document.getElementById('trackInfo-' + playlist).innerHTML = displayLI;
   console.log('displaying tracks');
 }
 
 function showOrHideTracks(playlistIDCombo) {
-  var hasTracks = document.getElementsByClassName(playlistIDCombo);
+  var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
   if (hasTracks.length > 0) {
-    removeTracks(hasTracks);
+    toggleTracks(hasTracks);
   } else {
+    document.getElementById('trackInfo-' + playlistIDCombo).classList.remove('hide');
     showTracks(playlistIDCombo);
   }
 }

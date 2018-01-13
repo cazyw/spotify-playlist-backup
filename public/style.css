@@ -87,6 +87,20 @@ ul {
   cursor: pointer;
 }
 
+.playlist {
+  display: flex;
+  flex-direction: column;
+}
+
+.playlistInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0;
+  /* margin: -20px;
+  padding: 20px; */
+}
+
 .playlistOwner {
   width: 100%;
   max-width: 100px;
@@ -117,6 +131,7 @@ ul {
   background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
 }
 
+
 .playlistHeader .playlistOwner,
 .playlistHeader .playlistName,
 .playlistHeader .playlistNoTracks
@@ -125,6 +140,22 @@ ul {
   background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
 }
 
-.playlists li.tracks {
+
+.playlists .playlist .tracks {
+  cursor: text;
+  opacity: 1;
+  padding: 0;
+  margin: 20px -20px -20px -20px;
+  --webkit-transition: opacity 2s ease-in;
+  transition: opacity 2s ease-in;
+}
+
+.playlists .playlist .tracks.hide {
+  opacity: 0;
+
+  margin: 0;
+}
+
+div.tracks li {
   cursor: text;
 }
