@@ -182,6 +182,7 @@ function inPlaylist(token, userID) {
 
 function getAllUserPlaylists(userID) {
   var promises = [];
+  console.log('== start retrieving all the playlists ==');
   for (var i = 0; i < noPlaylists; i += 20) {
     promises.push(spotifyApi.getUserPlaylists(userID, { offset: i }).then(function (data) {
       var playlists = data.items;
@@ -192,7 +193,7 @@ function getAllUserPlaylists(userID) {
       console.error(e);
     }));
   }
-  return Promise.all(promises).then('finished getting all the playlists').catch(function (e) {
+  return Promise.all(promises).then(console.log('== finished retrieving all the playlists ==')).catch(function (e) {
     console.error(e);
   });
 }
@@ -211,7 +212,6 @@ function displayUserPlaylists(playlists) {
 
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    console.log(playlist.owner, playlist.name, playlist.id);
     return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
@@ -219,9 +219,9 @@ function displayUserPlaylists(playlists) {
   // add a listener for clicking on the playlist
   var lists = document.querySelectorAll('.playlist-info');
   lists.forEach(function (list) {
-    list.addEventListener('click', Tracks.showOrHideTracks.bind(_this, list.parentNode.id));
+    list.addEventListener('click', Tracks.showOrHideTracks.bind(_this, list.parentNode.id, list.childNodes[5].textContent));
   });
-  console.log('== end playlists ==');
+  console.log('== displayed all the playlists ==');
 }
 
 /**
@@ -2035,69 +2035,66 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 var SpotifyWebApi = __webpack_require__(2);
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
-var trackOffset = null;
 
-function retrieveTracks(listOwner, listID) {
-  console.log('getting tracks');
-  return Promise.resolve(spotifyApi.getPlaylistTracks(listOwner, listID).then(function (data) {
-    var tracks = data.items;
-    trackOffset = data.next;
-    console.log("===========");
-    console.log('offset: ' + trackOffset);
-    console.log("===========");
-    tracks.forEach(function (track) {
-      var id = track.track.id;
-      var name = track.track.name;
-      var album = track.track.album.name;
-      var artists = track.track.artists.map(function (artist) {
-        return artist.name;
+function retrieveTracks(listOwner, listID, noTracks) {
+  var promises = [];
+  console.log('== start retrieving all the tracks ==');
+  for (var i = 0; i < noTracks; i += 100) {
+    promises.push(spotifyApi.getPlaylistTracks(listOwner, listID, { offset: i }).then(function (data) {
+      var tracks = data.items;
+      tracks.forEach(function (track) {
+        var id = track.track.id;
+        var name = track.track.name;
+        var album = track.track.album.name;
+        var artists = track.track.artists.map(function (artist) {
+          return artist.name;
+        });
+        playlistTracks.push({ id: id, name: name, album: album, artists: artists });
       });
-      playlistTracks.push({ id: id, name: name, album: album, artists: artists });
-    });
-  }, function (err) {
-    console.error(err);
-  }).then(function (data) {
-    console.log('finished getting the tracks');
-  }));
+    }).catch(function (e) {
+      console.error(e);
+    }));
+  }
+  return Promise.all(promises).then(console.log('== finished retrieving all the tracks ==')).catch(function (e) {
+    console.error(e);
+  });
 }
 
 function toggleTracks(tracks) {
   tracks[0].parentNode.classList.toggle('hide');
+  console.log('== toggling the display of tracks ==');
 }
 
 function displayUserTracks(playlist, tracks) {
-  console.log('== start tracks: ' + tracks.length + ' tracks ==');
+  console.log('== start displaying ' + tracks.length + ' tracks ==');
   var playlistSelected = document.getElementById('track-info-' + playlist);
-  console.log(playlist);
 
   var displayLI = tracks.map(function (track) {
-    console.log(track.id, track.name, track, name, track.artists);
 
     return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists + '</td>\n      </tr>';
-    // insertAfter(playlistSelected, newLI);
   }).join('');
+
   document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists</th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
 }
 
-function showOrHideTracks(playlistIDCombo) {
+function showOrHideTracks(playlistIDCombo, noTracks) {
   var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
   if (hasTracks.length > 0) {
     toggleTracks(hasTracks);
   } else {
     document.getElementById('track-info-' + playlistIDCombo).classList.remove('hide');
-    showTracks(playlistIDCombo);
+    showTracks(playlistIDCombo, noTracks);
   }
 }
 
-function showTracks(playlistIDCombo) {
-  console.log('tracks for ' + playlistIDCombo);
+function showTracks(playlistIDCombo, noTracks) {
   var listOwner = playlistIDCombo.split('---')[1];
   var listID = playlistIDCombo.split('---')[0];
   playlistTracks = [];
   return new Promise(function (resolve, reject) {
     resolve(1);
   }).then(function (result) {
-    return Promise.resolve(retrieveTracks(listOwner, listID));
+    return Promise.resolve(retrieveTracks(listOwner, listID, noTracks));
   }).then(function (result) {
     return Promise.resolve(displayUserTracks(playlistIDCombo, playlistTracks));
   });

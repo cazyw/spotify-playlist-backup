@@ -28,11 +28,12 @@ input {
   margin:10px 0px;
   display: flex;
   width: 90%;
+  color: rgb(0, 0, 0);
 }
 
 input.search {
   width: 100%;
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 0;
   text-align: center;
   outline:0;
@@ -193,4 +194,5 @@ ul {
 
 .track-table .track-artist {
   width: 30%;
+  border-right: 0px;
 }
