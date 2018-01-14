@@ -58,7 +58,7 @@ function displayUserTracks(playlist, tracks){
         <tr class="track-heading">
           <th class="track-name">Name</th>
           <th class="track-album">Album</th>
-          <th class="track-artists">Artists <span id="dl-${playlist}" class="download">DL</span></th>
+          <th class="track-artists">Artists <span id="dl-${playlist}" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>
         </tr>
         ${displayLI} 
       </table>`;

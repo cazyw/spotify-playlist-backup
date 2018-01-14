@@ -2074,7 +2074,7 @@ function displayUserTracks(playlist, tracks) {
     return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists + '</td>\n      </tr>';
   }).join('');
 
-  document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download">DL</span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
+  document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
 
   var trackHeading = document.getElementById('dl-' + playlist);
   trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
