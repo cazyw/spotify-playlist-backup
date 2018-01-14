@@ -45,6 +45,7 @@ function inPlaylist(token, userID){
 
 function getAllUserPlaylists(userID) {
   var promises = [];
+  console.log('== start retrieving all the playlists ==');
   for(let i = 0; i < noPlaylists; i += 20){
     promises.push(spotifyApi.getUserPlaylists(userID, {offset: i})
     .then(function(data){
@@ -59,7 +60,7 @@ function getAllUserPlaylists(userID) {
     )
   }
   return Promise.all(promises)
-  .then('finished getting all the playlists')
+  .then(console.log('== finished retrieving all the playlists =='))
   .catch((e) => {
     console.error(e);
   });
@@ -81,7 +82,6 @@ function displayUserPlaylists(playlists){
 
   // loop through to create LI for each playlist  
   let displayLI = playlists.map((playlist) => {
-    console.log(playlist.owner, playlist.name, playlist.id);
     return `
       <li id="${playlist.id}---${playlist.owner}" class="playlist">
         <div class="playlist-info">
@@ -98,9 +98,9 @@ function displayUserPlaylists(playlists){
   // add a listener for clicking on the playlist
   const lists = document.querySelectorAll('.playlist-info');
   lists.forEach((list) => {
-    list.addEventListener('click', Tracks.showOrHideTracks.bind(this, list.parentNode.id));
+    list.addEventListener('click', Tracks.showOrHideTracks.bind(this, list.parentNode.id, list.childNodes[5].textContent));
   });
-  console.log(`== end playlists ==`);
+  console.log(`== displayed all the playlists ==`);
 }
 
 
