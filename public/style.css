@@ -203,6 +203,9 @@ ul {
 }
 
 @media only screen and (max-width: 550px) {
+  ul {
+    width: 100%;
+  }
   .playlist-header .playlist-owner,
   .playlist-header .playlist-name,
   .playlist-header .playlist-no-tracks
