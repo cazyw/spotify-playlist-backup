@@ -8,7 +8,7 @@ var playlistTracks = [];
 
 function retrieveTracks(listOwner, listID, noTracks) {
   var promises = [];
-  console.log('== start retrieving all the tracks ==');
+  console.log('== start retrieving tracks ==');
   for(let i = 0; i < noTracks; i += 100){
     promises.push(spotifyApi.getPlaylistTracks(listOwner, listID, {offset: i})
     .then(function(data){
@@ -27,7 +27,7 @@ function retrieveTracks(listOwner, listID, noTracks) {
     )
   }
   return Promise.all(promises)
-  .then(console.log('== finished retrieving all the tracks =='))
+  .then(console.log('== finished retrieving tracks =='))
   .catch((e) => {
     console.error(e);
   });
@@ -42,7 +42,7 @@ function toggleTracks(tracks) {
 }
 
 function displayUserTracks(playlist, tracks){
-  console.log(`== start displaying ${tracks.length} tracks ==`);
+  console.log(`== displaying ${tracks.length} tracks ==`);
   const playlistSelected = document.getElementById(`track-info-${playlist}`);
  
   let displayLI = tracks.map((track) => {
@@ -58,10 +58,13 @@ function displayUserTracks(playlist, tracks){
         <tr class="track-heading">
           <th class="track-name">Name</th>
           <th class="track-album">Album</th>
-          <th class="track-artists">Artists</th>
+          <th class="track-artists">Artists <span id="dl-${playlist}" class="download">DL</span></th>
         </tr>
         ${displayLI} 
       </table>`;
+
+    const trackHeading = document.getElementById(`dl-${playlist}`);
+    trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
 function showOrHideTracks(playlistIDCombo, noTracks) {
@@ -91,6 +94,24 @@ function showTracks(playlistIDCombo, noTracks){
       displayUserTracks(playlistIDCombo, playlistTracks)
     )
   })
+}
+
+function downloadTracks(playlistCombo) {
+  console.log(`== downloading ${playlistCombo} ==`);
+  const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);
+  var csv = "Name;Album;Artists\n";
+  playlist.forEach((track) => {
+    csv += `${Array.from(track.children)[0].textContent};${Array.from(track.children)[1].textContent};${Array.from(track.children)[2].textContent}`;
+    csv += `\n`;
+  });
+
+  console.log(csv);
+  var hiddenElement = document.createElement('a');
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenElement.target = '_blank';
+  hiddenElement.download = 'playlist.csv';
+  hiddenElement.click();
+
 }
 
 module.exports = {

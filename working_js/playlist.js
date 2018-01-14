@@ -45,7 +45,7 @@ function inPlaylist(token, userID){
 
 function getAllUserPlaylists(userID) {
   var promises = [];
-  console.log('== start retrieving all the playlists ==');
+  console.log('== start retrieving playlists ==');
   for(let i = 0; i < noPlaylists; i += 20){
     promises.push(spotifyApi.getUserPlaylists(userID, {offset: i})
     .then(function(data){
@@ -60,7 +60,7 @@ function getAllUserPlaylists(userID) {
     )
   }
   return Promise.all(promises)
-  .then(console.log('== finished retrieving all the playlists =='))
+  .then(console.log('== finished retrieving playlists =='))
   .catch((e) => {
     console.error(e);
   });
@@ -100,7 +100,7 @@ function displayUserPlaylists(playlists){
   lists.forEach((list) => {
     list.addEventListener('click', Tracks.showOrHideTracks.bind(this, list.parentNode.id, list.childNodes[5].textContent));
   });
-  console.log(`== displayed all the playlists ==`);
+  console.log(`== displaying playlists ==`);
 }
 
 

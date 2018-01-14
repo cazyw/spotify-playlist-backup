@@ -196,3 +196,9 @@ ul {
   width: 30%;
   border-right: 0px;
 }
+
+.download {
+  float: right;
+  cursor: pointer;
+}
+
