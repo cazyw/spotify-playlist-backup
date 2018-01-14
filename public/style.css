@@ -202,3 +202,31 @@ ul {
   cursor: pointer;
 }
 
+@media only screen and (max-width: 550px) {
+  .playlist-header .playlist-owner,
+  .playlist-header .playlist-name,
+  .playlist-header .playlist-no-tracks
+  {
+    font-size: 1em;
+  }
+
+  .playlist-header .playlist-no-tracks
+  {
+    padding-right: 30px;
+  }
+
+  .playlist-owner {
+    width: 100%;
+    max-width: 50px;
+    background: rgb(168, 231, 170);
+  }
+  
+  .playlist-name {
+    overflow: hidden;
+  }
+  
+  .playlist-no-tracks {
+    width: 100%;
+    max-width: 20px;
+  }
+}
