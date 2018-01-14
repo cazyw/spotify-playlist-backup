@@ -206,6 +206,11 @@ ul {
   ul {
     width: 100%;
   }
+
+  .search-form {
+    width: 100%;
+  }
+
   .playlist-header .playlist-owner,
   .playlist-header .playlist-name,
   .playlist-header .playlist-no-tracks
@@ -222,6 +227,7 @@ ul {
     width: 100%;
     max-width: 50px;
     background: rgb(168, 231, 170);
+    overflow: hidden;
   }
   
   .playlist-name {
@@ -231,5 +237,6 @@ ul {
   .playlist-no-tracks {
     width: 100%;
     max-width: 20px;
+    text-align: right;
   }
 }
