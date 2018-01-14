@@ -1,7 +1,11 @@
+/**
+   * Retrieve track data from Spotify
+   */
+
 var SpotifyWebApi = require('spotify-web-api-js');
 var spotifyApi = new SpotifyWebApi();
-
 var playlistTracks = [];
+var trackOffset = null;
 
 function retrieveTracks(listOwner, listID) {
   console.log('getting tracks');
@@ -9,6 +13,10 @@ function retrieveTracks(listOwner, listID) {
     spotifyApi.getPlaylistTracks(listOwner, listID)
     .then(function(data){
       let tracks = data.items;
+      trackOffset = data.next;
+      console.log("===========");
+      console.log(`offset: ${trackOffset}`);
+      console.log("===========");
       tracks.forEach((track) => {
         let id = track.track.id;
         let name = track.track.name;
@@ -37,14 +45,21 @@ function displayUserTracks(playlist, tracks){
   let displayLI = tracks.map((track) => {
       console.log(track.id, track.name, track,name, track.artists);
 
-      return `<li class="tracks-${playlist}">
-        <div class="track-name">${track.name}</div> 
-        <div class="track-album">${track.album}</div> 
-        <div class="track-artists">${track.artists}</div>
-      </li>`;
+      return `<tr class="tracks-${playlist}">
+        <td class="track-name">${track.name}</td> 
+        <td class="track-album">${track.album}</td> 
+        <td class="track-artists">${track.artists}</td>
+      </tr>`;
       // insertAfter(playlistSelected, newLI);
     }).join('');
-    document.getElementById(`track-info-${playlist}`).innerHTML = displayLI;
+    document.getElementById(`track-info-${playlist}`).innerHTML = `<table class="track-table"> 
+        <tr class="track-heading">
+          <th class="track-name">Name</th>
+          <th class="track-album">Album</th>
+          <th class="track-artists">Artists</th>
+        </tr>
+        ${displayLI} 
+      </table>`;
 }
 
 function showOrHideTracks(playlistIDCombo) {

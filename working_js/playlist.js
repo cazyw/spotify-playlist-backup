@@ -1,5 +1,5 @@
 /**
-   * Retrieve data from Spotify
+   * Retrieve playlist data from Spotify
    */
 
 console.log('starting console log');
@@ -77,6 +77,8 @@ function displayUserPlaylists(playlists){
       <div class="playlist-no-tracks">Tracks</div>
     </li>`;
 
+  document.querySelector('.playlists').innerHTML = `${header}`; 
+
   // loop through to create LI for each playlist  
   let displayLI = playlists.map((playlist) => {
     console.log(playlist.owner, playlist.name, playlist.id);
@@ -85,13 +87,13 @@ function displayUserPlaylists(playlists){
         <div class="playlist-info">
           <div class="playlist-owner">${playlist.owner}</div> 
           <div class="playlist-name">${playlist.name}</div> 
-          <div class="playlist-no-tracks">${playlist.totalTracks} track${playlist.totalTracks!== 1 ? 's' : ''}</div>
+          <div class="playlist-no-tracks">${playlist.totalTracks}</div>
         </div>
         <div id="track-info-${playlist.id}---${playlist.owner}" class="tracks hide"></div>
       </li>
     `;
   }).join('');
-  document.querySelector('.playlists').innerHTML = `${header} ${displayLI}`;
+  document.querySelector('.playlists').innerHTML += `${displayLI}`;
 
   // add a listener for clicking on the playlist
   const lists = document.querySelectorAll('.playlist-info');
