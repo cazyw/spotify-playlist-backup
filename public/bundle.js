@@ -228,11 +228,11 @@ function displayUserPlaylists(playlists) {
    * Search playlists for a particular playlist
    */
 
-var filterPlaylist = function filterPlaylist(word) {
+function filterPlaylist(word) {
   return userPlaylists.filter(function (playlist) {
     return playlist.name.toLowerCase().includes(word);
   });
-};
+}
 
 function getInput() {
   if (this.value === "") {

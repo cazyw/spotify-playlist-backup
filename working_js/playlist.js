@@ -108,7 +108,7 @@ function displayUserPlaylists(playlists){
    * Search playlists for a particular playlist
    */
 
-const filterPlaylist = (word) =>{
+function filterPlaylist(word) {
   return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word));
 }
 
