@@ -1,6 +1,8 @@
 html, body {
-  background-color: rgb(215, 211, 200);
+  /* background-color: rgb(215, 211, 200); */
+  background-color: rgb(49, 49, 49);
   border-box;
+  color: rgb(255, 255, 255);
 }
 
 *, *:before, *:after {
@@ -14,6 +16,7 @@ h1 {
 
 .intro {
   padding: 20px;
+  /* color: rgb(255, 255, 255); */
 }
 
 
@@ -73,6 +76,10 @@ ul {
   width: 90%;
 }
 
+.playlists {
+  color: rgb(0, 0, 0);
+}
+
 .playlists li {
   background:white;
   list-style: none;
@@ -92,36 +99,33 @@ ul {
   flex-direction: column;
 }
 
-.playlistInfo {
+.playlist-info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: 0;
-  /* margin: -20px;
-  padding: 20px; */
 }
 
-.playlistOwner {
+.playlist-owner {
   width: 100%;
   max-width: 100px;
   margin: -20px;
   padding: 20px;
-  background: rgb(252, 228, 178);
+  background: rgb(168, 231, 170);
 }
 
-.playlistName {
-  /* width: 50%; */
+.playlist-name {
   margin: -20px;
-  padding: 20px;
-  overflow: scroll;
+  padding: 20px 50px;
+  overflow: hidden;
 }
 
-.playlistNoTracks {
+.playlist-no-tracks {
   width: 100%;
-  max-width: 100px;
+  max-width: 70px;
   margin: -20px;
   padding: 20px;
-  background: rgb(252, 228, 178);
+  background: rgb(168, 231, 170);
 }
 
 .playlists li:nth-child(even) {
@@ -132,9 +136,9 @@ ul {
 }
 
 
-.playlistHeader .playlistOwner,
-.playlistHeader .playlistName,
-.playlistHeader .playlistNoTracks
+.playlist-header .playlist-owner,
+.playlist-header .playlist-name,
+.playlist-header .playlist-no-tracks
  {
   font-size: 1.5em;
   background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
@@ -156,6 +160,37 @@ ul {
   margin: 0;
 }
 
-div.tracks li {
-  cursor: text;
+
+.track-table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.track-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: rgb(76, 175, 80);
+  color: white;
+}
+
+.track-table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+.track-table td, .track-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.track-table .track-name {
+  width: 40%;
+}
+.track-table .track-album {
+  width: 30%;
+}
+
+.track-table .track-artist {
+  width: 30%;
 }
