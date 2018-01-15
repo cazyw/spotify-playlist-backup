@@ -53,6 +53,17 @@ input.search {
   margin-top: 50px;
 }
 
+.loading {
+  margin-top: 50px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+}
+
+.loading.black {
+  margin: 20px;
+  color: rgb(49, 49, 49);
+}
+
 #login {
   padding-top: 50px;
   text-align: center;
@@ -82,7 +93,7 @@ ul {
 }
 
 .playlists li {
-  background:white;
+  background:rgb(255, 255, 255);
   list-style: none;
   border-bottom: 1px solid #D8D8D8;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
@@ -130,10 +141,10 @@ ul {
 }
 
 .playlists li:nth-child(even) {
-  background: linear-gradient(to bottom,  #ffffff 0%,#EFEFEF 100%);
+  background: linear-gradient(to bottom,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
 }
 .playlists li:nth-child(odd) {
-  background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
+  background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
 }
 
 
@@ -142,7 +153,7 @@ ul {
 .playlist-header .playlist-no-tracks
  {
   font-size: 1.5em;
-  background: linear-gradient(to top,  #ffffff 0%,#EFEFEF 100%);
+  background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
 }
 
 

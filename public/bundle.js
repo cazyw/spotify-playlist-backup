@@ -161,6 +161,7 @@ var spotifyApi = new SpotifyWebApi();
 
 function inPlaylist(token, userID) {
   spotifyApi.setAccessToken(token);
+  document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
   return new Promise(function (resolve, reject) {
     resolve(1);
   }).then(function (result) {
@@ -2070,7 +2071,6 @@ function displayUserTracks(playlist, tracks) {
   var playlistSelected = document.getElementById('track-info-' + playlist);
 
   var displayLI = tracks.map(function (track) {
-    console.log(track.artists.join(', '));
 
     return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists.join('; ') + '</td>\n      </tr>';
   }).join('');
@@ -2086,6 +2086,7 @@ function showOrHideTracks(playlistIDCombo, noTracks) {
   if (hasTracks.length > 0) {
     toggleTracks(hasTracks);
   } else {
+    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
     document.getElementById('track-info-' + playlistIDCombo).classList.remove('hide');
     showTracks(playlistIDCombo, noTracks);
   }

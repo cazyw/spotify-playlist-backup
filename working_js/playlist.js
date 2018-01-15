@@ -14,6 +14,7 @@ var spotifyApi = new SpotifyWebApi();
 
 function inPlaylist(token, userID){
   spotifyApi.setAccessToken(token);
+  document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
   return new Promise(function(resolve, reject) {
       resolve(1);
   })
