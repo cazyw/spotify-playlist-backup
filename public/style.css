@@ -151,13 +151,10 @@ ul {
   opacity: 1;
   padding: 0;
   margin: 20px -20px -20px -20px;
-  --webkit-transition: opacity 2s ease-in;
-  transition: opacity 2s ease-in;
 }
 
 .playlists .playlist .tracks.hide {
   opacity: 0;
-
   margin: 0;
 }
 
@@ -180,6 +177,10 @@ ul {
   background-color: #f2f2f2;
 }
 
+.track-table tr:nth-child(odd){
+  background-color: #ffffff;
+}
+
 .track-table td, .track-table th {
   border: 1px solid #ddd;
   padding: 8px;
@@ -195,6 +196,7 @@ ul {
 .track-table .track-artist {
   width: 30%;
   border-right: 0px;
+  overflow: scroll;
 }
 
 .download {
@@ -225,13 +227,19 @@ ul {
 
   .playlist-owner {
     width: 100%;
-    max-width: 50px;
-    background: rgb(168, 231, 170);
+    max-width: 70px;
     overflow: hidden;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   
   .playlist-name {
+    width: 100%;
+    max-width: 500px;
     overflow: hidden;
+    text-align: left;
+    margin: -20px 20px;
+    padding: 20px 20px;
   }
   
   .playlist-no-tracks {
@@ -239,4 +247,5 @@ ul {
     max-width: 20px;
     text-align: right;
   }
+
 }

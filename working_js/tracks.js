@@ -46,11 +46,12 @@ function displayUserTracks(playlist, tracks){
   const playlistSelected = document.getElementById(`track-info-${playlist}`);
  
   let displayLI = tracks.map((track) => {
+    console.log(track.artists.join(', '));
 
       return `<tr class="tracks-${playlist}">
         <td class="track-name">${track.name}</td> 
         <td class="track-album">${track.album}</td> 
-        <td class="track-artists">${track.artists}</td>
+        <td class="track-artists">${track.artists.join('; ')}</td>
       </tr>`;
     }).join('');
 
@@ -99,9 +100,9 @@ function showTracks(playlistIDCombo, noTracks){
 function downloadTracks(playlistCombo) {
   console.log(`== downloading ${playlistCombo} ==`);
   const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);
-  var csv = "Name;Album;Artists\n";
+  var csv = "Name,Album,Artists\n";
   playlist.forEach((track) => {
-    csv += `${Array.from(track.children)[0].textContent};${Array.from(track.children)[1].textContent};${Array.from(track.children)[2].textContent}`;
+    csv += `${Array.from(track.children)[0].textContent},${Array.from(track.children)[1].textContent},${Array.from(track.children)[2].textContent}`;
     csv += `\n`;
   });
 

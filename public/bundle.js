@@ -238,7 +238,7 @@ function getInput() {
   if (this.value === "") {
     displayUserPlaylists(userPlaylists, 0);
   } else {
-    displayUserPlaylists(filterPlaylist(this.value), 0);
+    displayUserPlaylists(filterPlaylist(this.value.toLowerCase()), 0);
   }
 }
 
@@ -2070,8 +2070,9 @@ function displayUserTracks(playlist, tracks) {
   var playlistSelected = document.getElementById('track-info-' + playlist);
 
   var displayLI = tracks.map(function (track) {
+    console.log(track.artists.join(', '));
 
-    return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists + '</td>\n      </tr>';
+    return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists.join('; ') + '</td>\n      </tr>';
   }).join('');
 
   document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
@@ -2106,9 +2107,9 @@ function showTracks(playlistIDCombo, noTracks) {
 function downloadTracks(playlistCombo) {
   console.log('== downloading ' + playlistCombo + ' ==');
   var playlist = document.querySelectorAll('.tracks-' + playlistCombo);
-  var csv = "Name;Album;Artists\n";
+  var csv = "Name,Album,Artists\n";
   playlist.forEach(function (track) {
-    csv += Array.from(track.children)[0].textContent + ';' + Array.from(track.children)[1].textContent + ';' + Array.from(track.children)[2].textContent;
+    csv += Array.from(track.children)[0].textContent + ',' + Array.from(track.children)[1].textContent + ',' + Array.from(track.children)[2].textContent;
     csv += '\n';
   });
 
