@@ -60,198 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var playlist = __webpack_require__(1);
-
-/**
-   * Obtains parameters from the hash of the URL
-   * @return Object
-   */
-function getHashParams() {
-  var hashParams = {};
-  var e,
-      r = /([^&;=]+)=?([^&;]*)/g,
-      q = window.location.hash.substring(1);
-  while (e = r.exec(q)) {
-    hashParams[e[1]] = decodeURIComponent(e[2]);
-  }
-  return hashParams;
-}
-
-function addClass(section) {
-  document.getElementById(section).classList.add('active');
-}
-
-function removeClass(section, callback, param) {
-  document.getElementById(section).classList.remove('active');
-  callback(param);
-}
-
-/**
-   * Authentication with Spotify
-   */
-
-function authenticate() {
-
-  var params = getHashParams();
-
-  var access_token = params.access_token,
-      refresh_token = params.refresh_token,
-      error = params.error;
-
-  if (error) {
-    alert('There was an error during the authentication');
-  } else {
-    if (access_token) {
-
-      removeClass('login', addClass, 'loading');
-
-      $.ajax({
-        url: 'https://api.spotify.com/v1/me',
-        headers: {
-          'Authorization': 'Bearer ' + access_token
-        },
-        success: function success(response) {
-          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
-          playlist.inPlaylist(access_token, response.id);
-          document.getElementById('loading').classList.remove('active');
-          document.querySelector('.display-name').textContent = response.id;
-          document.getElementById('loggedin').classList.add('active');
-        }
-      });
-    } else {
-      // render initial screen
-      document.getElementById('loggedin').classList.remove('active');
-      document.getElementById('login').classList.add('active');
-    }
-  }
-}
-
-authenticate();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
-   * Retrieve playlist data from Spotify
-   */
-
-console.log('starting console log');
-
-var SpotifyWebApi = __webpack_require__(2);
-var Tracks = __webpack_require__(3);
-var userPlaylists = [];
-var noPlaylists = 0;
-var spotifyApi = new SpotifyWebApi();
-
-// After authentication, get and display the user's playlists
-
-function inPlaylist(token, userID) {
-  spotifyApi.setAccessToken(token);
-  document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
-  return new Promise(function (resolve, reject) {
-    resolve(1);
-  }).then(function (result) {
-    return Promise.resolve(spotifyApi.getUserPlaylists().then(function (data) {
-      console.log('Number of playlists: ' + data.total + ', ' + Math.ceil(data.total / 20) + ' loops');
-      noPlaylists = data.total;
-    }, function (err) {
-      console.error(err);
-    }));
-  }).then(function (result) {
-    return Promise.resolve(getAllUserPlaylists(userID));
-  }).then(function (result) {
-    return Promise.resolve(displayUserPlaylists(userPlaylists));
-  });
-}
-
-// retrieve the logged in user's playlists from Spotify
-// save the playlists to the array
-
-function getAllUserPlaylists(userID) {
-  var promises = [];
-  console.log('== start retrieving playlists ==');
-  for (var i = 0; i < noPlaylists; i += 20) {
-    promises.push(spotifyApi.getUserPlaylists(userID, { offset: i }).then(function (data) {
-      var playlists = data.items;
-      playlists.forEach(function (playlist) {
-        userPlaylists.push({ owner: playlist.owner.id, name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
-      });
-    }).catch(function (e) {
-      console.error(e);
-    }));
-  }
-  return Promise.all(promises).then(console.log('== finished retrieving playlists ==')).catch(function (e) {
-    console.error(e);
-  });
-}
-
-// display the logged in user's playlists
-
-function displayUserPlaylists(playlists) {
-  var _this = this;
-
-  document.querySelector('.number-of-playlists').textContent = playlists.length;
-
-  // header for playlists
-  var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-no-tracks">Tracks</div>\n    </li>';
-
-  document.querySelector('.playlists').innerHTML = '' + header;
-
-  // loop through to create LI for each playlist  
-  var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
-  }).join('');
-  document.querySelector('.playlists').innerHTML += '' + displayLI;
-
-  // add a listener for clicking on the playlist
-  var lists = document.querySelectorAll('.playlist-info');
-  lists.forEach(function (list) {
-    list.addEventListener('click', Tracks.showOrHideTracks.bind(_this, list.parentNode.id, list.childNodes[5].textContent));
-  });
-  console.log('== displaying playlists ==');
-}
-
-/**
-   * Search playlists for a particular playlist
-   */
-
-function filterPlaylist(word) {
-  return userPlaylists.filter(function (playlist) {
-    return playlist.name.toLowerCase().includes(word);
-  });
-}
-
-function getInput() {
-  if (this.value === "") {
-    displayUserPlaylists(userPlaylists, 0);
-  } else {
-    displayUserPlaylists(filterPlaylist(this.value.toLowerCase()), 0);
-  }
-}
-
-var input = document.querySelector('input');
-input.addEventListener('keyup', getInput);
-
-module.exports = {
-  inPlaylist: inPlaylist
-};
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2023,6 +1836,193 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var playlist = __webpack_require__(2);
+
+/**
+   * Obtains parameters from the hash of the URL
+   * @return Object
+   */
+function getHashParams() {
+  var hashParams = {};
+  var e,
+      r = /([^&;=]+)=?([^&;]*)/g,
+      q = window.location.hash.substring(1);
+  while (e = r.exec(q)) {
+    hashParams[e[1]] = decodeURIComponent(e[2]);
+  }
+  return hashParams;
+}
+
+function addClass(section) {
+  document.getElementById(section).classList.add('active');
+}
+
+function removeClass(section, callback, param) {
+  document.getElementById(section).classList.remove('active');
+  callback(param);
+}
+
+/**
+   * Authentication with Spotify
+   */
+
+function authenticate() {
+
+  var params = getHashParams();
+
+  var access_token = params.access_token,
+      refresh_token = params.refresh_token,
+      error = params.error;
+
+  if (error) {
+    alert('There was an error during the authentication');
+  } else {
+    if (access_token) {
+
+      removeClass('login', addClass, 'loading');
+
+      $.ajax({
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        },
+        success: function success(response) {
+          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+          playlist.inPlaylist(access_token, response.id);
+          document.getElementById('loading').classList.remove('active');
+          document.querySelector('.display-name').textContent = response.id;
+          document.getElementById('loggedin').classList.add('active');
+        }
+      });
+    } else {
+      // render initial screen
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
+    }
+  }
+}
+
+authenticate();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+   * Retrieve playlist data from Spotify
+   */
+
+console.log('starting console log');
+
+var SpotifyWebApi = __webpack_require__(0);
+var Tracks = __webpack_require__(3);
+var userPlaylists = [];
+var noPlaylists = 0;
+var spotifyApi = new SpotifyWebApi();
+
+// After authentication, get and display the user's playlists
+
+function inPlaylist(token, userID) {
+  spotifyApi.setAccessToken(token);
+  document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
+  return new Promise(function (resolve, reject) {
+    resolve(1);
+  }).then(function (result) {
+    return Promise.resolve(spotifyApi.getUserPlaylists().then(function (data) {
+      console.log('Number of playlists: ' + data.total + ', ' + Math.ceil(data.total / 20) + ' loops');
+      noPlaylists = data.total;
+    }, function (err) {
+      console.error(err);
+    }));
+  }).then(function (result) {
+    return Promise.resolve(getAllUserPlaylists(userID));
+  }).then(function (result) {
+    return Promise.resolve(displayUserPlaylists(userPlaylists));
+  });
+}
+
+// retrieve the logged in user's playlists from Spotify
+// save the playlists to the array
+
+function getAllUserPlaylists(userID) {
+  var promises = [];
+  console.log('== start retrieving playlists ==');
+  for (var i = 0; i < noPlaylists; i += 20) {
+    promises.push(spotifyApi.getUserPlaylists(userID, { offset: i }).then(function (data) {
+      var playlists = data.items;
+      playlists.forEach(function (playlist) {
+        userPlaylists.push({ owner: playlist.owner.id, name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
+      });
+    }).catch(function (e) {
+      console.error(e);
+    }));
+  }
+  return Promise.all(promises).then(console.log('== finished retrieving playlists ==')).catch(function (e) {
+    console.error(e);
+  });
+}
+
+// display the logged in user's playlists
+
+function displayUserPlaylists(playlists) {
+  var _this = this;
+
+  document.querySelector('.number-of-playlists').textContent = playlists.length;
+
+  // header for playlists
+  var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-no-tracks">Tracks</div>\n    </li>';
+
+  document.querySelector('.playlists').innerHTML = '' + header;
+
+  // loop through to create LI for each playlist  
+  var displayLI = playlists.map(function (playlist) {
+    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
+  }).join('');
+  document.querySelector('.playlists').innerHTML += '' + displayLI;
+
+  // add a listener for clicking on the playlist
+  var lists = document.querySelectorAll('.playlist-info');
+  lists.forEach(function (list) {
+    list.addEventListener('click', Tracks.showOrHideTracks.bind(_this, list.parentNode.id, list.childNodes[5].textContent));
+  });
+  console.log('== displaying playlists ==');
+}
+
+/**
+   * Search playlists for a particular playlist
+   */
+
+function filterPlaylist(word) {
+  return userPlaylists.filter(function (playlist) {
+    return playlist.name.toLowerCase().includes(word);
+  });
+}
+
+function getInput() {
+  if (this.value === "") {
+    displayUserPlaylists(userPlaylists, 0);
+  } else {
+    displayUserPlaylists(filterPlaylist(this.value.toLowerCase()), 0);
+  }
+}
+
+var input = document.querySelector('input');
+input.addEventListener('keyup', getInput);
+
+module.exports = {
+  inPlaylist: inPlaylist
+};
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2033,7 +2033,7 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
    * Retrieve track data from Spotify
    */
 
-var SpotifyWebApi = __webpack_require__(2);
+var SpotifyWebApi = __webpack_require__(0);
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
 

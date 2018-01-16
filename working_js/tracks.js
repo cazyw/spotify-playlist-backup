@@ -33,9 +33,6 @@ function retrieveTracks(listOwner, listID, noTracks) {
   });
 }
 
-
-
-
 function toggleTracks(tracks) {
   tracks[0].parentNode.classList.toggle('hide');
   console.log('== toggling the display of tracks ==');
