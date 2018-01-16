@@ -125,6 +125,7 @@ ul {
   padding: 20px;
   background: rgb(168, 231, 170);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
 }
 
 .playlist-name {
@@ -135,7 +136,7 @@ ul {
 
 .playlist-no-tracks {
   width: 100%;
-  max-width: 70px;
+  max-width: 100px;
   margin: -20px;
   padding: 20px;
   background: rgb(168, 231, 170);
