@@ -1,5 +1,5 @@
-# Spotify Playlist Backup App
-Project to create a website that displays a user's playlist track details from Spotify. 
+# Spotify Playlist Backup
+Project to create a website that displays a user's Spotify playlist track details so they can be downloaded. 
 
 https://spotify-copy-playlist.herokuapp.com
 
