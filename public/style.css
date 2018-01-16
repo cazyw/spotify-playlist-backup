@@ -155,6 +155,7 @@ ul {
 .playlist-header .playlist-name,
 .playlist-header .playlist-no-tracks
  {
+  font-weight:bold;
   background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
 }
 
