@@ -109,4 +109,4 @@ One new item I had never touched on was downloading/saving information from a we
 
 As the project progressed I began separating my code out into smaller modules. This made it both easier to manage and a good way to explore how to use webpack and how to break code up into chunks.
 
-The project has essentially finished (barring some ongoing feature/design tweaks/refactoring) and was pretty fun.
+The project has essentially finished (barring some ongoing feature/design tweaks/refactoring) and was pretty fun, a great learning experience and resulted in something I will use.
