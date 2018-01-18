@@ -39,7 +39,6 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-
       removeClass('login', addClass, 'loading');
 
       $.ajax({
@@ -48,7 +47,6 @@ function authenticate() {
           'Authorization': 'Bearer ' + access_token
         },
         success: function(response) {
-          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
           playlist.inPlaylist(access_token, response.id);
           document.getElementById('loading').classList.remove('active');
           document.querySelector('.display-name').textContent = response.id;

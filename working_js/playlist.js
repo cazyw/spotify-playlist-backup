@@ -22,8 +22,9 @@ function inPlaylist(token, userID){
     return Promise.resolve(
       spotifyApi.getUserPlaylists()
         .then(function(data) {
-          console.log(`Number of playlists: ${data.total}, ${Math.ceil(data.total / 20)} loops`)
+          console.log(`Number of playlists: ${data.total}`)
           noPlaylists = data.total
+          document.querySelector('.number-of-playlists').textContent = data.total;
         }, function(err){
           console.error(err);
         })
@@ -38,6 +39,11 @@ function inPlaylist(token, userID){
     return Promise.resolve(
       displayUserPlaylists(userPlaylists)
     )
+  })
+  .catch((e) => {
+    console.error(e);
+    document.getElementById('loggedin').classList.remove('active');
+    document.getElementById('login').classList.add('active');
   })
 }
 
@@ -57,6 +63,8 @@ function getAllUserPlaylists(userID) {
     })
     .catch((e) => {
       console.error(e);
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
     })
     )
   }
@@ -70,7 +78,6 @@ function getAllUserPlaylists(userID) {
 // display the logged in user's playlists
 
 function displayUserPlaylists(playlists){
-  document.querySelector('.number-of-playlists').textContent = playlists.length;
 
   // header for playlists
   const header = `<li class="playlist-header">
@@ -110,7 +117,7 @@ function displayUserPlaylists(playlists){
    */
 
 function filterPlaylist(word) {
-  return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word));
+  return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word) || playlist.owner.toLowerCase().includes(word));
 }
 
 function getInput() {

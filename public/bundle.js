@@ -1884,7 +1884,6 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-
       removeClass('login', addClass, 'loading');
 
       $.ajax({
@@ -1893,7 +1892,6 @@ function authenticate() {
           'Authorization': 'Bearer ' + access_token
         },
         success: function success(response) {
-          // userProfilePlaceholder.innerHTML = userProfileTemplate(response);
           playlist.inPlaylist(access_token, response.id);
           document.getElementById('loading').classList.remove('active');
           document.querySelector('.display-name').textContent = response.id;
@@ -1938,8 +1936,9 @@ function inPlaylist(token, userID) {
     resolve(1);
   }).then(function (result) {
     return Promise.resolve(spotifyApi.getUserPlaylists().then(function (data) {
-      console.log('Number of playlists: ' + data.total + ', ' + Math.ceil(data.total / 20) + ' loops');
+      console.log('Number of playlists: ' + data.total);
       noPlaylists = data.total;
+      document.querySelector('.number-of-playlists').textContent = data.total;
     }, function (err) {
       console.error(err);
     }));
@@ -1947,6 +1946,10 @@ function inPlaylist(token, userID) {
     return Promise.resolve(getAllUserPlaylists(userID));
   }).then(function (result) {
     return Promise.resolve(displayUserPlaylists(userPlaylists));
+  }).catch(function (e) {
+    console.error(e);
+    document.getElementById('loggedin').classList.remove('active');
+    document.getElementById('login').classList.add('active');
   });
 }
 
@@ -1964,6 +1967,8 @@ function getAllUserPlaylists(userID) {
       });
     }).catch(function (e) {
       console.error(e);
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
     }));
   }
   return Promise.all(promises).then(console.log('== finished retrieving playlists ==')).catch(function (e) {
@@ -1975,8 +1980,6 @@ function getAllUserPlaylists(userID) {
 
 function displayUserPlaylists(playlists) {
   var _this = this;
-
-  document.querySelector('.number-of-playlists').textContent = playlists.length;
 
   // header for playlists
   var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-no-tracks">Tracks</div>\n    </li>';
@@ -2003,7 +2006,7 @@ function displayUserPlaylists(playlists) {
 
 function filterPlaylist(word) {
   return userPlaylists.filter(function (playlist) {
-    return playlist.name.toLowerCase().includes(word);
+    return playlist.name.toLowerCase().includes(word) || playlist.owner.toLowerCase().includes(word);
   });
 }
 
@@ -2037,6 +2040,35 @@ var SpotifyWebApi = __webpack_require__(0);
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
 
+function showOrHideTracks(playlistIDCombo, noTracks) {
+  var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
+  if (hasTracks.length > 0) {
+    toggleTracks(hasTracks);
+  } else {
+    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
+    document.getElementById('track-info-' + playlistIDCombo).classList.remove('hide');
+    showTracks(playlistIDCombo, noTracks);
+  }
+}
+
+function toggleTracks(tracks) {
+  tracks[0].parentNode.classList.toggle('hide');
+  console.log('== toggling the display of tracks ==');
+}
+
+function showTracks(playlistIDCombo, noTracks) {
+  var listID = playlistIDCombo.split('---')[0];
+  var listOwner = playlistIDCombo.split('---')[1];
+  playlistTracks = [];
+  return new Promise(function (resolve, reject) {
+    resolve(1);
+  }).then(function (result) {
+    return Promise.resolve(retrieveTracks(listOwner, listID, noTracks));
+  }).then(function (result) {
+    return Promise.resolve(displayUserTracks(playlistIDCombo, playlistTracks));
+  });
+}
+
 function retrieveTracks(listOwner, listID, noTracks) {
   var promises = [];
   console.log('== start retrieving tracks ==');
@@ -2054,16 +2086,15 @@ function retrieveTracks(listOwner, listID, noTracks) {
       });
     }).catch(function (e) {
       console.error(e);
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
     }));
   }
   return Promise.all(promises).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
     console.error(e);
+    document.getElementById('loggedin').classList.remove('active');
+    document.getElementById('login').classList.add('active');
   });
-}
-
-function toggleTracks(tracks) {
-  tracks[0].parentNode.classList.toggle('hide');
-  console.log('== toggling the display of tracks ==');
 }
 
 function displayUserTracks(playlist, tracks) {
@@ -2079,30 +2110,6 @@ function displayUserTracks(playlist, tracks) {
 
   var trackHeading = document.getElementById('dl-' + playlist);
   trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
-}
-
-function showOrHideTracks(playlistIDCombo, noTracks) {
-  var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
-  if (hasTracks.length > 0) {
-    toggleTracks(hasTracks);
-  } else {
-    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
-    document.getElementById('track-info-' + playlistIDCombo).classList.remove('hide');
-    showTracks(playlistIDCombo, noTracks);
-  }
-}
-
-function showTracks(playlistIDCombo, noTracks) {
-  var listOwner = playlistIDCombo.split('---')[1];
-  var listID = playlistIDCombo.split('---')[0];
-  playlistTracks = [];
-  return new Promise(function (resolve, reject) {
-    resolve(1);
-  }).then(function (result) {
-    return Promise.resolve(retrieveTracks(listOwner, listID, noTracks));
-  }).then(function (result) {
-    return Promise.resolve(displayUserTracks(playlistIDCombo, playlistTracks));
-  });
 }
 
 function downloadTracks(playlistCombo) {

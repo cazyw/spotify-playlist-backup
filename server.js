@@ -76,7 +76,6 @@ app.get('/callback', function(req, res) {
         error: 'state_mismatch'
       }));
   } else {
-    console.log('callback');
     res.clearCookie(stateKey);
     var authOptions = {
       url: 'https://accounts.spotify.com/api/token',
@@ -95,7 +94,7 @@ app.get('/callback', function(req, res) {
       if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
-            refresh_token = body.refresh_token;
+            refresh_token = body.refresh_token
     
         var options = {
           url: 'https://api.spotify.com/v1/me',

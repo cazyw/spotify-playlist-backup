@@ -6,6 +6,41 @@ var SpotifyWebApi = require('spotify-web-api-js');
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
 
+function showOrHideTracks(playlistIDCombo, noTracks) {
+  const hasTracks = document.getElementsByClassName(`tracks-${playlistIDCombo}`);
+  if (hasTracks.length > 0){
+    toggleTracks(hasTracks);
+  } else {
+    document.getElementById(`track-info-${playlistIDCombo}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
+    document.getElementById(`track-info-${playlistIDCombo}`).classList.remove('hide');
+    showTracks(playlistIDCombo, noTracks);
+  }
+}
+
+function toggleTracks(tracks) {
+  tracks[0].parentNode.classList.toggle('hide');
+  console.log('== toggling the display of tracks ==');
+}
+
+function showTracks(playlistIDCombo, noTracks){
+  let listID = playlistIDCombo.split('---')[0];
+  let listOwner = playlistIDCombo.split('---')[1];
+  playlistTracks = [];
+  return new Promise(function(resolve, reject) {
+    resolve(1);
+  })
+  .then(function (result) {
+    return Promise.resolve(
+      retrieveTracks(listOwner, listID, noTracks)
+    )
+  })
+  .then(function (result) {
+    return Promise.resolve(
+      displayUserTracks(playlistIDCombo, playlistTracks)
+    )
+  })
+}
+
 function retrieveTracks(listOwner, listID, noTracks) {
   var promises = [];
   console.log('== start retrieving tracks ==');
@@ -23,6 +58,8 @@ function retrieveTracks(listOwner, listID, noTracks) {
     })
     .catch((e) => {
       console.error(e);
+      document.getElementById('loggedin').classList.remove('active');
+      document.getElementById('login').classList.add('active');
     })
     )
   }
@@ -30,13 +67,12 @@ function retrieveTracks(listOwner, listID, noTracks) {
   .then(console.log('== finished retrieving tracks =='))
   .catch((e) => {
     console.error(e);
+    document.getElementById('loggedin').classList.remove('active');
+    document.getElementById('login').classList.add('active');
   });
 }
 
-function toggleTracks(tracks) {
-  tracks[0].parentNode.classList.toggle('hide');
-  console.log('== toggling the display of tracks ==');
-}
+
 
 function displayUserTracks(playlist, tracks){
   console.log(`== displaying ${tracks.length} tracks ==`);
@@ -64,35 +100,9 @@ function displayUserTracks(playlist, tracks){
     trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
-function showOrHideTracks(playlistIDCombo, noTracks) {
-  const hasTracks = document.getElementsByClassName(`tracks-${playlistIDCombo}`);
-  if (hasTracks.length > 0){
-    toggleTracks(hasTracks);
-  } else {
-    document.getElementById(`track-info-${playlistIDCombo}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
-    document.getElementById(`track-info-${playlistIDCombo}`).classList.remove('hide');
-    showTracks(playlistIDCombo, noTracks);
-  }
-}
 
-function showTracks(playlistIDCombo, noTracks){
-  let listOwner = playlistIDCombo.split('---')[1];
-  let listID = playlistIDCombo.split('---')[0];
-  playlistTracks = [];
-  return new Promise(function(resolve, reject) {
-    resolve(1);
-  })
-  .then(function (result) {
-    return Promise.resolve(
-      retrieveTracks(listOwner, listID, noTracks)
-    )
-  })
-  .then(function (result) {
-    return Promise.resolve(
-      displayUserTracks(playlistIDCombo, playlistTracks)
-    )
-  })
-}
+
+
 
 function downloadTracks(playlistCombo) {
   console.log(`== downloading ${playlistCombo} ==`);
