@@ -51,7 +51,13 @@ function authenticate() {
           document.getElementById('loading').classList.remove('active');
           document.querySelector('.display-name').textContent = response.id;
           document.getElementById('loggedin').classList.add('active');
-          }
+          },
+        error: function() {
+          alert('token expired, please log in again');
+          document.getElementById('loggedin').classList.remove('active');
+          document.getElementById('loading').classList.remove('active');
+          document.getElementById('login').classList.add('active');
+        }
         });
       } else {
         // render initial screen
