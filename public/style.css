@@ -184,11 +184,11 @@ ul {
 
 .tracks.active {
   opacity: 1;
-  -webkit-transition: all 0.75s linear;
-  -moz-transition: all 0.75s linear;
-  -ms-transition: all 0.75s linear;
-  -o-transition: all 0.75s linear;
-  transition: all 0.75s linear;
+  -webkit-transition: all 0.25s linear;
+  -moz-transition: all 0.25s linear;
+  -ms-transition: all 0.25s linear;
+  -o-transition: all 0.25s linear;
+  transition: all 0.25s linear;
 }
 
 .tracks {

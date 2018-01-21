@@ -10,16 +10,12 @@ function showOrHideTracks(playlistIDCombo, noTracks) {
   const hasTracks = document.getElementsByClassName(`tracks-${playlistIDCombo}`);
   if (hasTracks.length > 0){
     document.getElementById(`track-info-${playlistIDCombo}`).innerHTML = '';
+    document.getElementById(`track-info-${playlistIDCombo}`).classList.remove('active');
   } else {
     document.getElementById(`track-info-${playlistIDCombo}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
     document.getElementById(`track-info-${playlistIDCombo}`).classList.add('active');
     showTracks(playlistIDCombo, noTracks);
   }
-}
-
-function toggleTracks(playlistIDCombo) {
-  document.getElementById(`track-info-${playlistIDCombo}`).classList.toggle('active');
-  console.log('== toggling the display of tracks ==');
 }
 
 function showTracks(playlistIDCombo, noTracks){
@@ -56,6 +52,7 @@ function retrieveTracks(playlistIDCombo, noTracks) {
         let artists = track.track.artists.map((artist) => artist.name);
         playlistTracks.push({id: id, name: name, album: album, artists: artists});
       });
+      document.getElementById(`track-info-${playlistIDCombo}`).classList.remove('active');
     })
     .catch((e) => {
       console.error(e);
@@ -63,7 +60,6 @@ function retrieveTracks(playlistIDCombo, noTracks) {
       document.getElementById('login').classList.add('active');
     })
     )
-    document.getElementById(`track-info-${playlistIDCombo}`).classList.remove('active');
   }
   return Promise.all(promises)
   .then(console.log('== finished retrieving tracks =='))
@@ -97,8 +93,8 @@ function displayUserTracks(playlist, tracks){
         </tr>
         ${displayLI} 
       </table>`;
-    document.getElementById(`track-info-${playlist}`).classList.add('active');
     const trackHeading = document.getElementById(`dl-${playlist}`);
+    document.getElementById(`track-info-${playlist}`).classList.add('active');
     trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 

@@ -2049,16 +2049,12 @@ function showOrHideTracks(playlistIDCombo, noTracks) {
   var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
   if (hasTracks.length > 0) {
     document.getElementById('track-info-' + playlistIDCombo).innerHTML = '';
+    document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
   } else {
     document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
     document.getElementById('track-info-' + playlistIDCombo).classList.add('active');
     showTracks(playlistIDCombo, noTracks);
   }
-}
-
-function toggleTracks(playlistIDCombo) {
-  document.getElementById('track-info-' + playlistIDCombo).classList.toggle('active');
-  console.log('== toggling the display of tracks ==');
 }
 
 function showTracks(playlistIDCombo, noTracks) {
@@ -2092,12 +2088,12 @@ function retrieveTracks(playlistIDCombo, noTracks) {
         });
         playlistTracks.push({ id: id, name: name, album: album, artists: artists });
       });
+      document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
     }).catch(function (e) {
       console.error(e);
       document.getElementById('loggedin').classList.remove('active');
       document.getElementById('login').classList.add('active');
     }));
-    document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
   }
   return Promise.all(promises).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
     console.error(e);
@@ -2116,8 +2112,8 @@ function displayUserTracks(playlist, tracks) {
   }).join('');
 
   document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
-  document.getElementById('track-info-' + playlist).classList.add('active');
   var trackHeading = document.getElementById('dl-' + playlist);
+  document.getElementById('track-info-' + playlist).classList.add('active');
   trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
