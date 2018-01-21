@@ -2048,7 +2048,7 @@ var playlistTracks = [];
 function showOrHideTracks(playlistIDCombo, noTracks) {
   var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
   if (hasTracks.length > 0) {
-    toggleTracks(playlistIDCombo);
+    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '';
   } else {
     document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
     document.getElementById('track-info-' + playlistIDCombo).classList.add('active');

@@ -89,6 +89,8 @@ ul {
 .playlists {
   color: rgb(0, 0, 0);
   opacity: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .playlists.active {
@@ -136,7 +138,6 @@ ul {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0;
 }
 
 .playlist-owner {
@@ -183,7 +184,6 @@ ul {
 
 .tracks.active {
   opacity: 1;
-  height: 100%;
   -webkit-transition: all 0.75s linear;
   -moz-transition: all 0.75s linear;
   -ms-transition: all 0.75s linear;
@@ -192,17 +192,11 @@ ul {
 }
 
 .tracks {
-  opacity: 0;
-  height: 0px;
   cursor: text;
+  opacity: 0;
   padding: 0;
-  margin: 20px -20px -20px -20px;
   font-size: 1em;
-  -webkit-transition: all 0.75s linear;
-  -moz-transition: all 0.75s linear;
-  -ms-transition: all 0.75s linear;
-  -o-transition: all 0.75s linear;
-  transition: all 0.75s linear;
+  margin: 20px -20px -20px -20px;
 }
 
 
