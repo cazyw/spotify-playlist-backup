@@ -32,7 +32,6 @@ input {
 
 input.search {
   width: 100%;
-  /* max-width: 800px; */
   margin: 0;
   text-align: center;
   outline:0;
@@ -108,10 +107,8 @@ ul {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
   margin: 0;
   padding: 20px;
-  transition: background 0.2s;
   display: flex;
   justify-content: space-between;
-  text-transform: capitalize;
   cursor: pointer;
 }
 
@@ -124,9 +121,9 @@ ul {
 }
 
 .playlist:hover {
-  -webkit-opacity: 0.95;
-  -moz-opacity: 0.95;
-  opacity: 0.95;
+  -webkit-opacity: 0.90;
+  -moz-opacity: 0.90;
+  opacity: 0.90;
   box-shadow: 10px 0 10px rgba(0, 0, 0, 0.14);
   -webkit-transition: all 0.25s ease;
   -moz-transition: all 0.25s ease;
@@ -184,17 +181,28 @@ ul {
 }
 
 
-.playlists .playlist .tracks {
-  cursor: text;
+.tracks.active {
   opacity: 1;
+  height: 100%;
+  -webkit-transition: all 0.75s linear;
+  -moz-transition: all 0.75s linear;
+  -ms-transition: all 0.75s linear;
+  -o-transition: all 0.75s linear;
+  transition: all 0.75s linear;
+}
+
+.tracks {
+  opacity: 0;
+  height: 0px;
+  cursor: text;
   padding: 0;
   margin: 20px -20px -20px -20px;
   font-size: 1em;
-}
-
-.playlists .playlist .tracks.hide {
-  opacity: 0;
-  margin: 0;
+  -webkit-transition: all 0.75s linear;
+  -moz-transition: all 0.75s linear;
+  -ms-transition: all 0.75s linear;
+  -o-transition: all 0.75s linear;
+  transition: all 0.75s linear;
 }
 
 

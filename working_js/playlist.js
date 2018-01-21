@@ -92,7 +92,7 @@ function displayUserPlaylists(playlists){
           <div class="playlist-name">${playlist.name}</div> 
           <div class="playlist-no-tracks">${playlist.totalTracks}</div>
         </div>
-        <div id="track-info-${playlist.id}---${playlist.owner}" class="tracks hide"></div>
+        <div id="track-info-${playlist.id}---${playlist.owner}" class="tracks"></div>
       </li>
     `;
   }).join('');

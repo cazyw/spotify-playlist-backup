@@ -1992,7 +1992,7 @@ function displayUserPlaylists(playlists) {
 
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
   document.querySelector('.playlists').classList.add('active');
@@ -2048,34 +2048,37 @@ var playlistTracks = [];
 function showOrHideTracks(playlistIDCombo, noTracks) {
   var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
   if (hasTracks.length > 0) {
-    toggleTracks(hasTracks);
+    toggleTracks(playlistIDCombo);
   } else {
     document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
-    document.getElementById('track-info-' + playlistIDCombo).classList.remove('hide');
+    document.getElementById('track-info-' + playlistIDCombo).classList.add('active');
     showTracks(playlistIDCombo, noTracks);
   }
 }
 
-function toggleTracks(tracks) {
-  tracks[0].parentNode.classList.toggle('hide');
+function toggleTracks(playlistIDCombo) {
+  document.getElementById('track-info-' + playlistIDCombo).classList.toggle('active');
   console.log('== toggling the display of tracks ==');
 }
 
 function showTracks(playlistIDCombo, noTracks) {
-  var listID = playlistIDCombo.split('---')[0];
-  var listOwner = playlistIDCombo.split('---')[1];
   playlistTracks = [];
   return new Promise(function (resolve, reject) {
-    resolve(1);
-  }).then(function (result) {
-    return Promise.resolve(retrieveTracks(listOwner, listID, noTracks));
+    resolve(retrieveTracks(playlistIDCombo, noTracks));
   }).then(function (result) {
     return Promise.resolve(displayUserTracks(playlistIDCombo, playlistTracks));
+  }).catch(function (e) {
+    console.error(e);
+    alert('There was an error, please log in again');
+    document.getElementById('loggedin').classList.remove('active');
+    document.getElementById('login').classList.add('active');
   });
 }
 
-function retrieveTracks(listOwner, listID, noTracks) {
+function retrieveTracks(playlistIDCombo, noTracks) {
   var promises = [];
+  var listID = playlistIDCombo.split('---')[0];
+  var listOwner = playlistIDCombo.split('---')[1];
   console.log('== start retrieving tracks ==');
   for (var i = 0; i < noTracks; i += 100) {
     promises.push(spotifyApi.getPlaylistTracks(listOwner, listID, { offset: i }).then(function (data) {
@@ -2094,6 +2097,7 @@ function retrieveTracks(listOwner, listID, noTracks) {
       document.getElementById('loggedin').classList.remove('active');
       document.getElementById('login').classList.add('active');
     }));
+    document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
   }
   return Promise.all(promises).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
     console.error(e);
@@ -2112,7 +2116,7 @@ function displayUserTracks(playlist, tracks) {
   }).join('');
 
   document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
-
+  document.getElementById('track-info-' + playlist).classList.add('active');
   var trackHeading = document.getElementById('dl-' + playlist);
   trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
