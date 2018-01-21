@@ -16,19 +16,12 @@ function inPlaylist(token, userID){
   spotifyApi.setAccessToken(token);
   document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
   return new Promise(function(resolve, reject) {
-      resolve(1);
+    resolve(spotifyApi.getUserPlaylists());
   })
-  .then(function (result) {
-    return Promise.resolve(
-      spotifyApi.getUserPlaylists()
-        .then(function(data) {
-          console.log(`Number of playlists: ${data.total}`)
-          noPlaylists = data.total
-          document.querySelector('.number-of-playlists').textContent = data.total;
-        }, function(err){
-          console.error(err);
-        })
-    )
+  .then(function (data) {
+    console.log(`Number of playlists: ${data.total}`);
+    noPlaylists = data.total;
+    document.querySelector('.number-of-playlists').textContent = data.total;
   })
   .then(function (result) {
     return Promise.resolve(
@@ -42,6 +35,7 @@ function inPlaylist(token, userID){
   })
   .catch((e) => {
     console.error(e);
+    alert('There was an error, please log in again');
     document.getElementById('loggedin').classList.remove('active');
     document.getElementById('login').classList.add('active');
   })
@@ -60,6 +54,7 @@ function getAllUserPlaylists(userID) {
       playlists.forEach(function(playlist) {
         userPlaylists.push({owner: playlist.owner.id, name:playlist.name, id:playlist.id, totalTracks: playlist.tracks.total});
       });
+      document.querySelector('.playlists').classList.remove('active');
     })
     .catch((e) => {
       console.error(e);
@@ -78,7 +73,7 @@ function getAllUserPlaylists(userID) {
 // display the logged in user's playlists
 
 function displayUserPlaylists(playlists){
-
+  
   // header for playlists
   const header = `<li class="playlist-header">
       <div class="playlist-owner">Owner</div>
@@ -102,6 +97,7 @@ function displayUserPlaylists(playlists){
     `;
   }).join('');
   document.querySelector('.playlists').innerHTML += `${displayLI}`;
+  document.querySelector('.playlists').classList.add('active');
 
   // add a listener for clicking on the playlist
   const lists = document.querySelectorAll('.playlist-info');

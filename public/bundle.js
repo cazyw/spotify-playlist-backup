@@ -1939,21 +1939,18 @@ function inPlaylist(token, userID) {
   spotifyApi.setAccessToken(token);
   document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
   return new Promise(function (resolve, reject) {
-    resolve(1);
-  }).then(function (result) {
-    return Promise.resolve(spotifyApi.getUserPlaylists().then(function (data) {
-      console.log('Number of playlists: ' + data.total);
-      noPlaylists = data.total;
-      document.querySelector('.number-of-playlists').textContent = data.total;
-    }, function (err) {
-      console.error(err);
-    }));
+    resolve(spotifyApi.getUserPlaylists());
+  }).then(function (data) {
+    console.log('Number of playlists: ' + data.total);
+    noPlaylists = data.total;
+    document.querySelector('.number-of-playlists').textContent = data.total;
   }).then(function (result) {
     return Promise.resolve(getAllUserPlaylists(userID));
   }).then(function (result) {
     return Promise.resolve(displayUserPlaylists(userPlaylists));
   }).catch(function (e) {
     console.error(e);
+    alert('There was an error, please log in again');
     document.getElementById('loggedin').classList.remove('active');
     document.getElementById('login').classList.add('active');
   });
@@ -1971,6 +1968,7 @@ function getAllUserPlaylists(userID) {
       playlists.forEach(function (playlist) {
         userPlaylists.push({ owner: playlist.owner.id, name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
       });
+      document.querySelector('.playlists').classList.remove('active');
     }).catch(function (e) {
       console.error(e);
       document.getElementById('loggedin').classList.remove('active');
@@ -1997,6 +1995,7 @@ function displayUserPlaylists(playlists) {
     return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks hide"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
+  document.querySelector('.playlists').classList.add('active');
 
   // add a listener for clicking on the playlist
   var lists = document.querySelectorAll('.playlist-info');
