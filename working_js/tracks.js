@@ -70,8 +70,6 @@ function retrieveTracks(playlistIDCombo, noTracks) {
   });
 }
 
-
-
 function displayUserTracks(playlist, tracks){
   console.log(`== displaying ${tracks.length} tracks ==`);
   const playlistSelected = document.getElementById(`track-info-${playlist}`);
@@ -98,20 +96,21 @@ function displayUserTracks(playlist, tracks){
     trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
-
-
-
-
 function downloadTracks(playlistCombo) {
-  console.log(`== downloading ${playlistCombo} ==`);
+  console.log(`== downloading tracks ==`);
+  const owner = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-owner').textContent;
+  const name = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-name').textContent;
+  const numTracks = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-no-tracks').textContent;
+  var csv = `Playlist Owner: ${owner}, Playlist Name: ${name}, Number of tracks: ${numTracks}\n`;
+  csv += "Name,Album,Artists\n";
+
   const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);
-  var csv = "Name,Album,Artists\n";
+
   playlist.forEach((track) => {
     csv += `${Array.from(track.children)[0].textContent},${Array.from(track.children)[1].textContent},${Array.from(track.children)[2].textContent}`;
     csv += `\n`;
   });
 
-  console.log(csv);
   var hiddenElement = document.createElement('a');
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
   hiddenElement.target = '_blank';

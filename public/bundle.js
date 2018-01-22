@@ -2118,15 +2118,20 @@ function displayUserTracks(playlist, tracks) {
 }
 
 function downloadTracks(playlistCombo) {
-  console.log('== downloading ' + playlistCombo + ' ==');
+  console.log('== downloading tracks ==');
+  var owner = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-owner').textContent;
+  var name = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-name').textContent;
+  var numTracks = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-no-tracks').textContent;
+  var csv = 'Playlist Owner: ' + owner + ', Playlist Name: ' + name + ', Number of tracks: ' + numTracks + '\n';
+  csv += "Name,Album,Artists\n";
+
   var playlist = document.querySelectorAll('.tracks-' + playlistCombo);
-  var csv = "Name,Album,Artists\n";
+
   playlist.forEach(function (track) {
     csv += Array.from(track.children)[0].textContent + ',' + Array.from(track.children)[1].textContent + ',' + Array.from(track.children)[2].textContent;
     csv += '\n';
   });
 
-  console.log(csv);
   var hiddenElement = document.createElement('a');
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
   hiddenElement.target = '_blank';
