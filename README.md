@@ -25,7 +25,7 @@ The project is hosted on Heroku but can also be run locally.
 
 * node (version 8.9.1)
 * npm (version 5.6.0)
-* a developer account on Spotify
+* an normal account (as a Spotify user) and a developer account on Spotify
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
@@ -79,7 +79,7 @@ server.js
 
 The `bundle.js` file is built using webpack from the files in
 ```
-\working.js
+\working
   |- authentication.js
   |- playlist.js
   |- tracks.js
