@@ -1879,7 +1879,6 @@ function getHashParams() {
    */
 
 function authenticate() {
-  removeClass('#login');
 
   var params = getHashParams();
 
@@ -1891,7 +1890,7 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-      addClass('#loading');
+      removeClass('#login', addClass, '#loading');
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
