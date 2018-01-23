@@ -1887,7 +1887,7 @@ function authenticate() {
       error = params.error;
 
   if (error) {
-    errorHandler(error);
+    alert('There was an error during the authentication');
   } else {
     if (access_token) {
 
