@@ -71,4 +71,3 @@ function authenticate() {
 }
 
 authenticate();
-
