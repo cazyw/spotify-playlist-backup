@@ -1889,9 +1889,12 @@ function authenticate() {
   if (error) {
     alert('There was an error during the authentication');
   } else {
+
+    removeClass('#login');
+
     if (access_token) {
 
-      removeClass('#login', addClass, '#loading');
+      addClass('#loading');
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
