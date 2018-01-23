@@ -43,11 +43,12 @@ function authenticate() {
       error = params.error;
 
   if (error) {
-    alert('There was an error during the authentication');
+    errorHandler(error);
   } else {
     if (access_token) {
-      removeClass('#login', addClass, '#loading');
 
+      removeClass('#login', addClass, '#loading');
+      
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
         headers: {

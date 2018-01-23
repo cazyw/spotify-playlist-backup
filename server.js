@@ -116,7 +116,7 @@ app.get('/callback', function(req, res) {
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('/#' +
+        res.redirect('/login' +
           querystring.stringify({
             error: 'invalid_token'
           }));

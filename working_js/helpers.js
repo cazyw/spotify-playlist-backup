@@ -13,7 +13,8 @@ function removeClass(section, ...callbackParam){
 
 function errorHandler(e){
   console.error(e);
-  alert('There was an error, please log in again');
+  alert('There was an authentication error, please log in again');
+  removeClass('#loading');
   removeClass('#loggedin', addClass, '#login');
 }
 

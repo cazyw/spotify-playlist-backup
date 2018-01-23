@@ -1887,9 +1887,10 @@ function authenticate() {
       error = params.error;
 
   if (error) {
-    alert('There was an error during the authentication');
+    errorHandler(error);
   } else {
     if (access_token) {
+
       removeClass('#login', addClass, '#loading');
 
       $.ajax({
@@ -2164,7 +2165,8 @@ function removeClass(section) {
 
 function errorHandler(e) {
   console.error(e);
-  alert('There was an error, please log in again');
+  alert('There was an authentication error, please log in again');
+  removeClass('#loading');
   removeClass('#loggedin', addClass, '#login');
 }
 
