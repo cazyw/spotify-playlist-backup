@@ -1,7 +1,7 @@
 # Spotify Playlist Backup
 Project to create a website that displays a user's Spotify playlist track details so they can be downloaded. 
 
-https://spotify-copy-playlist.herokuapp.com
+https://spotify-playlist-backup.herokuapp.com
 
 # Objective
 
@@ -15,7 +15,7 @@ The app will allow users to:
 
 <img src="https://cazyw.github.io/img/js-spotify.jpg" width="450" alt="Spotify Playlist Backup">
 
-Navigate to https://spotify-copy-playlist.herokuapp.com. You'll be asked to log in and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
+Navigate to https://spotify-playlist-backup.herokuapp.com. You'll be asked to log in and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
 
 # Project Setup/Running
 
@@ -88,7 +88,7 @@ The `bundle.js` file is built using webpack from the files in
 # Status
 
 The project is finished as is, however the following features might be added in future:
-* logout and better handling of token expiry
+* logout and better handling of token expiry (currently can log out by selecting "not you?" in the permission page)
 * smoother display
 * sorting/ordering of lists
 * refactor code so cleaner
