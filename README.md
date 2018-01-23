@@ -26,32 +26,36 @@ The project is hosted on Heroku but can also be run locally.
 * node (version 8.9.1)
 * npm (version 5.6.0)
 * a normal account (as a Spotify user) and a developer account on Spotify
+* a Heroku account and CLI (if deploying to Heroku)
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
+An overview of deploying to Heroku: https://devcenter.heroku.com/articles/deploying-nodejs/
 
-Using the Authorization Code Flow, the following configuration variables must be set as environment variables in a `.env` file:
+
+## Steps
+
+Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to Heroku (e.g. in my case `https://spotify-playlist-backup.herokuapp.com/callback/`)
+
+Clone the repository.
+
+Install node and npm.
+
+Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to Heroku. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address in Heroku.
 ```
 $ export CLIENT_ID=<value in your Spotify app account>
 
 $ export CLIENT_SECRET=<value in your Spotify app account>
 
-$ export REDIRECT_URI=https://localhost:8888/callback/
+$ export REDIRECT_URI=https://localhost:8888/callback/ 
 ```
-You must create the `.env` file yourself with your details. The `dotenv` module will load the file into `process.env`.
 
-
-## Steps (local server)
-
-Setup your Spotify Developer account and App, install node and npm.
-
-Clone the repository. Set your environment variables (`.env`) in the root of the directory.
 
 To install the required packages (see package.json), run:
 ```
 $ npm install
 ```
 
-Start the server:
+Start the server locally:
 ```
 $ npm start
 ```
@@ -66,7 +70,7 @@ Or to watch for and rebuild automatically after any changes, run:
 $ npm run watch
 ```
 
-Pushing to Heroku requires an account on Heroku and following some of their setup instruction (see https://devcenter.heroku.com/articles/deploying-nodejs). 
+Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done. 
 
 ## Project file structure
 
