@@ -25,7 +25,7 @@ The project is hosted on Heroku but can also be run locally.
 
 * node (version 8.9.1)
 * npm (version 5.6.0)
-* an normal account (as a Spotify user) and a developer account on Spotify
+* a normal account (as a Spotify user) and a developer account on Spotify
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
@@ -37,11 +37,14 @@ $ export CLIENT_SECRET=<value in your Spotify app account>
 
 $ export REDIRECT_URI=https://localhost:8888/callback/
 ```
+You must create the `.env` file yourself with your details. The `dotenv` module will load the file into `process.env`.
+
+
 ## Steps (local server)
 
-Setup your Spotify Developer and App account, node and npm and environment variables above.
+Setup your Spotify Developer account and App, install node and npm.
 
-Clone the repository.
+Clone the repository. Set your environment variables (`.env`) in the root of the directory.
 
 To install the required packages (see package.json), run:
 ```
