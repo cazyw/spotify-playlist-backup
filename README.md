@@ -1,5 +1,5 @@
 # Spotify Playlist Backup
-Project to create a website that displays a user's Spotify playlist track details so they can be downloaded. 
+Project to create a website that displays a user's Spotify playlist song details so they can be downloaded. 
 
 https://spotify-playlist-backup.herokuapp.com
 
@@ -9,13 +9,13 @@ The app will allow users to:
 * log in
 * display their playlists (and search for a particular playlist)
 * display the details (name, album, artist(s)) of the songs in that playlist
-* download a copy of the track details as a csv file
+* download a copy of the song details as a csv file
 
 # Operating Instructions
 
 <img src="https://cazyw.github.io/img/js-spotify.jpg" width="450" alt="Spotify Playlist Backup">
 
-Navigate to https://spotify-playlist-backup.herokuapp.com. You'll be asked to log in and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
+Navigate to https://spotify-playlist-backup.herokuapp.com. You'll be asked to log in and then the page will display a list of all your playlists. Clicking on a playlist will display the songs and the option to download the list to a csv file.
 
 # Project Setup/Running
 
@@ -28,8 +28,7 @@ The project is hosted on Heroku but can also be run locally.
 * a normal account (as a Spotify user) and a developer account on Spotify
 * a Heroku account and CLI (if deploying to Heroku)
 
-An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
-An overview of deploying to Heroku: https://devcenter.heroku.com/articles/deploying-nodejs/
+An overview of Spotify Web API setup: https://developer.spotify.com/web-api/ and deploying to Heroku: https://devcenter.heroku.com/articles/deploying-nodejs/
 
 
 ## Steps
