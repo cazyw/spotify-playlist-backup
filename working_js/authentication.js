@@ -1,4 +1,19 @@
-var playlist = require('./playlist.js');
+var inPlaylist = require('./playlist.js').inPlaylist;
+var removeClass = require('./helpers.js').removeClass;
+var addClass = require('./helpers.js').addClass;
+var errorHandler = require('./helpers.js').errorHandler;
+
+/**
+ * The code here is from Spotify's authentication workflow and then modified
+ * 
+ * 
+ * This is an example of a basic node.js script that performs
+ * the Authorization Code oAuth2 flow to authenticate against
+ * the Spotify Accounts.
+ *
+ * For more information, read
+ * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
+ */
 
 /**
    * Obtains parameters from the hash of the URL
@@ -14,14 +29,6 @@ function getHashParams() {
   return hashParams;
 }
 
-function addClass(section){
-  document.getElementById(section).classList.add('active');
-}
-
-function removeClass(section, callback, param){
-  document.getElementById(section).classList.remove('active');
-  callback(param);
-}
 
 /**
    * Authentication with Spotify
@@ -39,7 +46,7 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-      removeClass('login', addClass, 'loading');
+      removeClass('#login', addClass, '#loading');
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
@@ -47,22 +54,17 @@ function authenticate() {
           'Authorization': 'Bearer ' + access_token
         },
         success: function(response) {
-          playlist.inPlaylist(access_token, response.id);
-          document.getElementById('loading').classList.remove('active');
+          inPlaylist(access_token, response.id);
+          removeClass('#loading', addClass, '#loggedin');
           document.querySelector('.display-name').textContent = response.id;
-          document.getElementById('loggedin').classList.add('active');
           },
-        error: function() {
-          alert('token expired, please log in again');
-          document.getElementById('loggedin').classList.remove('active');
-          document.getElementById('loading').classList.remove('active');
-          document.getElementById('login').classList.add('active');
+        error: function(e) {
+          errorHandler(e);
         }
         });
       } else {
         // render initial screen
-        document.getElementById('loggedin').classList.remove('active');
-        document.getElementById('login').classList.add('active');
+        removeClass('#loggedin', addClass, '#login');
     }
   }
 }

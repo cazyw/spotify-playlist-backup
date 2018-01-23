@@ -1842,7 +1842,22 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 "use strict";
 
 
-var playlist = __webpack_require__(2);
+var inPlaylist = __webpack_require__(2).inPlaylist;
+var removeClass = __webpack_require__(4).removeClass;
+var addClass = __webpack_require__(4).addClass;
+var errorHandler = __webpack_require__(4).errorHandler;
+
+/**
+ * The code here is from Spotify's authentication workflow and then modified
+ * 
+ * 
+ * This is an example of a basic node.js script that performs
+ * the Authorization Code oAuth2 flow to authenticate against
+ * the Spotify Accounts.
+ *
+ * For more information, read
+ * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
+ */
 
 /**
    * Obtains parameters from the hash of the URL
@@ -1857,15 +1872,6 @@ function getHashParams() {
     hashParams[e[1]] = decodeURIComponent(e[2]);
   }
   return hashParams;
-}
-
-function addClass(section) {
-  document.getElementById(section).classList.add('active');
-}
-
-function removeClass(section, callback, param) {
-  document.getElementById(section).classList.remove('active');
-  callback(param);
 }
 
 /**
@@ -1884,7 +1890,7 @@ function authenticate() {
     alert('There was an error during the authentication');
   } else {
     if (access_token) {
-      removeClass('login', addClass, 'loading');
+      removeClass('#login', addClass, '#loading');
 
       $.ajax({
         url: 'https://api.spotify.com/v1/me',
@@ -1892,22 +1898,17 @@ function authenticate() {
           'Authorization': 'Bearer ' + access_token
         },
         success: function success(response) {
-          playlist.inPlaylist(access_token, response.id);
-          document.getElementById('loading').classList.remove('active');
+          inPlaylist(access_token, response.id);
+          removeClass('#loading', addClass, '#loggedin');
           document.querySelector('.display-name').textContent = response.id;
-          document.getElementById('loggedin').classList.add('active');
         },
-        error: function error() {
-          alert('token expired, please log in again');
-          document.getElementById('loggedin').classList.remove('active');
-          document.getElementById('loading').classList.remove('active');
-          document.getElementById('login').classList.add('active');
+        error: function error(e) {
+          errorHandler(e);
         }
       });
     } else {
       // render initial screen
-      document.getElementById('loggedin').classList.remove('active');
-      document.getElementById('login').classList.add('active');
+      removeClass('#loggedin', addClass, '#login');
     }
   }
 }
@@ -1925,10 +1926,12 @@ authenticate();
    * Retrieve playlist data from Spotify
    */
 
-console.log('starting console log');
-
 var SpotifyWebApi = __webpack_require__(0);
-var Tracks = __webpack_require__(3);
+var showOrHideTracks = __webpack_require__(3).showOrHideTracks;
+var removeClass = __webpack_require__(4).removeClass;
+var addClass = __webpack_require__(4).addClass;
+var errorHandler = __webpack_require__(4).errorHandler;
+
 var userPlaylists = [];
 var noPlaylists = 0;
 var spotifyApi = new SpotifyWebApi();
@@ -1949,10 +1952,7 @@ function inPlaylist(token, userID) {
   }).then(function (result) {
     return Promise.resolve(displayUserPlaylists(userPlaylists));
   }).catch(function (e) {
-    console.error(e);
-    alert('There was an error, please log in again');
-    document.getElementById('loggedin').classList.remove('active');
-    document.getElementById('login').classList.add('active');
+    errorHandler(e);
   });
 }
 
@@ -1968,15 +1968,12 @@ function getAllUserPlaylists(userID) {
       playlists.forEach(function (playlist) {
         userPlaylists.push({ owner: playlist.owner.id, name: playlist.name, id: playlist.id, totalTracks: playlist.tracks.total });
       });
-      document.querySelector('.playlists').classList.remove('active');
     }).catch(function (e) {
-      console.error(e);
-      document.getElementById('loggedin').classList.remove('active');
-      document.getElementById('login').classList.add('active');
+      errorHandler(e);
     }));
   }
-  return Promise.all(promises).then(console.log('== finished retrieving playlists ==')).catch(function (e) {
-    console.error(e);
+  return Promise.all(promises).then(removeClass('.playlists')).then(console.log('== finished retrieving playlists ==')).catch(function (e) {
+    errorHandler(e);
   });
 }
 
@@ -1992,15 +1989,17 @@ function displayUserPlaylists(playlists) {
 
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '---' + playlist.owner + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '---' + playlist.owner + '" class="tracks"></div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
-  document.querySelector('.playlists').classList.add('active');
+  addClass('.playlists');
 
   // add a listener for clicking on the playlist
   var lists = document.querySelectorAll('.playlist-info');
   lists.forEach(function (list) {
-    list.addEventListener('click', Tracks.showOrHideTracks.bind(_this, list.parentNode.id, list.childNodes[5].textContent));
+    var owner = list.childNodes[1].textContent;
+    var numTracks = list.childNodes[5].textContent;
+    list.addEventListener('click', showOrHideTracks.bind(_this, list.parentNode.id, owner, numTracks));
   });
   console.log('== displaying playlists ==');
 }
@@ -2042,42 +2041,42 @@ module.exports = {
    */
 
 var SpotifyWebApi = __webpack_require__(0);
+var removeClass = __webpack_require__(4).removeClass;
+var addClass = __webpack_require__(4).addClass;
+var errorHandler = __webpack_require__(4).errorHandler;
+
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
 
-function showOrHideTracks(playlistIDCombo, noTracks) {
-  var hasTracks = document.getElementsByClassName('tracks-' + playlistIDCombo);
+function showOrHideTracks(playlistID, owner, noTracks) {
+  var hasTracks = document.getElementsByClassName('tracks-' + playlistID);
   if (hasTracks.length > 0) {
-    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '';
-    document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
+    document.getElementById('track-info-' + playlistID).innerHTML = '';
+    removeClass('#track-info-' + playlistID);
   } else {
-    document.getElementById('track-info-' + playlistIDCombo).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
-    document.getElementById('track-info-' + playlistIDCombo).classList.add('active');
-    showTracks(playlistIDCombo, noTracks);
+    document.getElementById('track-info-' + playlistID).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
+    addClass('#track-info-' + playlistID);
+    showTracks(playlistID, owner, noTracks);
   }
 }
 
-function showTracks(playlistIDCombo, noTracks) {
+function showTracks(playlistID, owner, noTracks) {
   playlistTracks = [];
   return new Promise(function (resolve, reject) {
-    resolve(retrieveTracks(playlistIDCombo, noTracks));
+    resolve(retrieveTracks(playlistID, owner, noTracks));
   }).then(function (result) {
-    return Promise.resolve(displayUserTracks(playlistIDCombo, playlistTracks));
+    return Promise.resolve(displayUserTracks(playlistID, playlistTracks));
   }).catch(function (e) {
-    console.error(e);
-    alert('There was an error, please log in again');
-    document.getElementById('loggedin').classList.remove('active');
-    document.getElementById('login').classList.add('active');
+    errorHandler(e);
   });
 }
 
-function retrieveTracks(playlistIDCombo, noTracks) {
+function retrieveTracks(playlistID, owner, noTracks) {
   var promises = [];
-  var listID = playlistIDCombo.split('---')[0];
-  var listOwner = playlistIDCombo.split('---')[1];
+
   console.log('== start retrieving tracks ==');
   for (var i = 0; i < noTracks; i += 100) {
-    promises.push(spotifyApi.getPlaylistTracks(listOwner, listID, { offset: i }).then(function (data) {
+    promises.push(spotifyApi.getPlaylistTracks(owner, playlistID, { offset: i }).then(function (data) {
       var tracks = data.items;
       tracks.forEach(function (track) {
         var id = track.track.id;
@@ -2088,17 +2087,12 @@ function retrieveTracks(playlistIDCombo, noTracks) {
         });
         playlistTracks.push({ id: id, name: name, album: album, artists: artists });
       });
-      document.getElementById('track-info-' + playlistIDCombo).classList.remove('active');
     }).catch(function (e) {
-      console.error(e);
-      document.getElementById('loggedin').classList.remove('active');
-      document.getElementById('login').classList.add('active');
+      errorHandler(e);
     }));
   }
-  return Promise.all(promises).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
-    console.error(e);
-    document.getElementById('loggedin').classList.remove('active');
-    document.getElementById('login').classList.add('active');
+  return Promise.all(promises).then(removeClass('#track-info-' + playlistID)).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
+    errorHandler(e);
   });
 }
 
@@ -2113,7 +2107,7 @@ function displayUserTracks(playlist, tracks) {
 
   document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
   var trackHeading = document.getElementById('dl-' + playlist);
-  document.getElementById('track-info-' + playlist).classList.add('active');
+  addClass('#track-info-' + playlist);
   trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
@@ -2141,6 +2135,43 @@ function downloadTracks(playlistCombo) {
 
 module.exports = {
   showOrHideTracks: showOrHideTracks
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Helper functions
+
+function addClass(section) {
+  document.querySelector(section).classList.add('active');
+}
+
+function removeClass(section) {
+  document.querySelector(section).classList.remove('active');
+
+  for (var _len = arguments.length, callbackParam = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    callbackParam[_key - 1] = arguments[_key];
+  }
+
+  if (callbackParam.length > 0) {
+    callbackParam[0](callbackParam[1]);
+  }
+}
+
+function errorHandler(e) {
+  console.error(e);
+  alert('There was an error, please log in again');
+  removeClass('#loggedin', addClass, '#login');
+}
+
+module.exports = {
+  addClass: addClass,
+  removeClass: removeClass,
+  errorHandler: errorHandler
 };
 
 /***/ })

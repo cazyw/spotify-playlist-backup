@@ -2,10 +2,13 @@
    * Retrieve playlist data from Spotify
    */
 
-console.log('starting console log');
 
 var SpotifyWebApi = require('spotify-web-api-js');
-var Tracks = require('./tracks.js');
+var showOrHideTracks = require('./tracks.js').showOrHideTracks;
+var removeClass = require('./helpers.js').removeClass;
+var addClass = require('./helpers.js').addClass;
+var errorHandler = require('./helpers.js').errorHandler;
+
 var userPlaylists = [];
 var noPlaylists = 0;
 var spotifyApi = new SpotifyWebApi();
@@ -34,10 +37,7 @@ function inPlaylist(token, userID){
     )
   })
   .catch((e) => {
-    console.error(e);
-    alert('There was an error, please log in again');
-    document.getElementById('loggedin').classList.remove('active');
-    document.getElementById('login').classList.add('active');
+    errorHandler(e);
   })
 }
 
@@ -54,19 +54,17 @@ function getAllUserPlaylists(userID) {
       playlists.forEach(function(playlist) {
         userPlaylists.push({owner: playlist.owner.id, name:playlist.name, id:playlist.id, totalTracks: playlist.tracks.total});
       });
-      document.querySelector('.playlists').classList.remove('active');
     })
     .catch((e) => {
-      console.error(e);
-      document.getElementById('loggedin').classList.remove('active');
-      document.getElementById('login').classList.add('active');
+      errorHandler(e);
     })
-    )
+    ) 
   }
   return Promise.all(promises)
+  .then(removeClass('.playlists'))
   .then(console.log('== finished retrieving playlists =='))
   .catch((e) => {
-    console.error(e);
+    errorHandler(e);
   });
 }
 
@@ -86,23 +84,25 @@ function displayUserPlaylists(playlists){
   // loop through to create LI for each playlist  
   let displayLI = playlists.map((playlist) => {
     return `
-      <li id="${playlist.id}---${playlist.owner}" class="playlist">
+      <li id="${playlist.id}" class="playlist">
         <div class="playlist-info">
           <div class="playlist-owner">${playlist.owner}</div> 
           <div class="playlist-name">${playlist.name}</div> 
           <div class="playlist-no-tracks">${playlist.totalTracks}</div>
         </div>
-        <div id="track-info-${playlist.id}---${playlist.owner}" class="tracks"></div>
+        <div id="track-info-${playlist.id}" class="tracks"></div>
       </li>
     `;
   }).join('');
   document.querySelector('.playlists').innerHTML += `${displayLI}`;
-  document.querySelector('.playlists').classList.add('active');
+  addClass('.playlists');
 
   // add a listener for clicking on the playlist
   const lists = document.querySelectorAll('.playlist-info');
   lists.forEach((list) => {
-    list.addEventListener('click', Tracks.showOrHideTracks.bind(this, list.parentNode.id, list.childNodes[5].textContent));
+    const owner = list.childNodes[1].textContent;
+    const numTracks = list.childNodes[5].textContent;
+    list.addEventListener('click', showOrHideTracks.bind(this, list.parentNode.id, owner, numTracks));
   });
   console.log(`== displaying playlists ==`);
 }

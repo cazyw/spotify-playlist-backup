@@ -85,8 +85,9 @@ server.js
 
 The `bundle.js` file is built using webpack from the files in
 ```
-\working
+\working_js
   |- authentication.js
+  |- helpers.js
   |- playlist.js
   |- tracks.js
 ```
