@@ -1879,6 +1879,7 @@ function getHashParams() {
    */
 
 function authenticate() {
+  removeClass('#login');
 
   var params = getHashParams();
 
@@ -1889,11 +1890,7 @@ function authenticate() {
   if (error) {
     alert('There was an error during the authentication');
   } else {
-
-    removeClass('#login');
-
     if (access_token) {
-
       addClass('#loading');
 
       $.ajax({
@@ -1912,6 +1909,7 @@ function authenticate() {
       });
     } else {
       // render initial screen
+      console.log('no token');
       removeClass('#loggedin', addClass, '#login');
     }
   }
