@@ -2,35 +2,31 @@
    * Retrieve track data from Spotify
    */
 
-var SpotifyWebApi = require('spotify-web-api-js');
-var removeClass = require('./helpers.js').removeClass;
-var addClass = require('./helpers.js').addClass;
-var errorHandler = require('./helpers.js').errorHandler;
+const SpotifyWebApi = require('spotify-web-api-js');
+const removeActiveClass = require('./helpers.js').removeActiveClass;
+const addActiveClass = require('./helpers.js').addActiveClass;
+const errorHandler = require('./helpers.js').errorHandler;
 
-var spotifyApi = new SpotifyWebApi();
-var playlistTracks = [];
+const spotifyApi = new SpotifyWebApi();
+let playlistTracks = [];
 
 function showOrHideTracks(playlistID, owner, noTracks) {
   const hasTracks = document.getElementsByClassName(`tracks-${playlistID}`);
   if (hasTracks.length > 0){
     document.getElementById(`track-info-${playlistID}`).innerHTML = '';
-    removeClass(`#track-info-${playlistID}`);
+    removeActiveClass(`#track-info-${playlistID}`);
   } else {
+    addActiveClass(`#track-info-${playlistID}`);
     document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
-    addClass(`#track-info-${playlistID}`);
     showTracks(playlistID, owner, noTracks);
   }
 }
 
 function showTracks(playlistID, owner, noTracks){
   playlistTracks = [];
-  return new Promise(function(resolve, reject) {
-    resolve(retrieveTracks(playlistID, owner, noTracks));
-  })
+  return retrieveTracks(playlistID, owner, noTracks)
   .then(function (result) {
-    return Promise.resolve(
-      displayUserTracks(playlistID, playlistTracks)
-    )
+    return displayUserTracks(playlistID, playlistTracks)
   })
   .catch((e) => {
     errorHandler(e);
@@ -38,7 +34,7 @@ function showTracks(playlistID, owner, noTracks){
 }
 
 function retrieveTracks(playlistID, owner, noTracks) {
-  var promises = [];
+  let promises = [];
 
   console.log('== start retrieving tracks ==');
   for(let i = 0; i < noTracks; i += 100){
@@ -46,23 +42,23 @@ function retrieveTracks(playlistID, owner, noTracks) {
     .then(function(data){
       const tracks = data.items;
       tracks.forEach((track) => {
-        let id = track.track.id;
-        let name = track.track.name;
-        let album = track.track.album.name;
-        let artists = track.track.artists.map((artist) => artist.name);
+        const id = track.track.id;
+        const name = track.track.name;
+        const album = track.track.album.name;
+        const artists = track.track.artists.map((artist) => artist.name);
         playlistTracks.push({id: id, name: name, album: album, artists: artists});
       });
     })
     .catch((e) => {
-      errorHandler(e);
+      return Promise.reject(e);
     })
     )
   }
   return Promise.all(promises)
-  .then(removeClass(`#track-info-${playlistID}`))
+  // .then(removeActiveClass(`#track-info-${playlistID}`))
   .then(console.log('== finished retrieving tracks =='))
   .catch((e) => {
-    errorHandler(e);
+    return Promise.reject(e);
   });
 }
 
@@ -71,7 +67,6 @@ function displayUserTracks(playlist, tracks){
   const playlistSelected = document.getElementById(`track-info-${playlist}`);
  
   let displayLI = tracks.map((track) => {
-
       return `<tr class="tracks-${playlist}">
         <td class="track-name">${track.name}</td> 
         <td class="track-album">${track.album}</td> 
@@ -88,7 +83,7 @@ function displayUserTracks(playlist, tracks){
         ${displayLI} 
       </table>`;
     const trackHeading = document.getElementById(`dl-${playlist}`);
-    addClass(`#track-info-${playlist}`);
+    addActiveClass(`#track-info-${playlist}`);
     trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
 }
 
@@ -97,7 +92,7 @@ function downloadTracks(playlistCombo) {
   const owner = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-owner').textContent;
   const name = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-name').textContent;
   const numTracks = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-no-tracks').textContent;
-  var csv = `Playlist Owner: ${owner}, Playlist Name: ${name}, Number of tracks: ${numTracks}\n`;
+  let csv = `Playlist Owner: ${owner}, Playlist Name: ${name}, Number of tracks: ${numTracks}\n`;
   csv += "Name,Album,Artists\n";
 
   const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);
@@ -107,7 +102,7 @@ function downloadTracks(playlistCombo) {
     csv += `\n`;
   });
 
-  var hiddenElement = document.createElement('a');
+  const hiddenElement = document.createElement('a');
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
   hiddenElement.target = '_blank';
   hiddenElement.download = 'playlist.csv';

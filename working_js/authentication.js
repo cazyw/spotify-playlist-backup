@@ -1,6 +1,6 @@
 const accessPlaylist = require('./playlist.js').accessPlaylist;
-const removeClass = require('./helpers.js').removeClass;
-const addClass = require('./helpers.js').addClass;
+const removeActiveClass = require('./helpers.js').removeActiveClass;
+const addActiveClass = require('./helpers.js').addActiveClass;
 const errorHandler = require('./helpers.js').errorHandler;
 
 /**
@@ -38,14 +38,16 @@ const authenticate = () => {
         error = params.error;
 
   if (error) {
+    console.log('auth There was an error during the authentication');
     alert('There was an error during the authentication');
+    window.location.href = "/";
   } else {
     if (access_token) {
-      removeClass('#login', addClass, '#loading');
+      removeActiveClass('#login', addActiveClass, '#loading');
       accessPlaylist(access_token);
     } else {
         // render initial screen
-        removeClass('#loggedin', addClass, '#login');
+        removeActiveClass('#loggedin', addActiveClass, '#login');
     }
   }
 }
