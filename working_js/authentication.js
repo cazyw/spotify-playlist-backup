@@ -12,6 +12,8 @@ const errorHandler = require('./helpers.js').errorHandler;
    * @return Object
    */
 
+// gets the has (part from # onwards)
+// theoretically should be only access_token
 const getHashParams = () => {
   let hashParams = {};
   let result = [], 

@@ -13,36 +13,23 @@ let numPlaylists = 0;
 const spotifyApi = new SpotifyWebApi();
 
 // After authentication, get and display the user's playlists
-
 const accessPlaylist = (token) => {
-  const setToken = Promise.resolve(spotifyApi.setAccessToken(token)); 
-  setToken.then(
-    spotifyApi.getMe({}, (error, response) => {
-      if (error) {
-        errorHandler(error);
-      } else {
-        inPlaylist(token, response.id);
-        removeClass('#loading', addClass, '#loggedin');
-        document.querySelector('.display-name').textContent = response.id;
-      }
-    })
-  )
-}
-
-function inPlaylist(token, userID){
-  spotifyApi.setAccessToken(token);
-  document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
   return new Promise(function(resolve, reject) {
-    resolve(spotifyApi.getUserPlaylists());
-  })
-  .then(function (data) {
-    console.log(`Number of playlists: ${data.total}`);
-    numPlaylists = data.total;
-    document.querySelector('.number-of-playlists').textContent = data.total;
+    resolve(spotifyApi.setAccessToken(token));
   })
   .then(function (result) {
     return Promise.resolve(
-      getAllUserPlaylists(userID)
+      getUser()
+    )
+  })
+  .then(function (result) {
+    return Promise.resolve(
+      getUserPlaylistsCount(result)
+    )
+  })
+  .then(function (result) {
+    return Promise.resolve(
+      getAllUserPlaylists(result)
     )
   })
   .then(function (result) {
@@ -55,10 +42,40 @@ function inPlaylist(token, userID){
   })
 }
 
+// get the user id of the user logged in
+const getUser = () => {
+  return Promise.resolve(spotifyApi.getMe())
+  .then(function (response) {
+    removeClass('#loading', addClass, '#loggedin');
+    document.querySelector('.display-name').textContent = response.id;
+    document.querySelector(".playlists").innerHTML = '<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
+    return response.id;
+  })
+  .catch((e) => {
+    errorHandler(e);
+  })
+}
+
+// get a count of the number of playlists
+const getUserPlaylistsCount = (userID) => {
+  return new Promise(function(resolve, reject) {
+    resolve(spotifyApi.getUserPlaylists({limit: 1}));
+  })
+  .then(function (data) {
+    numPlaylists = data.total;
+    console.log(`Number of playlists: ${data.total}`);
+    document.querySelector('.number-of-playlists').textContent = data.total;
+    return userID;
+  })
+  .catch((e) => {
+    errorHandler(e);
+  })
+}
+
 // retrieve the logged in user's playlists from Spotify
 // save the playlists to the array
 
-function getAllUserPlaylists(userID) {
+const getAllUserPlaylists = (userID) => {
   let promises = [];
   console.log('== start retrieving playlists ==');
   for(let i = 0; i < numPlaylists; i += 20){
@@ -75,8 +92,8 @@ function getAllUserPlaylists(userID) {
     ) 
   }
   return Promise.all(promises)
-  .then(removeClass('.playlists'))
   .then(console.log('== finished retrieving playlists =='))
+  .then(removeClass('.playlists'))
   .catch((e) => {
     errorHandler(e);
   });
@@ -84,7 +101,7 @@ function getAllUserPlaylists(userID) {
 
 // display the logged in user's playlists
 
-function displayUserPlaylists(playlists){
+const displayUserPlaylists = (playlists) => {
   
   // header for playlists
   const header = `<li class="playlist-header">
@@ -126,7 +143,7 @@ function displayUserPlaylists(playlists){
    * Search playlists for a particular playlist
    */
 
-function filterPlaylist(word) {
+const filterPlaylist = (word) => {
   return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word) || playlist.owner.toLowerCase().includes(word));
 }
 
