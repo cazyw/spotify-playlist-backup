@@ -1880,48 +1880,41 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 "use strict";
 
 
-var inPlaylist = __webpack_require__(3).inPlaylist;
+var accessPlaylist = __webpack_require__(3).accessPlaylist;
 var removeClass = __webpack_require__(0).removeClass;
 var addClass = __webpack_require__(0).addClass;
 var errorHandler = __webpack_require__(0).errorHandler;
 
 /**
- * The code here is from Spotify's authentication workflow and then modified
- * 
- * 
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
+ * The code here was from Spotify's authentication workflow and then modified
  */
 
 /**
    * Obtains parameters from the hash of the URL
    * @return Object
    */
-function getHashParams() {
+
+var getHashParams = function getHashParams() {
   var hashParams = {};
-  var e,
-      r = /([^&;=]+)=?([^&;]*)/g,
-      q = window.location.hash.substring(1);
-  while (e = r.exec(q)) {
-    hashParams[e[1]] = decodeURIComponent(e[2]);
+  var result = [],
+      pattern = /#([^&;=]+)=?([^&;]*)/g,
+      anchor = window.location.hash;
+
+  if (anchor !== '') {
+    result = pattern.exec(anchor);
+    hashParams[result[1]] = decodeURIComponent(result[2]);
   }
   return hashParams;
-}
+};
 
 /**
    * Authentication with Spotify
    */
 
-function authenticate() {
-
+var authenticate = function authenticate() {
   var params = getHashParams();
 
   var access_token = params.access_token,
-      refresh_token = params.refresh_token,
       error = params.error;
 
   if (error) {
@@ -1929,28 +1922,13 @@ function authenticate() {
   } else {
     if (access_token) {
       removeClass('#login', addClass, '#loading');
-
-      $.ajax({
-        url: 'https://api.spotify.com/v1/me',
-        headers: {
-          'Authorization': 'Bearer ' + access_token
-        },
-        success: function success(response) {
-          inPlaylist(access_token, response.id);
-          removeClass('#loading', addClass, '#loggedin');
-          document.querySelector('.display-name').textContent = response.id;
-        },
-        error: function error(e) {
-          errorHandler(e);
-        }
-      });
+      accessPlaylist(access_token);
     } else {
       // render initial screen
-      console.log('no token');
       removeClass('#loggedin', addClass, '#login');
     }
   }
-}
+};
 
 authenticate();
 
@@ -1972,10 +1950,23 @@ var addClass = __webpack_require__(0).addClass;
 var errorHandler = __webpack_require__(0).errorHandler;
 
 var userPlaylists = [];
-var noPlaylists = 0;
+var numPlaylists = 0;
 var spotifyApi = new SpotifyWebApi();
 
 // After authentication, get and display the user's playlists
+
+var accessPlaylist = function accessPlaylist(token) {
+  var setToken = Promise.resolve(spotifyApi.setAccessToken(token));
+  setToken.then(spotifyApi.getMe({}, function (error, response) {
+    if (error) {
+      errorHandler(error);
+    } else {
+      inPlaylist(token, response.id);
+      removeClass('#loading', addClass, '#loggedin');
+      document.querySelector('.display-name').textContent = response.id;
+    }
+  }));
+};
 
 function inPlaylist(token, userID) {
   spotifyApi.setAccessToken(token);
@@ -1984,7 +1975,7 @@ function inPlaylist(token, userID) {
     resolve(spotifyApi.getUserPlaylists());
   }).then(function (data) {
     console.log('Number of playlists: ' + data.total);
-    noPlaylists = data.total;
+    numPlaylists = data.total;
     document.querySelector('.number-of-playlists').textContent = data.total;
   }).then(function (result) {
     return Promise.resolve(getAllUserPlaylists(userID));
@@ -2001,7 +1992,7 @@ function inPlaylist(token, userID) {
 function getAllUserPlaylists(userID) {
   var promises = [];
   console.log('== start retrieving playlists ==');
-  for (var i = 0; i < noPlaylists; i += 20) {
+  for (var i = 0; i < numPlaylists; i += 20) {
     promises.push(spotifyApi.getUserPlaylists(userID, { offset: i }).then(function (data) {
       var playlists = data.items;
       playlists.forEach(function (playlist) {
@@ -2065,7 +2056,7 @@ var input = document.querySelector('input');
 input.addEventListener('keyup', getInput);
 
 module.exports = {
-  inPlaylist: inPlaylist
+  accessPlaylist: accessPlaylist
 };
 
 /***/ }),

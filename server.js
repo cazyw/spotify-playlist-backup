@@ -65,6 +65,9 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
+  // scope has been set to 'playlist-read-private playlist-read-collaborative'
+  // which means you can read playlists you've marked private
+  // or that you've collaborated on
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       client_id: client_id,
@@ -118,7 +121,6 @@ app.get('/boomerang', function(req, res) {
 
     // request the access token
     request.post(authOptions, function(error, response, body) {
-
       // no errors
       if (!error && response.statusCode === 200) {
         const access_token = body.access_token

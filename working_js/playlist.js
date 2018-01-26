@@ -2,18 +2,32 @@
    * Retrieve playlist data from Spotify
    */
 
+const SpotifyWebApi = require('spotify-web-api-js');
+const showOrHideTracks = require('./tracks.js').showOrHideTracks;
+const removeClass = require('./helpers.js').removeClass;
+const addClass = require('./helpers.js').addClass;
+const errorHandler = require('./helpers.js').errorHandler;
 
-var SpotifyWebApi = require('spotify-web-api-js');
-var showOrHideTracks = require('./tracks.js').showOrHideTracks;
-var removeClass = require('./helpers.js').removeClass;
-var addClass = require('./helpers.js').addClass;
-var errorHandler = require('./helpers.js').errorHandler;
-
-var userPlaylists = [];
-var noPlaylists = 0;
-var spotifyApi = new SpotifyWebApi();
+let userPlaylists = [];
+let numPlaylists = 0;
+const spotifyApi = new SpotifyWebApi();
 
 // After authentication, get and display the user's playlists
+
+const accessPlaylist = (token) => {
+  const setToken = Promise.resolve(spotifyApi.setAccessToken(token)); 
+  setToken.then(
+    spotifyApi.getMe({}, (error, response) => {
+      if (error) {
+        errorHandler(error);
+      } else {
+        inPlaylist(token, response.id);
+        removeClass('#loading', addClass, '#loggedin');
+        document.querySelector('.display-name').textContent = response.id;
+      }
+    })
+  )
+}
 
 function inPlaylist(token, userID){
   spotifyApi.setAccessToken(token);
@@ -23,7 +37,7 @@ function inPlaylist(token, userID){
   })
   .then(function (data) {
     console.log(`Number of playlists: ${data.total}`);
-    noPlaylists = data.total;
+    numPlaylists = data.total;
     document.querySelector('.number-of-playlists').textContent = data.total;
   })
   .then(function (result) {
@@ -45,9 +59,9 @@ function inPlaylist(token, userID){
 // save the playlists to the array
 
 function getAllUserPlaylists(userID) {
-  var promises = [];
+  let promises = [];
   console.log('== start retrieving playlists ==');
-  for(let i = 0; i < noPlaylists; i += 20){
+  for(let i = 0; i < numPlaylists; i += 20){
     promises.push(spotifyApi.getUserPlaylists(userID, {offset: i})
     .then(function(data){
       const playlists = data.items;
@@ -128,5 +142,5 @@ const input = document.querySelector('input');
 input.addEventListener('keyup', getInput);
 
 module.exports = {
-  inPlaylist
+  accessPlaylist
 }
