@@ -60,11 +60,49 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Helper functions
+
+function addClass(section) {
+  document.querySelector(section).classList.add('active');
+}
+
+function removeClass(section) {
+  document.querySelector(section).classList.remove('active');
+
+  for (var _len = arguments.length, callbackParam = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    callbackParam[_key - 1] = arguments[_key];
+  }
+
+  if (callbackParam.length > 0) {
+    callbackParam[0](callbackParam[1]);
+  }
+}
+
+function errorHandler(e) {
+  console.error(e);
+  alert('There was an authentication error, please log in again');
+  removeClass('#loading');
+  removeClass('#loggedin', addClass, '#login');
+}
+
+module.exports = {
+  addClass: addClass,
+  removeClass: removeClass,
+  errorHandler: errorHandler
+};
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1836,16 +1874,16 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var inPlaylist = __webpack_require__(2).inPlaylist;
-var removeClass = __webpack_require__(4).removeClass;
-var addClass = __webpack_require__(4).addClass;
-var errorHandler = __webpack_require__(4).errorHandler;
+var inPlaylist = __webpack_require__(3).inPlaylist;
+var removeClass = __webpack_require__(0).removeClass;
+var addClass = __webpack_require__(0).addClass;
+var errorHandler = __webpack_require__(0).errorHandler;
 
 /**
  * The code here is from Spotify's authentication workflow and then modified
@@ -1917,7 +1955,7 @@ function authenticate() {
 authenticate();
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1927,11 +1965,11 @@ authenticate();
    * Retrieve playlist data from Spotify
    */
 
-var SpotifyWebApi = __webpack_require__(0);
-var showOrHideTracks = __webpack_require__(3).showOrHideTracks;
-var removeClass = __webpack_require__(4).removeClass;
-var addClass = __webpack_require__(4).addClass;
-var errorHandler = __webpack_require__(4).errorHandler;
+var SpotifyWebApi = __webpack_require__(1);
+var showOrHideTracks = __webpack_require__(4).showOrHideTracks;
+var removeClass = __webpack_require__(0).removeClass;
+var addClass = __webpack_require__(0).addClass;
+var errorHandler = __webpack_require__(0).errorHandler;
 
 var userPlaylists = [];
 var noPlaylists = 0;
@@ -2031,7 +2069,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2041,10 +2079,10 @@ module.exports = {
    * Retrieve track data from Spotify
    */
 
-var SpotifyWebApi = __webpack_require__(0);
-var removeClass = __webpack_require__(4).removeClass;
-var addClass = __webpack_require__(4).addClass;
-var errorHandler = __webpack_require__(4).errorHandler;
+var SpotifyWebApi = __webpack_require__(1);
+var removeClass = __webpack_require__(0).removeClass;
+var addClass = __webpack_require__(0).addClass;
+var errorHandler = __webpack_require__(0).errorHandler;
 
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
@@ -2136,44 +2174,6 @@ function downloadTracks(playlistCombo) {
 
 module.exports = {
   showOrHideTracks: showOrHideTracks
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// Helper functions
-
-function addClass(section) {
-  document.querySelector(section).classList.add('active');
-}
-
-function removeClass(section) {
-  document.querySelector(section).classList.remove('active');
-
-  for (var _len = arguments.length, callbackParam = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    callbackParam[_key - 1] = arguments[_key];
-  }
-
-  if (callbackParam.length > 0) {
-    callbackParam[0](callbackParam[1]);
-  }
-}
-
-function errorHandler(e) {
-  console.error(e);
-  alert('There was an authentication error, please log in again');
-  removeClass('#loading');
-  removeClass('#loggedin', addClass, '#login');
-}
-
-module.exports = {
-  addClass: addClass,
-  removeClass: removeClass,
-  errorHandler: errorHandler
 };
 
 /***/ })
