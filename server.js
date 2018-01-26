@@ -86,9 +86,9 @@ app.get('/boomerang', function(req, res) {
   // after checking the state parameter (it should return
   // the same value as was sent in the original request)
 
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+  const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (req.query.code === undefined) {
     // if the user hits Cancel on the authorisation page
@@ -103,7 +103,7 @@ app.get('/boomerang', function(req, res) {
     // success - therefore set the details to exchange the authorisation code
     // for an access token
     res.clearCookie(stateKey);
-    var authOptions = {
+    const authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         grant_type: 'authorization_code',
@@ -121,7 +121,7 @@ app.get('/boomerang', function(req, res) {
 
       // no errors
       if (!error && response.statusCode === 200) {
-        var access_token = body.access_token
+        const access_token = body.access_token
 
         // redirect and pass the token to the browser to make requests from there
         res.redirect('/#' +
