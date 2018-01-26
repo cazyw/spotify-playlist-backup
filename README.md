@@ -76,7 +76,7 @@ Deploying to Heroku requires some additional setup such as installing Heroku and
 The project uses webpack.js to build the final Javascript file. The following are the final project files:
 ```
 server.js
-\public
+public/
   |- index.html
   |- bundle.js
   |- style.css
@@ -85,7 +85,7 @@ server.js
 
 The `bundle.js` file is built using webpack from the files in
 ```
-\working_js
+working_js/
   |- authentication.js
   |- helpers.js
   |- playlist.js
