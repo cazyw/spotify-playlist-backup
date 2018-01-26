@@ -22,6 +22,10 @@ const redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
 
 const port = process.env.PORT || 8888;
 
+const app = express();
+const stateKey = 'spotify_auth_state';
+
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -39,14 +43,18 @@ const generateRandomString = (length) => {
   return text;
 };
 
-const stateKey = 'spotify_auth_state';
-
-const app = express();
 
 // the static files are in the public folder
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
    
+
+// function for when there's an error linking with Spotify
+const errorAction = (res, msg) => {
+  res.clearCookie(stateKey);
+  console.log(msg);
+  res.redirect('/');
+}
 
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
@@ -83,18 +91,12 @@ app.get('/boomerang', function(req, res) {
   var storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (req.query.code === undefined) {
-
     // if the user hits Cancel on the authorisation page
-    res.clearCookie(stateKey);
-    console.log('Authorisation not granted - redirecting to login');
-    res.redirect('/');
+    errorAction(res, 'Authorisation not granted - redirecting to login');
 
   } else if (state === null || state !== storedState) {
-
     // if there's an error with the state
-    res.clearCookie(stateKey);
-    console.log('State sent did not match the state received - redirecting to login');
-    res.redirect('/');
+    errorAction(res, 'State sent did not match the state received - redirecting to login');
 
   } else {
 
@@ -127,8 +129,7 @@ app.get('/boomerang', function(req, res) {
             access_token: access_token
           }));
       } else {
-        console.log('Error retrieving the access token - redirecting to login');
-        res.redirect('/');
+        errorAction(res, 'Error retrieving the access token - redirecting to login');
       }
     });
   }
