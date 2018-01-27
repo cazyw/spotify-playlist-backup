@@ -122,7 +122,7 @@ One new item I had never touched on was downloading/saving information from a we
 
 I used `webpack` for the module bundler. As the project progressed I began separating my code out into smaller modules that tackled one aspect of the app. This made it both easier to manage and a good way to explore how to use webpack and how to break code up into chunks and then refer to functions in different files. It was useful to set up scripts so that webpack automatically rebuilt my javascript file each time one of the working files was updated.
 
-I also included the `babel-core babel-preset-env babel-loader` modules which compiles/transpiles javascript that is using new features into code that can run in older browsers that do not support the features yet.
+I also included the `babel-core` (core) `babel-preset-env` (settings) `babel-loader` (work with webpack) modules which compiles/transpiles javascript that is using new features into code that can run in older browsers that do not support the features yet.
 
 ## Design
 
