@@ -84,7 +84,7 @@ const getAllUserPlaylists = (userID) => {
   }
   return Promise.all(promises)
   .then(console.log('== finished retrieving playlists =='))
-  .then(removeActiveClass('.playlists'))
+  // .then(removeActiveClass('.playlists'))
   .catch((e) => {
     return Promise.reject(e);
   });
@@ -135,11 +135,15 @@ const addPlaylistListener = () => {
 }
 
 const displayUserPlaylists = (playlists) => {
-  addPlaylistHeader(playlists);
-  addPlaylistBody(playlists);
-  addPlaylistListener();
+  removeActiveClass('.playlists')
+  console.log(`== start displaying playlists ==`);
+  setTimeout(() => {
+    addPlaylistHeader(playlists);
+    addPlaylistBody(playlists);
+    addPlaylistListener();
+    console.log(`== finish displaying playlists ==`);
+  }, 500);
   
-  console.log(`== displaying playlists ==`);
 }
 
 

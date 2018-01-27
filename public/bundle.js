@@ -2015,7 +2015,9 @@ var getAllUserPlaylists = function getAllUserPlaylists(userID) {
       return Promise.reject(e);
     }));
   }
-  return Promise.all(promises).then(console.log('== finished retrieving playlists ==')).then(removeActiveClass('.playlists')).catch(function (e) {
+  return Promise.all(promises).then(console.log('== finished retrieving playlists =='))
+  // .then(removeActiveClass('.playlists'))
+  .catch(function (e) {
     return Promise.reject(e);
   });
 };
@@ -2052,11 +2054,14 @@ var addPlaylistListener = function addPlaylistListener() {
 };
 
 var displayUserPlaylists = function displayUserPlaylists(playlists) {
-  addPlaylistHeader(playlists);
-  addPlaylistBody(playlists);
-  addPlaylistListener();
-
-  console.log('== displaying playlists ==');
+  removeActiveClass('.playlists');
+  console.log('== start displaying playlists ==');
+  setTimeout(function () {
+    addPlaylistHeader(playlists);
+    addPlaylistBody(playlists);
+    addPlaylistListener();
+    console.log('== finish displaying playlists ==');
+  }, 500);
 };
 
 // search playlists for a particular playlist
