@@ -1949,7 +1949,7 @@ authenticate();
    */
 
 var SpotifyWebApi = __webpack_require__(1);
-var showOrHideTracks = __webpack_require__(4).showOrHideTracks;
+var getOrRemoveTracks = __webpack_require__(4).getOrRemoveTracks;
 var removeActiveClass = __webpack_require__(0).removeActiveClass;
 var addActiveClass = __webpack_require__(0).addActiveClass;
 var errorHandler = __webpack_require__(0).errorHandler;
@@ -2027,7 +2027,7 @@ var getAllUserPlaylists = function getAllUserPlaylists(userID) {
 
 var addPlaylistHeader = function addPlaylistHeader(playlists) {
   // header for playlists
-  var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-no-tracks">Tracks</div>\n    </li>';
+  var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-num-tracks">Tracks</div>\n    </li>';
 
   document.querySelector('.playlists').innerHTML = '' + header;
 };
@@ -2035,7 +2035,7 @@ var addPlaylistHeader = function addPlaylistHeader(playlists) {
 var addPlaylistBody = function addPlaylistBody(playlists) {
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-no-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-num-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
   addActiveClass('.playlists');
@@ -2047,7 +2047,7 @@ var addPlaylistListener = function addPlaylistListener() {
   lists.forEach(function (list) {
     var owner = list.childNodes[1].textContent;
     var numTracks = list.childNodes[5].textContent;
-    list.addEventListener('click', showOrHideTracks.bind(undefined, list.parentNode.id, owner, numTracks));
+    list.addEventListener('click', getOrRemoveTracks.bind(undefined, list.parentNode.id, owner, numTracks));
   });
 };
 
@@ -2059,7 +2059,7 @@ var displayUserPlaylists = function displayUserPlaylists(playlists) {
   console.log('== displaying playlists ==');
 };
 
-// Search playlists for a particular playlist
+// search playlists for a particular playlist
 
 var filterPlaylist = function filterPlaylist(word) {
   return userPlaylists.filter(function (playlist) {
@@ -2101,7 +2101,9 @@ var errorHandler = __webpack_require__(0).errorHandler;
 var spotifyApi = new SpotifyWebApi();
 var playlistTracks = [];
 
-function showOrHideTracks(playlistID, owner, noTracks) {
+// either retrieves or removes tracks
+
+var getOrRemoveTracks = function getOrRemoveTracks(playlistID, owner, numTracks) {
   var hasTracks = document.getElementsByClassName('tracks-' + playlistID);
   if (hasTracks.length > 0) {
     document.getElementById('track-info-' + playlistID).innerHTML = '';
@@ -2109,30 +2111,36 @@ function showOrHideTracks(playlistID, owner, noTracks) {
   } else {
     addActiveClass('#track-info-' + playlistID);
     document.getElementById('track-info-' + playlistID).innerHTML = '<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>';
-    showTracks(playlistID, owner, noTracks);
+    showTracks(playlistID, owner, numTracks);
   }
-}
+};
 
-function showTracks(playlistID, owner, noTracks) {
+// retrieves then displays tracks
+
+var showTracks = function showTracks(playlistID, owner, numTracks) {
   playlistTracks = [];
-  return retrieveTracks(playlistID, owner, noTracks).then(function (result) {
+  return retrieveTracks(playlistID, owner, numTracks).then(function (result) {
     return displayUserTracks(playlistID, playlistTracks);
   }).catch(function (e) {
     errorHandler(e);
   });
-}
+};
 
-function retrieveTracks(playlistID, owner, noTracks) {
+// retrieve the tracks from Spotify
+
+var retrieveTracks = function retrieveTracks(playlistID, owner, numTracks) {
   var promises = [];
 
   console.log('== start retrieving tracks ==');
-  for (var i = 0; i < noTracks; i += 100) {
+  for (var i = 0; i < numTracks; i += 100) {
     promises.push(spotifyApi.getPlaylistTracks(owner, playlistID, { offset: i }).then(function (data) {
       var tracks = data.items;
       tracks.forEach(function (track) {
-        var id = track.track.id;
-        var name = track.track.name;
-        var album = track.track.album.name;
+        // using destructured assignment
+        var id = track.track.id,
+            name = track.track.name,
+            album = track.track.album.name;
+
         var artists = track.track.artists.map(function (artist) {
           return artist.name;
         });
@@ -2142,32 +2150,42 @@ function retrieveTracks(playlistID, owner, noTracks) {
       return Promise.reject(e);
     }));
   }
-  return Promise.all(promises)
-  // .then(removeActiveClass(`#track-info-${playlistID}`))
-  .then(console.log('== finished retrieving tracks ==')).catch(function (e) {
+  return Promise.all(promises).then(console.log('== finished retrieving tracks ==')).catch(function (e) {
     return Promise.reject(e);
   });
-}
+};
 
-function displayUserTracks(playlist, tracks) {
+// formats the track details
+var getTrackBody = function getTrackBody(playlist, tracks) {
+  var displayLI = tracks.map(function (track) {
+    return '<tr class="tracks-' + playlist + '">\n      <td class="track-name">' + track.name + '</td> \n      <td class="track-album">' + track.album + '</td> \n      <td class="track-artists">' + track.artists.join('; ') + '</td>\n    </tr>';
+  }).join('');
+
+  return displayLI;
+};
+
+// displays the track details
+var displayUserTracks = function displayUserTracks(playlist, tracks) {
   console.log('== displaying ' + tracks.length + ' tracks ==');
   var playlistSelected = document.getElementById('track-info-' + playlist);
 
-  var displayLI = tracks.map(function (track) {
-    return '<tr class="tracks-' + playlist + '">\n        <td class="track-name">' + track.name + '</td> \n        <td class="track-album">' + track.album + '</td> \n        <td class="track-artists">' + track.artists.join('; ') + '</td>\n      </tr>';
-  }).join('');
+  document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n      <tr class="track-heading">\n        <th class="track-name">Name</th>\n        <th class="track-album">Album</th>\n        <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n      </tr>\n      ' + getTrackBody(playlist, tracks) + ' \n    </table>';
 
-  document.getElementById('track-info-' + playlist).innerHTML = '<table class="track-table"> \n        <tr class="track-heading">\n          <th class="track-name">Name</th>\n          <th class="track-album">Album</th>\n          <th class="track-artists">Artists <span id="dl-' + playlist + '" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>\n        </tr>\n        ' + displayLI + ' \n      </table>';
+  // add listener for clicking to download
   var trackHeading = document.getElementById('dl-' + playlist);
   addActiveClass('#track-info-' + playlist);
-  trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
-}
+  trackHeading.addEventListener('click', downloadTracks.bind(undefined, playlist));
+};
+
+var getTrackInfo = function getTrackInfo(playlistCombo, selector) {
+  return document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector(selector).textContent;
+};
 
 function downloadTracks(playlistCombo) {
   console.log('== downloading tracks ==');
-  var owner = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-owner').textContent;
-  var name = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-name').textContent;
-  var numTracks = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-no-tracks').textContent;
+  var owner = getTrackInfo(playlistCombo, '.playlist-owner');
+  var name = getTrackInfo(playlistCombo, '.playlist-name');
+  var numTracks = getTrackInfo(playlistCombo, '.playlist-num-tracks');
   var csv = 'Playlist Owner: ' + owner + ', Playlist Name: ' + name + ', Number of tracks: ' + numTracks + '\n';
   csv += "Name,Album,Artists\n";
 
@@ -2186,7 +2204,7 @@ function downloadTracks(playlistCombo) {
 }
 
 module.exports = {
-  showOrHideTracks: showOrHideTracks
+  getOrRemoveTracks: getOrRemoveTracks
 };
 
 /***/ })

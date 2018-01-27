@@ -3,7 +3,7 @@
    */
 
 const SpotifyWebApi = require('spotify-web-api-js');
-const showOrHideTracks = require('./tracks.js').showOrHideTracks;
+const getOrRemoveTracks = require('./tracks.js').getOrRemoveTracks;
 const removeActiveClass = require('./helpers.js').removeActiveClass;
 const addActiveClass = require('./helpers.js').addActiveClass;
 const errorHandler = require('./helpers.js').errorHandler;
@@ -100,7 +100,7 @@ const addPlaylistHeader = (playlists) => {
   const header = `<li class="playlist-header">
       <div class="playlist-owner">Owner</div>
       <div class="playlist-name">Playlist</div>
-      <div class="playlist-no-tracks">Tracks</div>
+      <div class="playlist-num-tracks">Tracks</div>
     </li>`;
 
   document.querySelector('.playlists').innerHTML = `${header}`; 
@@ -114,7 +114,7 @@ const addPlaylistBody = (playlists) => {
         <div class="playlist-info">
           <div class="playlist-owner">${playlist.owner}</div> 
           <div class="playlist-name">${playlist.name}</div> 
-          <div class="playlist-no-tracks">${playlist.totalTracks}</div>
+          <div class="playlist-num-tracks">${playlist.totalTracks}</div>
         </div>
         <div id="track-info-${playlist.id}" class="tracks"></div>
       </li>
@@ -130,7 +130,7 @@ const addPlaylistListener = () => {
   lists.forEach((list) => {
     const owner = list.childNodes[1].textContent;
     const numTracks = list.childNodes[5].textContent;
-    list.addEventListener('click', showOrHideTracks.bind(this, list.parentNode.id, owner, numTracks));
+    list.addEventListener('click', getOrRemoveTracks.bind(this, list.parentNode.id, owner, numTracks));
   });
 }
 
@@ -143,7 +143,7 @@ const displayUserPlaylists = (playlists) => {
 }
 
 
-// Search playlists for a particular playlist
+// search playlists for a particular playlist
 
 const filterPlaylist = (word) => {
   return userPlaylists.filter(playlist => playlist.name.toLowerCase().includes(word) || playlist.owner.toLowerCase().includes(word));

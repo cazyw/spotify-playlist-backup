@@ -156,7 +156,7 @@ ul {
   overflow: hidden;
 }
 
-.playlist-no-tracks {
+.playlist-num-tracks {
   width: 100%;
   max-width: 100px;
   margin: -20px;
@@ -175,7 +175,7 @@ ul {
 
 .playlist-header .playlist-owner,
 .playlist-header .playlist-name,
-.playlist-header .playlist-no-tracks
+.playlist-header .playlist-num-tracks
  {
   font-weight:bold;
   background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
@@ -256,12 +256,12 @@ ul {
 
   .playlist-header .playlist-owner,
   .playlist-header .playlist-name,
-  .playlist-header .playlist-no-tracks
+  .playlist-header .playlist-num-tracks
   {
     font-size: 1em;
   }
 
-  .playlist-header .playlist-no-tracks
+  .playlist-header .playlist-num-tracks
   {
     padding-right: 30px;
   }
@@ -283,7 +283,7 @@ ul {
     padding: 20px 10px;
   }
   
-  .playlist-no-tracks {
+  .playlist-num-tracks {
     width: 100%;
     max-width: 65px;
     text-align: right;

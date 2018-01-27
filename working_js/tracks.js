@@ -10,7 +10,10 @@ const errorHandler = require('./helpers.js').errorHandler;
 const spotifyApi = new SpotifyWebApi();
 let playlistTracks = [];
 
-function showOrHideTracks(playlistID, owner, noTracks) {
+
+// either retrieves or removes tracks
+
+const getOrRemoveTracks = (playlistID, owner, numTracks) => {
   const hasTracks = document.getElementsByClassName(`tracks-${playlistID}`);
   if (hasTracks.length > 0){
     document.getElementById(`track-info-${playlistID}`).innerHTML = '';
@@ -18,13 +21,15 @@ function showOrHideTracks(playlistID, owner, noTracks) {
   } else {
     addActiveClass(`#track-info-${playlistID}`);
     document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
-    showTracks(playlistID, owner, noTracks);
+    showTracks(playlistID, owner, numTracks);
   }
 }
 
-function showTracks(playlistID, owner, noTracks){
+// retrieves then displays tracks
+
+const showTracks = (playlistID, owner, numTracks) => {
   playlistTracks = [];
-  return retrieveTracks(playlistID, owner, noTracks)
+  return retrieveTracks(playlistID, owner, numTracks)
   .then(function (result) {
     return displayUserTracks(playlistID, playlistTracks)
   })
@@ -33,18 +38,19 @@ function showTracks(playlistID, owner, noTracks){
   })
 }
 
-function retrieveTracks(playlistID, owner, noTracks) {
+// retrieve the tracks from Spotify
+
+const retrieveTracks = (playlistID, owner, numTracks) => {
   let promises = [];
 
   console.log('== start retrieving tracks ==');
-  for(let i = 0; i < noTracks; i += 100){
+  for(let i = 0; i < numTracks; i += 100){
     promises.push(spotifyApi.getPlaylistTracks(owner, playlistID, {offset: i})
     .then(function(data){
       const tracks = data.items;
       tracks.forEach((track) => {
-        const id = track.track.id;
-        const name = track.track.name;
-        const album = track.track.album.name;
+        // using destructured assignment
+        const {track: {id}, track: {name}, track: {album: {name: album}}} = track;
         const artists = track.track.artists.map((artist) => artist.name);
         playlistTracks.push({id: id, name: name, album: album, artists: artists});
       });
@@ -55,43 +61,56 @@ function retrieveTracks(playlistID, owner, noTracks) {
     )
   }
   return Promise.all(promises)
-  // .then(removeActiveClass(`#track-info-${playlistID}`))
   .then(console.log('== finished retrieving tracks =='))
   .catch((e) => {
     return Promise.reject(e);
   });
 }
 
-function displayUserTracks(playlist, tracks){
+
+// formats the track details
+const getTrackBody = (playlist, tracks) => {
+  let displayLI = tracks.map((track) => {
+    return `<tr class="tracks-${playlist}">
+      <td class="track-name">${track.name}</td> 
+      <td class="track-album">${track.album}</td> 
+      <td class="track-artists">${track.artists.join('; ')}</td>
+    </tr>`;
+  }).join('');
+
+  return displayLI;
+}
+
+// displays the track details
+const displayUserTracks = (playlist, tracks) => {
   console.log(`== displaying ${tracks.length} tracks ==`);
   const playlistSelected = document.getElementById(`track-info-${playlist}`);
  
-  let displayLI = tracks.map((track) => {
-      return `<tr class="tracks-${playlist}">
-        <td class="track-name">${track.name}</td> 
-        <td class="track-album">${track.album}</td> 
-        <td class="track-artists">${track.artists.join('; ')}</td>
-      </tr>`;
-    }).join('');
+  document.getElementById(`track-info-${playlist}`).innerHTML = `<table class="track-table"> 
+      <tr class="track-heading">
+        <th class="track-name">Name</th>
+        <th class="track-album">Album</th>
+        <th class="track-artists">Artists <span id="dl-${playlist}" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>
+      </tr>
+      ${getTrackBody(playlist, tracks)} 
+    </table>`;
 
-    document.getElementById(`track-info-${playlist}`).innerHTML = `<table class="track-table"> 
-        <tr class="track-heading">
-          <th class="track-name">Name</th>
-          <th class="track-album">Album</th>
-          <th class="track-artists">Artists <span id="dl-${playlist}" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>
-        </tr>
-        ${displayLI} 
-      </table>`;
-    const trackHeading = document.getElementById(`dl-${playlist}`);
-    addActiveClass(`#track-info-${playlist}`);
-    trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
+  // add listener for clicking to download
+  const trackHeading = document.getElementById(`dl-${playlist}`);
+  addActiveClass(`#track-info-${playlist}`);
+  trackHeading.addEventListener('click', downloadTracks.bind(this, playlist));
+}
+
+
+const getTrackInfo = (playlistCombo, selector) => {
+  return document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector(selector).textContent;
 }
 
 function downloadTracks(playlistCombo) {
   console.log(`== downloading tracks ==`);
-  const owner = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-owner').textContent;
-  const name = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-name').textContent;
-  const numTracks = document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector('.playlist-no-tracks').textContent;
+  const owner = getTrackInfo(playlistCombo, '.playlist-owner');
+  const name = getTrackInfo(playlistCombo, '.playlist-name');
+  const numTracks = getTrackInfo(playlistCombo, '.playlist-num-tracks');
   let csv = `Playlist Owner: ${owner}, Playlist Name: ${name}, Number of tracks: ${numTracks}\n`;
   csv += "Name,Album,Artists\n";
 
@@ -111,5 +130,5 @@ function downloadTracks(playlistCombo) {
 }
 
 module.exports = {
-  showOrHideTracks
+  getOrRemoveTracks
 }
