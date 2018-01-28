@@ -95,7 +95,7 @@ working_js/
 # Status
 
 The project is complete. Further tweaks and modifications may be made if anything comes up:
-* Possible further research into Spotify's authorisation workflows
+* Possible further research into Spotify's authorisation workflows and addition of refresh tokens
 
 # Discussion
 
@@ -104,7 +104,7 @@ This project came about because due to Spotify's UI update a while ago, I could 
 ## Spotify Authentication
 My first step was to investigate how to connect to Spotify, how their Web API and authentication worked and other resources that would assist in fetching data (e.g. I used https://github.com/jmperez/spotify-web-api-js). In order to access user data in Spotify, users need to log in and then authorize the application. 
 
-I picked the `Authentication Code Flow` for authentication, as it allowed me to access user data and had the greatest options. The `Implicit Grant` workflow could work as I currently do not user refresh tokens but at the time, I hadn't decided on this and it would be a good opportunity to build on the server-side as well.
+I picked the `Authentication Code Flow` for authentication, as it allowed me to access user data and had the greatest options. The `Implicit Grant` workflow could work as I currently do not use refresh tokens (something I plan to add in next). Using the  `Authentication Code Flow` would be a good opportunity to build on the server-side as well and use `express`.
 
 The server and authentication code was based on the code in https://github.com/spotify/web-api-auth-examples, which I modified so only the parts I needed remained and which I spent some time reviewing to understand what it did.
 
