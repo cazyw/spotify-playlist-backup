@@ -33,7 +33,7 @@ An overview of Spotify Web API setup: https://developer.spotify.com/web-api/ and
 
 ## Steps
 
-Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/boomerang/`. You will need to (later) add additional entries if deploying to Heroku (e.g. in my case `https://spotify-playlist-backup.herokuapp.com/boomerang/`)
+Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to Heroku (e.g. in my case `https://spotify-playlist-backup.herokuapp.com/callback/`)
 
 Clone the repository.
 
@@ -45,7 +45,7 @@ $ export CLIENT_ID=<value in your Spotify app account>
 
 $ export CLIENT_SECRET=<value in your Spotify app account>
 
-$ export REDIRECT_URI=https://localhost:8888/boomerang/ 
+$ export REDIRECT_URI=https://localhost:8888/callback/ 
 ```
 
 

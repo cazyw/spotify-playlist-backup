@@ -12,6 +12,7 @@ const errorHandler = require('./helpers.js').errorHandler;
    * @return Object
    */
 
+
 // gets the has (part from # onwards)
 // theoretically should be only access_token
 const getHashParams = () => {
@@ -31,10 +32,12 @@ const getHashParams = () => {
    * Authentication with Spotify
    */
 
+
+
 const authenticate = () => {
   const params = getHashParams();
 
-  const access_token = params.access_token,
+  let access_token = params.access_token,
         error = params.error;
 
   if (error) {

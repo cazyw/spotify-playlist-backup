@@ -83,7 +83,7 @@ app.get('/login', function(req, res) {
 // after the authorisation page, the user is then redirected
 // back to a 'middle' uri where, if the user has authorised 
 // access to their account, a request is sent for access tokens
-app.get('/boomerang', function(req, res) {
+app.get('/callback', function(req, res) {
   
   // your application requests access tokens
   // after checking the state parameter (it should return
@@ -123,8 +123,10 @@ app.get('/boomerang', function(req, res) {
     request.post(authOptions, function(error, response, body) {
       // no errors
       if (!error && response.statusCode === 200) {
-        const access_token = body.access_token
+        const access_token = body.access_token,
+              expires_in = body.expires_in;
 
+      
         // redirect and pass the token to the browser to make requests from there
         res.redirect('/#' +
           querystring.stringify({
@@ -136,6 +138,8 @@ app.get('/boomerang', function(req, res) {
     });
   }
 });
+
+
 
 app.listen(port, function() {
   console.log('Our app is running on http://localhost:' + port);
