@@ -39,13 +39,12 @@ Clone the repository.
 
 Install node and npm.
 
-Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to Heroku. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address in Heroku.
+Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to Heroku. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address in Heroku. In the `.env` file include:
+
 ```
-$ export CLIENT_ID=<value in your Spotify app account>
-
-$ export CLIENT_SECRET=<value in your Spotify app account>
-
-$ export REDIRECT_URI=https://localhost:8888/callback/ 
+CLIENT_ID=<value in your Spotify app account>
+CLIENT_SECRET=<value in your Spotify app account>
+REDIRECT_URI=http://localhost:8888/callback/ 
 ```
 
 
@@ -96,6 +95,7 @@ working_js/
 
 The project is complete. Further tweaks and modifications may be made if anything comes up:
 * Possible further research into Spotify's authorisation workflows and addition of refresh tokens
+* testing
 
 # Discussion
 
@@ -107,6 +107,8 @@ My first step was to investigate how to connect to Spotify, how their Web API an
 I picked the `Authentication Code Flow` for authentication, as it allowed me to access user data and had the greatest options. The `Implicit Grant` workflow could work as I currently do not use refresh tokens (something I plan to add in next). Using the  `Authentication Code Flow` would be a good opportunity to build on the server-side as well and use `express`.
 
 The server and authentication code was based on the code in https://github.com/spotify/web-api-auth-examples, which I modified so only the parts I needed remained and which I spent some time reviewing to understand what it did.
+
+There is no way to log out from spotify's web api and redirect to the app, the `/logout` endpoint they provide does not allow redirection so the workaround is to direct users to the authorisation page where they can select `(Not you?)` to log out of the app. This seems to be the most common work around.
 
 ## Retrieving Data from Spotify
 

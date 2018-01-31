@@ -75,10 +75,32 @@ app.get('/login', function(req, res) {
       redirect_uri: redirect_uri,
       scope: 'playlist-read-private playlist-read-collaborative',
       state: state, // recommended for validation purposes
-      show_dialog: true // so users have to re-login/authenticate
+      show_dialog: false // so users do not have to re-login/authenticate
     }));
 });
 
+
+// since there's no real way of logging out from the 
+// spotify web API, the work around is to direct users to
+// authorisation page where they can select "Not you?"
+// the alternative logout endpoint does not redirect back to 
+// this app so cannot be used
+app.get('/logout', function(req, res) {
+
+  res.clearCookie(stateKey);
+  const state = generateRandomString(16);
+  res.cookie(stateKey, state);
+
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      client_id: client_id,
+      response_type: 'code',
+      redirect_uri: redirect_uri,
+      scope: 'playlist-read-private playlist-read-collaborative',
+      state: state, // recommended for validation purposes
+      show_dialog: true // so users have to re-login/authenticate
+    }));
+});
 
 // after the authorisation page, the user is then redirected
 // back to a 'middle' uri where, if the user has authorised 
