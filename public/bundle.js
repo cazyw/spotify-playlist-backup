@@ -1921,7 +1921,7 @@ var authenticate = function authenticate() {
       error = params.error;
 
   if (error) {
-    console.log('auth There was an error during the authentication');
+    console.log('There was an error during the authentication');
     alert('There was an error during the authentication');
     window.location.href = "/";
   } else {
@@ -2029,15 +2029,17 @@ var getAllUserPlaylists = function getAllUserPlaylists(userID) {
 
 var addPlaylistHeader = function addPlaylistHeader(playlists) {
   // header for playlists
-  var header = '<li class="playlist-header">\n      <div class="playlist-owner">Owner</div>\n      <div class="playlist-name">Playlist</div>\n      <div class="playlist-num-tracks">Tracks</div>\n    </li>';
-
+  var header = '<li class="playlist-header">\n      Playlists\n    </li>';
+  // <div class="playlist-owner">Owner</div>
+  // <div class="playlist-name">Playlist</div>
+  // <div class="playlist-num-tracks">Tracks</div>
   document.querySelector('.playlists').innerHTML = '' + header;
 };
 
 var addPlaylistBody = function addPlaylistBody(playlists) {
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-owner">' + playlist.owner + '</div> \n          <div class="playlist-name">' + playlist.name + '</div> \n          <div class="playlist-num-tracks">' + playlist.totalTracks + '</div>\n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-name">' + playlist.name + '\n            <span class="playlist-num-tracks"> [' + playlist.totalTracks + ' tracks]</span>\n          </div> \n          <div class="playlist-owner">Owned by ' + playlist.owner + '</div>  \n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
   addActiveClass('.playlists');
@@ -2047,8 +2049,8 @@ var addPlaylistListener = function addPlaylistListener() {
   // add a listener for clicking on the playlist
   var lists = document.querySelectorAll('.playlist-info');
   lists.forEach(function (list) {
-    var owner = list.childNodes[1].textContent;
-    var numTracks = list.childNodes[5].textContent;
+    var owner = list.childNodes[3].textContent.match(/Owned by (.*)/)[1];
+    var numTracks = list.childNodes[1].childNodes[1].textContent.match(/([0-9]+) /)[1];
     list.addEventListener('click', getOrRemoveTracks.bind(undefined, list.parentNode.id, owner, numTracks));
   });
 };

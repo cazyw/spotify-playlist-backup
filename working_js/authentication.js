@@ -41,7 +41,7 @@ const authenticate = () => {
         error = params.error;
 
   if (error) {
-    console.log('auth There was an error during the authentication');
+    console.log('There was an error during the authentication');
     alert('There was an error during the authentication');
     window.location.href = "/";
   } else {

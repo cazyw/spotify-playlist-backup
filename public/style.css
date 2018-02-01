@@ -1,5 +1,4 @@
 html, body {
-  /* background-color: rgb(215, 211, 200); */
   background-color: rgb(49, 49, 49);
   box-sizing: border-box;
   color: rgb(255, 255, 255);
@@ -88,6 +87,7 @@ ul {
 
 .playlists {
   color: rgb(0, 0, 0);
+  font-size: 1em;
   opacity: 0;
   display: flex;
   flex-direction: column;
@@ -103,15 +103,15 @@ ul {
 }
 
 .playlists li {
-  background:rgb(255, 255, 255);
   list-style: none;
   border-bottom: 1px solid #D8D8D8;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
   margin: 0;
-  padding: 20px;
+  padding: 0px;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
+  
 }
 
 .playlist {
@@ -120,40 +120,39 @@ ul {
   -webkit-opacity: 1;
   -moz-opacity: 1;
   opacity: 1;
+  font-family: "Helvetica Neue", sans-serif;
 }
 
 
 .playlist-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
-  margin: -20px;
+  padding: 10px;
+  margin: 0px;
 }
 
 .playlist-owner {
   width: 100%;
-  max-width: 100px;
-  margin: -20px;
-  padding: 20px;
-  background: rgb(168, 231, 170);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+  padding: 1px;
+  font-size: 0.9em;
   overflow: hidden;
 }
 
 .playlist-name {
-  margin: -20px;
-  padding: 20px 50px;
+  width: 100%;
+  padding: 1px;
   overflow: hidden;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: rgb(30, 215, 96);
 }
 
 .playlist-num-tracks {
-  width: 100%;
-  max-width: 100px;
-  margin: -20px;
-  padding: 20px;
-  background: rgb(168, 231, 170);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
+  padding: 10px;
+  font-size: 0.8em;
+  font-weight: 400;
+  color: rgb(0, 0, 0);
 }
 
 .playlists li:nth-child(even) {
@@ -174,12 +173,11 @@ ul {
   z-index: 1;
 }
 
-.playlist-header .playlist-owner,
-.playlist-header .playlist-name,
-.playlist-header .playlist-num-tracks
- {
+li.playlist-header {
   font-weight:bold;
+  font-size: 1.5em;
   background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
+  padding: 20px 10px;
 }
 
 
@@ -198,7 +196,6 @@ ul {
   opacity: 0;
   padding: 0;
   font-size: 1em;
-  margin: 20px -20px -20px -20px;
 }
 
 
@@ -256,43 +253,6 @@ ul {
 
   .search-form {
     width: 100%;
-  }
-
-  .playlist-header .playlist-owner,
-  .playlist-header .playlist-name,
-  .playlist-header .playlist-num-tracks
-  {
-    font-size: 1em;
-  }
-
-  .playlist-header .playlist-num-tracks
-  {
-    padding-right: 30px;
-  }
-
-  .playlist-owner {
-    width: 100%;
-    max-width: 70px;
-    overflow: hidden;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  
-  .playlist-name {
-    width: 100%;
-    max-width: 500px;
-    overflow: hidden;
-    text-align: left;
-    margin: -20px 20px;
-    padding: 20px 10px;
-  }
-  
-  .playlist-num-tracks {
-    width: 100%;
-    max-width: 65px;
-    text-align: right;
-    padding-left: 10px;
-    padding-right: 10px;
   }
 
 }

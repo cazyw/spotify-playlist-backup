@@ -98,11 +98,11 @@ const getAllUserPlaylists = (userID) => {
 const addPlaylistHeader = (playlists) => {
   // header for playlists
   const header = `<li class="playlist-header">
-      <div class="playlist-owner">Owner</div>
-      <div class="playlist-name">Playlist</div>
-      <div class="playlist-num-tracks">Tracks</div>
+      Playlists
     </li>`;
-
+      // <div class="playlist-owner">Owner</div>
+      // <div class="playlist-name">Playlist</div>
+      // <div class="playlist-num-tracks">Tracks</div>
   document.querySelector('.playlists').innerHTML = `${header}`; 
 }
 
@@ -112,9 +112,10 @@ const addPlaylistBody = (playlists) => {
     return `
       <li id="${playlist.id}" class="playlist">
         <div class="playlist-info">
-          <div class="playlist-owner">${playlist.owner}</div> 
-          <div class="playlist-name">${playlist.name}</div> 
-          <div class="playlist-num-tracks">${playlist.totalTracks}</div>
+          <div class="playlist-name">${playlist.name}
+            <span class="playlist-num-tracks"> [${playlist.totalTracks} tracks]</span>
+          </div> 
+          <div class="playlist-owner">Owned by ${playlist.owner}</div>  
         </div>
         <div id="track-info-${playlist.id}" class="tracks"></div>
       </li>
@@ -128,8 +129,8 @@ const addPlaylistListener = () => {
   // add a listener for clicking on the playlist
   const lists = document.querySelectorAll('.playlist-info');
   lists.forEach((list) => {
-    const owner = list.childNodes[1].textContent;
-    const numTracks = list.childNodes[5].textContent;
+    const owner = list.childNodes[3].textContent.match(/Owned by (.*)/)[1];
+    const numTracks = list.childNodes[1].childNodes[1].textContent.match(/([0-9]+) /)[1];
     list.addEventListener('click', getOrRemoveTracks.bind(this, list.parentNode.id, owner, numTracks));
   });
 }
