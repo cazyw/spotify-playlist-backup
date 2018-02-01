@@ -63,7 +63,8 @@ To rebuild (after any file changes), run:
 ```
 $ npm run build
 ```
-Or to watch for and rebuild automatically after any changes, run:
+
+Or to watch for and rebuild automatically after any changes (`webpack`) AND automatically re-start the server if there are changes there as well (`nodemon`), run:
 ```
 $ npm run watch
 ```

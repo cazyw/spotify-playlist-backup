@@ -106,6 +106,7 @@ const getTrackInfo = (playlistCombo, selector) => {
   return document.getElementById(playlistCombo).querySelector('.playlist-info').querySelector(selector).textContent;
 }
 
+// function to download tracks to csv file
 function downloadTracks(playlistCombo) {
   console.log(`== downloading tracks ==`);
   const owner = getTrackInfo(playlistCombo, '.playlist-owner');

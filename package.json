@@ -7,7 +7,9 @@
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --progress -p",
-    "watch": "webpack --progress --watch"
+    "watch:webpack": "webpack --progress --watch",
+    "watch:server": "nodemon server.js",
+    "watch": "npm run watch:webpack & npm run watch:server"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "nodemon": "^1.14.11",
     "webpack": "^3.10.0"
   },
   "engines": {
