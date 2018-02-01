@@ -2039,7 +2039,7 @@ var addPlaylistHeader = function addPlaylistHeader(playlists) {
 var addPlaylistBody = function addPlaylistBody(playlists) {
   // loop through to create LI for each playlist  
   var displayLI = playlists.map(function (playlist) {
-    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-name">' + playlist.name + '\n            <span class="playlist-num-tracks"> [' + playlist.totalTracks + ' tracks]</span>\n          </div> \n          <div class="playlist-owner">Owned by ' + playlist.owner + '</div>  \n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
+    return '\n      <li id="' + playlist.id + '" class="playlist">\n        <div class="playlist-info">\n          <div class="playlist-name">' + playlist.name + '<span class="playlist-num-tracks"> [' + playlist.totalTracks + ' tracks]</span></div> \n          <div class="playlist-owner">Owned by ' + playlist.owner + '</div>  \n        </div>\n        <div id="track-info-' + playlist.id + '" class="tracks"></div>\n      </li>\n    ';
   }).join('');
   document.querySelector('.playlists').innerHTML += '' + displayLI;
   addActiveClass('.playlists');
@@ -2192,9 +2192,8 @@ var getTrackInfo = function getTrackInfo(playlistCombo, selector) {
 function downloadTracks(playlistCombo) {
   console.log('== downloading tracks ==');
   var owner = getTrackInfo(playlistCombo, '.playlist-owner');
-  var name = getTrackInfo(playlistCombo, '.playlist-name');
-  var numTracks = getTrackInfo(playlistCombo, '.playlist-num-tracks');
-  var csv = 'Playlist Owner: ' + owner + ', Playlist Name: ' + name + ', Number of tracks: ' + numTracks + '\n';
+  var nameAndNum = getTrackInfo(playlistCombo, '.playlist-name');
+  var csv = owner + ', Playlist Name: ' + nameAndNum + '\n';
   csv += "Name,Album,Artists\n";
 
   var playlist = document.querySelectorAll('.tracks-' + playlistCombo);

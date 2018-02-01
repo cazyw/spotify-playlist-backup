@@ -110,9 +110,8 @@ const getTrackInfo = (playlistCombo, selector) => {
 function downloadTracks(playlistCombo) {
   console.log(`== downloading tracks ==`);
   const owner = getTrackInfo(playlistCombo, '.playlist-owner');
-  const name = getTrackInfo(playlistCombo, '.playlist-name');
-  const numTracks = getTrackInfo(playlistCombo, '.playlist-num-tracks');
-  let csv = `Playlist Owner: ${owner}, Playlist Name: ${name}, Number of tracks: ${numTracks}\n`;
+  const nameAndNum = getTrackInfo(playlistCombo, '.playlist-name');
+  let csv = `${owner}, Playlist Name: ${nameAndNum}\n`;
   csv += "Name,Album,Artists\n";
 
   const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);

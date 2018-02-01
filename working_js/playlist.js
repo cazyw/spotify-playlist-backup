@@ -112,9 +112,7 @@ const addPlaylistBody = (playlists) => {
     return `
       <li id="${playlist.id}" class="playlist">
         <div class="playlist-info">
-          <div class="playlist-name">${playlist.name}
-            <span class="playlist-num-tracks"> [${playlist.totalTracks} tracks]</span>
-          </div> 
+          <div class="playlist-name">${playlist.name}<span class="playlist-num-tracks"> [${playlist.totalTracks} tracks]</span></div> 
           <div class="playlist-owner">Owned by ${playlist.owner}</div>  
         </div>
         <div id="track-info-${playlist.id}" class="tracks"></div>
