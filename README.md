@@ -105,7 +105,7 @@ This project came about because due to Spotify's UI update a while ago, I could 
 ## Spotify Authentication
 My first step was to investigate how to connect to Spotify, how their Web API and authentication worked and other resources that would assist in fetching data (e.g. I used https://github.com/jmperez/spotify-web-api-js). In order to access user data in Spotify, users need to log in and then authorize the application. 
 
-I picked the `Authentication Code Flow` for authentication, as it allowed me to access user data and had the greatest options. The `Implicit Grant` workflow could work as I currently do not use refresh tokens (something I plan to add in next). Using the  `Authentication Code Flow` would be a good opportunity to build on the server-side as well and use `express`.
+I picked the `Authentication Code Flow` for authentication, as it allowed me to access user data and had the greatest options. The `Implicit Grant` workflow could work as I currently do not use refresh tokens (something I plan to add in the future). Using the  `Authentication Code Flow` would be a good opportunity to build on the server-side as well and use `express`.
 
 The server and authentication code was based on the code in https://github.com/spotify/web-api-auth-examples, which I modified so only the parts I needed remained and which I spent some time reviewing to understand what it did.
 
@@ -129,7 +129,9 @@ I also included the `babel-core` (core) `babel-preset-env` (settings) `babel-loa
 
 ## Design
 
-Design-wise, working out how the data would display, particularly in mobile view required a fair amount of testing to determine appropriate spacing and to make sure data did not overrun. I ended up displaying the track information in a table as this was both appropriate and meant I could literally copy and paste the data, if I wanted to, into excel as well. I added some spinning animations to show data was loading/retrieved and further animations to fade in the playlist. 
+Design-wise, working out how the data would display, particularly in mobile view required a fair amount of testing to determine appropriate spacing and to make sure data did not overrun. I ended up displaying the track information in a table as this was both appropriate and meant I could literally copy and paste the data, if I wanted to, into excel as well. I added some spinning animations to show data was loading/retrieved and further animations to fade in the playlist. Displaying the playlists themselves went through a few iterations. 
+
+Initially the playlist data was displayed in a 'table-like' form (playlist owner, name, number of tracks), however I have since changed it to a more modern display that displays the information over two lines and uses font size, weight and colour to differentiate the information. The Spotify Developer website has information on spotify colours. Something I hadn't thought about was favicons! I downloaded one from a free-favicon website.
 
 ## Conclusion
 
