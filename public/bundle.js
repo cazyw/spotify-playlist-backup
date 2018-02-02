@@ -2076,9 +2076,9 @@ var filterPlaylist = function filterPlaylist(word) {
 
 function getInput() {
   if (this.value === "") {
-    displayUserPlaylists(userPlaylists, 0);
+    displayUserPlaylists(userPlaylists);
   } else {
-    displayUserPlaylists(filterPlaylist(this.value.toLowerCase()), 0);
+    displayUserPlaylists(filterPlaylist(this.value.toLowerCase()));
   }
 }
 
