@@ -209,7 +209,7 @@ li.playlist-header {
   font-weight:bold;
   font-size: 1.5em;
   background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
-  padding: 20px 10px;
+  padding: 10px;
 }
 
 
@@ -298,6 +298,10 @@ li.playlist-header {
   }
   .search-form {
     width: 100%;
+  }
+
+  li.playlist-header {
+    padding: 10px;
   }
 
 }
