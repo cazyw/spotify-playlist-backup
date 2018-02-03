@@ -1,18 +1,19 @@
+const path = require('path');
+
 module.exports = {
   entry: './working_js/authentication.js',
   output: {
-    filename: './public/bundle.js'
+    path: path.resolve(__dirname, 'public'),
+    filename: 'bundle.js'
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
+        loader: 'babel-loader',
+        options: {
             presets: ['env']
-          }
         }
       }
     ]
