@@ -1,6 +1,8 @@
 html, body {
   /* background: rgb(49, 49, 49); */
-  background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg') center;
+  background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
   box-sizing: border-box;
@@ -88,7 +90,9 @@ input.search {
   position: fixed;
   top: 0%;
   z-index: 10;
-  background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg') center;
+  background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
