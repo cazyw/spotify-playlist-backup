@@ -1,4 +1,4 @@
-html, body {
+html {
   /* background: rgb(49, 49, 49); */
   background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
   background-position: center;
@@ -6,8 +6,11 @@ html, body {
   background-size: 100% auto;
   background-attachment: fixed;
   box-sizing: border-box;
-  color: rgb(255, 255, 255);
   height: 100%;
+}
+
+body {
+  color: rgb(255, 255, 255);
 }
 
 *, *:before, *:after {
@@ -307,7 +310,7 @@ li.playlist-header {
 
 
 @media only screen and (max-width: 550px) {
-  html, body {
+  html {
     background-size: auto 100%;
   }
 
