@@ -340,4 +340,8 @@ li.playlist-header {
     margin-top: 225px;
   }
 
+  .fixed-header {
+    background: rgb(2, 18, 70);
+  }
+
 }
