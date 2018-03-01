@@ -3,7 +3,7 @@ html, body {
   background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% auto;
   background-attachment: fixed;
   box-sizing: border-box;
   color: rgb(255, 255, 255);
@@ -93,7 +93,7 @@ input.search {
   background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% auto;
   background-attachment: fixed;
 }
 
@@ -307,7 +307,10 @@ li.playlist-header {
 
 
 @media only screen and (max-width: 550px) {
-  
+  html, body {
+    background-size: auto 100%;
+  }
+
   ul {
     width: 100%;
   }
