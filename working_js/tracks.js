@@ -20,7 +20,7 @@ const getOrRemoveTracks = (playlistID, owner, numTracks) => {
     removeActiveClass(`#track-info-${playlistID}`);
   } else {
     addActiveClass(`#track-info-${playlistID}`);
-    document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="loading black"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
+    document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
     showTracks(playlistID, owner, numTracks);
   }
 }

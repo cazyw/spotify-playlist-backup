@@ -121,11 +121,6 @@ input.search {
   color: rgb(255, 255, 255);
 }
 
-.loading.black {
-  margin: 20px;
-  color: rgb(49, 49, 49);
-}
-
 .logout a:link,
 .logout a:visited,
 .logout a:hover,
