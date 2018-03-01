@@ -133,6 +133,8 @@ Design-wise, working out how the data would display, particularly in mobile view
 
 Initially the playlist data was displayed in a 'table-like' form (playlist owner, name, number of tracks), however I have since changed it to a more modern display that displays the information over two lines and uses font size, weight and colour to differentiate the information. The Spotify Developer website has information on spotify colours. Something I hadn't thought about was favicons! I downloaded one from a free-favicon website.
 
+The background image is from Bruno Cervera on [Unsplash](https://unsplash.com/). Once I added this image I changed the design to make the playlist more transparent and managed to find a css trick so the playlist scrolls in its own area and the header/search bar stays up the top. That was simple but very cool.
+
 ### Conclusion
 
 The project has essentially finished (barring some ongoing feature/design tweaks/refactoring) and was pretty fun, a great learning experience and resulted in something I will use.
