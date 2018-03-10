@@ -19,8 +19,11 @@ body {
 }
 
 h1 {
-  padding-top: 20px;
+  font-size: 2em;
+  padding-top: 10px;
   padding-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 0px;
   text-align: center;
   text-shadow: 1px 1px 3px rgb(49, 49, 49);
 }
@@ -31,10 +34,12 @@ p {
 
 h2 {
   margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 1.5em;
 }
 
 .intro {
-  padding: 20px;
+  padding: 10px;
 }
 
 input {
@@ -46,11 +51,11 @@ input.search {
   margin: 0;
   text-align: center;
   outline:0;
-  border: 10px solid rgb(247, 247, 247);
+  border: 5px solid rgb(247, 247, 247);
   padding: 2px 20px;
   z-index: 2;
   border-radius: 5px;
-  font-size: 20px;
+  font-size: 18px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.19);
 }
 
@@ -70,7 +75,8 @@ input.search {
 }
 
 #login {
-  margin: 30px -15px;
+  border: 1px solid rgb(255, 255, 255);
+  margin: 30px 15px;
   padding: 20px 0px 42px 0px;
   text-align: center;
   background: rgba(167, 167, 167, 0.3);
@@ -144,7 +150,7 @@ ul {
   display: flex;
   flex-direction: column;
   position: absolute;
-  margin-top: 300px;
+  margin-top: 232px;
   z-index: 5;
   overflow-y: scroll;
 
@@ -200,7 +206,7 @@ ul {
   width: 100%;
   padding: 1px;
   overflow: hidden;
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: 700;
   color: rgb(30, 215, 96);
 }
@@ -233,7 +239,7 @@ ul {
 
 li.playlist-header {
   font-weight:bold;
-  font-size: 1.5em;
+  font-size: 1.2em;
   background: linear-gradient(to top,  rgb(255, 255, 255) 0%,rgb(239, 239, 239) 100%);
   padding: 10px;
 }
@@ -305,7 +311,7 @@ li.playlist-header {
 
 
 
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 768px) {
   html, body {
     background-size: auto 100%;
   }
@@ -314,11 +320,14 @@ li.playlist-header {
     width: 100%;
   }
   h1 {
-    font-size: 1.5em;
-    padding-top: 10px;
+    font-size: 1.2em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 5px;
   }
   h2 {
-    font-size: 1.2em;
+    font-size: 1em;
+    margin: 5px auto;
   }
   input.search {
     font-size: 1em;
@@ -326,9 +335,14 @@ li.playlist-header {
   .intro {
     padding: 10px;
     padding-bottom: 0px;
+    font-size: 0.9em;
   }
   .search-form {
     width: 100%;
+  }
+
+  .logout a {
+    font-size: 0.9em;
   }
 
   li.playlist-header {
@@ -336,11 +350,12 @@ li.playlist-header {
   }
 
   .playlists {
-    margin-top: 225px;
+    margin-top: 160px;
   }
 
   .fixed-header {
-    background: rgb(2, 18, 70);
+    /* background: rgb(2, 18, 70); */
+    background-size: auto 100%;
   }
 
 }
