@@ -350,7 +350,7 @@ li.playlist-header {
   }
 
   .fixed-header {
-    background-size: auto 100%;
+    background: rgb(2, 18, 70);
  }
 
 }
