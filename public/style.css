@@ -10,7 +10,7 @@ body {
   background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: auto 100%;
   background-attachment: fixed;
 }
 
@@ -22,7 +22,7 @@ h1 {
   font-size: 2em;
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-top: 15px;
+  margin-top: 10px;
   margin-bottom: 0px;
   text-align: center;
   text-shadow: 1px 1px 3px rgb(49, 49, 49);
@@ -40,6 +40,7 @@ h2 {
 
 .intro {
   padding: 10px;
+  padding-bottom: 0px;
 }
 
 input {
@@ -103,7 +104,7 @@ input.search {
   background: rgb(2, 18, 70) url('./bruno-cervera-408708-unsplash.jpg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: auto 100%;
   background-attachment: fixed;
 }
 
@@ -150,7 +151,7 @@ ul {
   display: flex;
   flex-direction: column;
   position: absolute;
-  margin-top: 232px;
+  margin-top: 207px;
   z-index: 5;
   overflow-y: scroll;
 
@@ -244,8 +245,6 @@ li.playlist-header {
   padding: 10px;
 }
 
-
-
 .tracks.active {
   opacity: 1;
   -webkit-transition: all 0.25s linear;
@@ -312,9 +311,6 @@ li.playlist-header {
 
 
 @media only screen and (max-width: 768px) {
-  html, body {
-    background-size: auto 100%;
-  }
 
   ul {
     width: 100%;
@@ -353,9 +349,11 @@ li.playlist-header {
     margin-top: 160px;
   }
 
-  .fixed-header {
-    /* background: rgb(2, 18, 70); */
-    background-size: auto 100%;
-  }
+}
 
+/* Minimum aspect ratio */
+@media (min-aspect-ratio: 3/2) {
+  body, .fixed-header {
+     background-size: 100% auto;
+  }
 }
