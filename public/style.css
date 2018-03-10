@@ -349,6 +349,10 @@ li.playlist-header {
     margin-top: 160px;
   }
 
+  .fixed-header {
+    background-size: auto 100%;
+ }
+
 }
 
 /* Minimum aspect ratio */
