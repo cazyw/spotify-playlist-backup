@@ -13,6 +13,7 @@ const express = require('express'); // Express web server framework
 const request = require('request'); // "Request" library
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
+const p3p = require('p3p');
 
 dotenv.load();
 
@@ -55,6 +56,32 @@ const errorAction = (res, msg) => {
   console.log(msg);
   res.redirect('/');
 }
+
+function setCookieTest(req, res, next) {
+  // Add headers
+  const origin = req.get('origin');
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', origin);
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  var expiry = new Date();
+  expiry.setMonth(expiry.getMonth() + 1);
+
+  res.cookie('spotify-cookie', 'musicforthesoul', { domain: '.spotify-playlist-backup.herokuapp.com', path: '/', expires: expiry });
+  res.send(204);
+  console.log(`test cookie set`);
+}
+
+app.get('/setcookie', p3p(p3p.recommended), quotesController.setCookieTest);
 
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
