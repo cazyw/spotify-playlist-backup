@@ -81,7 +81,7 @@ function setCookieTest(req, res, next) {
   console.log(`test cookie set`);
 }
 
-app.get('/setcookie', p3p(p3p.recommended), quotesController.setCookieTest);
+app.get('/setcookie', p3p(p3p.recommended), setCookieTest);
 
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
