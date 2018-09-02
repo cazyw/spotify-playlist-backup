@@ -1,7 +1,7 @@
 # Spotify Playlist Backup
 Project to create a web app that displays a user's Spotify playlist track details so they can be downloaded as a csv file. 
 
-https://spotify-playlist-backup.herokuapp.com
+https://spotify-playlist-backup.herokuapp.com (using Heroku's free sandbox account that sleeps inactive applications, so the application will take time to start if it's been inactive for 30mins)
 
 ## Objective
 
