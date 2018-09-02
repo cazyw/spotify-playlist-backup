@@ -1,6 +1,6 @@
 /**
  * The code here was from Spotify's authentication workflow and then modified
- * 
+ *
  * It performs the Authorization Code oAuth2 flow to authenticate against
  * the Spotify Accounts.
  *
@@ -13,7 +13,6 @@ const express = require('express'); // Express web server framework
 const request = require('request'); // "Request" library
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
-const p3p = require('p3p');
 
 dotenv.load();
 
@@ -33,7 +32,7 @@ const stateKey = 'spotify_auth_state';
  * @return {string} The generated string
  */
 
-// this is used for verification 
+// this is used for verification
 const generateRandomString = (length) => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -48,7 +47,7 @@ const generateRandomString = (length) => {
 // the static files are in the public folder
 app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
-   
+
 
 // function for when there's an error linking with Spotify
 const errorAction = (res, msg) => {
@@ -56,32 +55,6 @@ const errorAction = (res, msg) => {
   console.log(msg);
   res.redirect('/');
 }
-
-function setCookieTest(req, res, next) {
-  // Add headers
-  const origin = req.get('origin');
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', origin);
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  var expiry = new Date();
-  expiry.setMonth(expiry.getMonth() + 1);
-
-  res.cookie('spotify-cookie', 'musicforthesoul', { domain: '.spotify-playlist-backup.herokuapp.com', path: '/', expires: expiry });
-  res.send(204);
-  console.log(`test cookie set`);
-}
-
-app.get('/setcookie', p3p(p3p.recommended), setCookieTest);
 
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
@@ -107,10 +80,10 @@ app.get('/login', function(req, res) {
 });
 
 
-// since there's no real way of logging out from the 
+// since there's no real way of logging out from the
 // spotify web API, the work around is to direct users to
 // authorisation page where they can select "Not you?"
-// the alternative logout endpoint does not redirect back to 
+// the alternative logout endpoint does not redirect back to
 // this app so cannot be used
 app.get('/logout', function(req, res) {
 
@@ -130,10 +103,10 @@ app.get('/logout', function(req, res) {
 });
 
 // after the authorisation page, the user is then redirected
-// back to a 'middle' uri where, if the user has authorised 
+// back to a 'middle' uri where, if the user has authorised
 // access to their account, a request is sent for access tokens
 app.get('/callback', function(req, res) {
-  
+
   // your application requests access tokens
   // after checking the state parameter (it should return
   // the same value as was sent in the original request)
@@ -175,7 +148,7 @@ app.get('/callback', function(req, res) {
         const access_token = body.access_token,
               expires_in = body.expires_in;
 
-      
+
         // redirect and pass the token to the browser to make requests from there
         res.redirect('/#' +
           querystring.stringify({
