@@ -22,20 +22,19 @@
   },
   "homepage": "https://github.com/cazyw/spotify-copy-playlist#readme",
   "dependencies": {
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.4",
     "dotenv": "^4.0.0",
-    "express": "~4.16.2",
-    "npm": "^6.8.0",
+    "express": "^4.16.4",
     "querystring": "~0.2.0",
     "request": "^2.88.0",
     "spotify-web-api-js": "^0.23.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.18.4",
-    "webpack": "^3.10.0"
+    "nodemon": "^1.19.1",
+    "webpack": "^3.12.0"
   },
   "engines": {
     "node": "8.9.1"
