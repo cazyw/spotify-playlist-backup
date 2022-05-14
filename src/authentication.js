@@ -46,9 +46,11 @@ const authenticate = () => {
     window.location.href = "/";
   } else {
     if (access_token) {
+      console.log("========= access token")
       removeActiveClass('#login', addActiveClass, '#loading');
       accessPlaylist(access_token);
     } else {
+      console.log("========= no access token")
         // render initial screen
         removeActiveClass('#loggedin', addActiveClass, '#login');
     }
