@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './working_js/authentication.js',
+  entry: path.resolve(__dirname, 'src/authentication.js'),
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js'
@@ -9,12 +9,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js)$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-            presets: ['env']
-        }
+        use: ['babel-loader']
       }
     ]
   }
