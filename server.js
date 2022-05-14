@@ -10,7 +10,7 @@
 
 const dotenv = require('dotenv'); // for local environment variables
 const express = require('express'); // Express web server framework
-const request = require('request'); // "Request" library
+const fetch = require('node-fetch'); // "node-fetch" library
 const cookieParser = require('cookie-parser');
 
 dotenv.config();
@@ -23,7 +23,6 @@ const port = process.env.PORT || 8888;
 
 const app = express();
 const stateKey = 'spotify_auth_state';
-
 
 /**
  * Generates a random string containing numbers and letters
@@ -51,7 +50,7 @@ app.use(express.static(__dirname + '/public'))
 // function for when there's an error linking with Spotify
 const errorAction = (res, msg) => {
   res.clearCookie(stateKey);
-  console.log(msg);
+  console.error(msg);
   res.redirect('/');
 }
 
@@ -129,25 +128,26 @@ app.get('/callback', function(req, res) {
     // success - therefore set the details to exchange the authorisation code
     // for an access token
     res.clearCookie(stateKey);
-    const authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        grant_type: 'authorization_code',
+
+    const params = new URLSearchParams({
+      grant_type: 'authorization_code',
         code: code,
         redirect_uri: redirect_uri // for validation only
-      },
-      headers: {
-        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true
-    };
+    })
 
-    // request the access token
-    request.post(authOptions, function(error, response, body) {
-      // no errors
-      if (!error && response.statusCode === 200) {
-        const access_token = body.access_token,
-              expires_in = body.expires_in;
+    try {
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: "post",
+        headers: {
+          'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64')
+        },
+        body: params
+      })
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const access_token = data.access_token;
 
         const params = new URLSearchParams({
           access_token: access_token
@@ -157,11 +157,12 @@ app.get('/callback', function(req, res) {
       } else {
         errorAction(res, 'Error retrieving the access token - redirecting to login');
       }
-    });
+
+    } catch (error) {
+      errorAction(res, 'Error retrieving the access token - redirecting to login');
+    }
   }
 });
-
-
 
 app.listen(port, function() {
   console.log('Our app is running on http://localhost:' + port);
