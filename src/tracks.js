@@ -45,7 +45,7 @@ const retrieveTracks = (playlistID, owner, numTracks) => {
 
   console.log('== start retrieving tracks ==');
   for(let i = 0; i < numTracks; i += 100){
-    promises.push(spotifyApi.getPlaylistTracks(owner, playlistID, {offset: i})
+    promises.push(spotifyApi.getPlaylistTracks(playlistID, {offset: i})
     .then(function(data){
       const tracks = data.items;
       tracks.forEach((track) => {
