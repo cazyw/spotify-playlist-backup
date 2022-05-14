@@ -1,7 +1,7 @@
 # Spotify Playlist Backup
 Project to create a web app that displays a user's Spotify playlist track details so they can be downloaded as a csv file.
 
-https://spotify-playlist-backup.onrender.com/ (changed from Heroku to Render)
+https://spotify-playlist-backup.onrender.com (changed from Heroku to Render)
 
 ## Objective
 
@@ -19,14 +19,13 @@ Navigate to https://spotify-playlist-backup.onrender.com. You'll be asked to log
 
 ## Project Setup/Running
 
-The project is hosted on Heroku but can also be run locally.
+The project is hosted on Render but can also be run locally.
 
 ###  Project Requirements
 
-* node (version 8.9.1)
-* npm (version 5.6.0)
+* node (version 16.14.2)
+* npm (version 8.6.0)
 * Spotify accounts (a normal user account and a developer account)
-* Heroku account and CLI (if deploying to Heroku)
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
