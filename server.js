@@ -57,7 +57,6 @@ const errorAction = (res, msg) => {
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
 app.get('/login', function(req, res) {
-  console.log("========= login")
   // set cookie
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -106,7 +105,6 @@ app.get('/logout', function(req, res) {
 // back to a 'middle' uri where, if the user has authorised
 // access to their account, a request is sent for access tokens
 app.get('/callback', function(req, res) {
-  console.log("========= callbackh")
   // your application requests access tokens
   // after checking the state parameter (it should return
   // the same value as was sent in the original request)
@@ -135,7 +133,6 @@ app.get('/callback', function(req, res) {
       redirect_uri: redirect_uri // for validation only
     })
 
-    console.log("========= about to fetch")
     fetch('https://accounts.spotify.com/api/token', {
       method: "post",
       headers: {
@@ -144,15 +141,12 @@ app.get('/callback', function(req, res) {
       },
       body: params
     }).then (response => {
-      console.log("========= fetched", response, response.ok, response.statusCode)
       if (response.ok) {
-        console.log("========= fetched and response ok")
         return response.json();
       } else {
-        throw new Error('response was not ok');
+        throw new Error(`response was status ${response.status}`);
       }
     }).then(body => {
-      console.log("========= fetched and response ok and got body")
       const access_token = body.access_token;
 
       const params = new URLSearchParams({
