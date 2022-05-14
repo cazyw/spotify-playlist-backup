@@ -57,7 +57,7 @@ const errorAction = (res, msg) => {
 // the user selects to login and is redirected to
 // Spotify's login and authorisation page
 app.get('/login', function(req, res) {
-
+  console.log("========= login")
   // set cookie
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -106,7 +106,7 @@ app.get('/logout', function(req, res) {
 // back to a 'middle' uri where, if the user has authorised
 // access to their account, a request is sent for access tokens
 app.get('/callback', function(req, res) {
-
+  console.log("========= callbackh")
   // your application requests access tokens
   // after checking the state parameter (it should return
   // the same value as was sent in the original request)
@@ -139,11 +139,12 @@ app.get('/callback', function(req, res) {
     fetch('https://accounts.spotify.com/api/token', {
       method: "post",
       headers: {
-        'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64')
+        'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64'),
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: params
     }).then (response => {
-      console.log("========= fetched")
+      console.log("========= fetched", response.ok, response.http)
       if (response.ok) {
         console.log("========= fetched and response ok")
         return response.json();
@@ -160,7 +161,7 @@ app.get('/callback', function(req, res) {
       // redirect and pass the token to the browser to make requests from there
       res.redirect('/#' + params);
     }).catch(err => {
-      errorAction(res, 'Error retrieving the access token - redirecting to login');
+      errorAction(res, 'Error retrieving the access token - redirecting to login', err);
     });
   }
 });
