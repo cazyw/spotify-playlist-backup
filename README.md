@@ -1,7 +1,7 @@
 # Spotify Playlist Backup
-Project to create a web app that displays a user's Spotify playlist track details so they can be downloaded as a csv file. 
+Project to create a web app that displays a user's Spotify playlist track details so they can be downloaded as a csv file.
 
-https://spotify-playlist-backup.herokuapp.com (using Heroku's free sandbox account that sleeps inactive applications, so the application will take time to start if it's been inactive for 30mins)
+https://spotify-playlist-backup.onrender.com/ (changed from Heroku to Render)
 
 ## Objective
 
@@ -13,9 +13,9 @@ The app will allow users to:
 
 ## Operating Instructions
 
-<img src="https://cazyw.github.io/img/js-spotify.jpg" width="450" alt="Spotify Playlist Backup">
+<img src="https://cazyw.dev/static/js-spotify-9363391b199df7f71adac4dcd7002793.webp" width="450" alt="Spotify Playlist Backup">
 
-Navigate to https://spotify-playlist-backup.herokuapp.com. You'll be asked to log in, authorise the connection of the app to your Spotify account, and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
+Navigate to https://spotify-playlist-backup.onrender.com. You'll be asked to log in, authorise the connection of the app to your Spotify account, and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
 
 ## Project Setup/Running
 
@@ -28,23 +28,23 @@ The project is hosted on Heroku but can also be run locally.
 * Spotify accounts (a normal user account and a developer account)
 * Heroku account and CLI (if deploying to Heroku)
 
-An overview of Spotify Web API setup: https://developer.spotify.com/web-api/ and deploying to Heroku: https://devcenter.heroku.com/articles/deploying-nodejs/
+An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
 
 ### Steps
 
-Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to Heroku (e.g. in my case `https://spotify-playlist-backup.herokuapp.com/callback/`)
+Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to a platform (e.g. in my case `https://spotify-playlist-backup.onrender.com/callback/`)
 
 Clone the repository.
 
 Install node and npm.
 
-Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to Heroku. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address in Heroku. In the `.env` file include:
+Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to a platform. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address on the deployed platform. In the `.env` file include:
 
 ```
 CLIENT_ID=<value in your Spotify app account>
 CLIENT_SECRET=<value in your Spotify app account>
-REDIRECT_URI=http://localhost:8888/callback/ 
+REDIRECT_URI=http://localhost:8888/callback/
 ```
 
 
@@ -69,7 +69,9 @@ Or to watch for and rebuild automatically after any changes (`webpack`) AND auto
 $ npm run watch
 ```
 
-Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done. 
+~~Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done.~~
+
+The site is now deployed to Render.
 
 ### Project file structure
 
