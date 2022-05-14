@@ -142,12 +142,15 @@ app.get('/callback', function(req, res) {
       },
       body: params
     }).then (response => {
+      console.log("========= fetched")
       if (response.ok) {
+        console.log("========= fetched and response ok")
         return response.json();
       } else {
         throw new Error('response was not ok');
       }
     }).then(body => {
+      console.log("========= fetched and response ok and got body")
       const access_token = body.access_token;
 
       const params = new URLSearchParams({
