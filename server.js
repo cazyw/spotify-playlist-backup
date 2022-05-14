@@ -131,20 +131,20 @@ app.get('/callback', function(req, res) {
 
     const params = new URLSearchParams({
       grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: redirect_uri // for validation only
+      code: code,
+      redirect_uri: redirect_uri // for validation only
     })
 
     console.log("========= about to fetch")
     fetch('https://accounts.spotify.com/api/token', {
       method: "post",
       headers: {
-        'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64'),
+        'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')),
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: params
     }).then (response => {
-      console.log("========= fetched", response.ok, response.http)
+      console.log("========= fetched", response, response.ok, response.statusCode)
       if (response.ok) {
         console.log("========= fetched and response ok")
         return response.json();
