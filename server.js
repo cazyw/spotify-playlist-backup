@@ -11,7 +11,6 @@
 const dotenv = require('dotenv'); // for local environment variables
 const express = require('express'); // Express web server framework
 const request = require('request'); // "Request" library
-const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
 dotenv.load();
@@ -68,15 +67,16 @@ app.get('/login', function(req, res) {
   // scope has been set to 'playlist-read-private playlist-read-collaborative'
   // which means you can read playlists you've marked private
   // or that you've collaborated on
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      client_id: client_id,
-      response_type: 'code',
-      redirect_uri: redirect_uri,
-      scope: 'playlist-read-private playlist-read-collaborative',
-      state: state, // recommended for validation purposes
-      show_dialog: false // so users do not have to re-login/authenticate
-    }));
+  const params = new URLSearchParams({
+    client_id: client_id,
+    response_type: 'code',
+    redirect_uri: redirect_uri,
+    scope: 'playlist-read-private playlist-read-collaborative',
+    state: state, // recommended for validation purposes
+    show_dialog: false // so users do not have to re-login/authenticate
+  })
+
+  res.redirect('https://accounts.spotify.com/authorize?' + params);
 });
 
 
@@ -91,15 +91,16 @@ app.get('/logout', function(req, res) {
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      client_id: client_id,
-      response_type: 'code',
-      redirect_uri: redirect_uri,
-      scope: 'playlist-read-private playlist-read-collaborative',
-      state: state, // recommended for validation purposes
-      show_dialog: true // so users have to re-login/authenticate
-    }));
+  const params = new URLSearchParams({
+    client_id: client_id,
+    response_type: 'code',
+    redirect_uri: redirect_uri,
+    scope: 'playlist-read-private playlist-read-collaborative',
+    state: state, // recommended for validation purposes
+    show_dialog: true // so users have to re-login/authenticate
+  })
+
+  res.redirect('https://accounts.spotify.com/authorize?' + params);
 });
 
 // after the authorisation page, the user is then redirected
@@ -148,12 +149,11 @@ app.get('/callback', function(req, res) {
         const access_token = body.access_token,
               expires_in = body.expires_in;
 
-
+        const params = new URLSearchParams({
+          access_token: access_token
+        })
         // redirect and pass the token to the browser to make requests from there
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token
-          }));
+        res.redirect('/#' + params);
       } else {
         errorAction(res, 'Error retrieving the access token - redirecting to login');
       }

@@ -22,12 +22,11 @@
   },
   "homepage": "https://github.com/cazyw/spotify-copy-playlist#readme",
   "dependencies": {
-    "cookie-parser": "^1.4.4",
-    "dotenv": "^4.0.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.1",
     "express": "^4.17.1",
-    "querystring": "~0.2.0",
     "request": "^2.88.0",
-    "spotify-web-api-js": "^0.23.0"
+    "spotify-web-api-js": "^1.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
