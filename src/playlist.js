@@ -128,7 +128,7 @@ const addPlaylistListener = () => {
   const lists = document.querySelectorAll('.playlist-info');
   lists.forEach((list) => {
     const owner = list.childNodes[3].textContent.match(/Owned by (.*)/)[1];
-    const numTracks = list.childNodes[1].childNodes[1].textContent.match(/([0-9]+) /)[1];
+    const numTracks = list.childNodes[1].childNodes[1]?.textContent.match(/([0-9]+) /)[1];
     list.addEventListener('click', getOrRemoveTracks.bind(this, list.parentNode.id, owner, numTracks));
   });
 }
