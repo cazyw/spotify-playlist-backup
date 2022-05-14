@@ -135,32 +135,29 @@ app.get('/callback', function(req, res) {
         redirect_uri: redirect_uri // for validation only
     })
 
-    try {
-      const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: "post",
-        headers: {
-          'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64')
-        },
-        body: params
-      })
-
-      const data = await response.json();
-
+    fetch('https://accounts.spotify.com/api/token', {
+      method: "post",
+      headers: {
+        'Authorization': 'Basic ' + (client_id + ':' + client_secret).toString('base64')
+      },
+      body: params
+    }).then (response => {
       if (response.ok) {
-        const access_token = data.access_token;
-
-        const params = new URLSearchParams({
-          access_token: access_token
-        })
-        // redirect and pass the token to the browser to make requests from there
-        res.redirect('/#' + params);
+        return response.json();
       } else {
-        errorAction(res, 'Error retrieving the access token - redirecting to login');
+        throw new Error('response was not ok');
       }
+    }).then(body => {
+      const access_token = body.access_token;
 
-    } catch (error) {
+      const params = new URLSearchParams({
+        access_token: access_token
+      })
+      // redirect and pass the token to the browser to make requests from there
+      res.redirect('/#' + params);
+    }).catch(err => {
       errorAction(res, 'Error retrieving the access token - redirecting to login');
-    }
+    });
   }
 });
 
