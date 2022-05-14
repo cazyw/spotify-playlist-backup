@@ -135,6 +135,7 @@ app.get('/callback', function(req, res) {
         redirect_uri: redirect_uri // for validation only
     })
 
+    console.log("========= about to fetch")
     fetch('https://accounts.spotify.com/api/token', {
       method: "post",
       headers: {
