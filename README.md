@@ -1,7 +1,7 @@
 # Spotify Playlist Backup
 Project to create a web app that displays a user's Spotify playlist track details so they can be downloaded as a csv file.
 
-https://spotify-playlist-backup.onrender.com (changed from Heroku to Render)
+https://spotify.cazyw.dev (changed from Heroku to Render)
 
 ## Objective
 
@@ -15,7 +15,7 @@ The app will allow users to:
 
 <img src="https://cazyw.dev/static/js-spotify-9363391b199df7f71adac4dcd7002793.webp" width="450" alt="Spotify Playlist Backup">
 
-Navigate to https://spotify-playlist-backup.onrender.com. You'll be asked to log in, authorise the connection of the app to your Spotify account, and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
+Navigate to https://spotify.cazyw.dev. You'll be asked to log in, authorise the connection of the app to your Spotify account, and then the page will display a list of all your playlists. Clicking on a playlist will display the tracks and the option to download the list to a csv file.
 
 ## Project Setup/Running
 
