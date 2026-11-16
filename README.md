@@ -72,7 +72,8 @@ The site is now deployed to Render.
 
 The browser loads the Javascript files directly as ES modules, starting from `authentication.js`. The following are the project files:
 ```
-server.js
+server.js (starts the server)
+app.js (the routes for logging in with Spotify)
 public/
   |- index.html
   |- style.css
@@ -83,6 +84,7 @@ public/
       |- spotify.js
       |- tracks.js
 test/
+  |- app.test.js
   |- spotify.test.js
 ```
 
