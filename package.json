@@ -13,28 +13,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cazyw/spotify-copy-playlist.git"
+    "url": "git+https://github.com/cazyw/spotify-playlist-backup.git"
   },
   "author": "Carol W (cazyw)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cazyw/spotify-copy-playlist/issues"
+    "url": "https://github.com/cazyw/spotify-playlist-backup/issues"
   },
-  "homepage": "https://github.com/cazyw/spotify-copy-playlist#readme",
+  "homepage": "https://github.com/cazyw/spotify-playlist-backup#readme",
   "dependencies": {
-    "cookie-parser": "^1.4.6",
-    "dotenv": "^16.0.1",
-    "express": "^4.17.1",
-    "node-fetch": "^2.6.7",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "node-fetch": "^2.7.0",
     "spotify-web-api-js": "^1.5.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
-    "babel-loader": "^8.2.5",
-    "nodemon": "^2.0.16",
-    "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2"
+    "@babel/core": "^8.1.2",
+    "@babel/preset-env": "^8.0.7",
+    "babel-loader": "^10.1.1",
+    "nodemon": "3.1.11",
+    "webpack": "^5.112.2",
+    "webpack-cli": "^7.3.1"
   },
   "engines": {
     "node": ">=26"
