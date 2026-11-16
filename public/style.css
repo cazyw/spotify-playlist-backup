@@ -254,6 +254,10 @@ li.playlist-header {
   transition: all 0.25s linear;
 }
 
+.tracks-unavailable {
+  padding: 10px;
+}
+
 .tracks {
   cursor: text;
   opacity: 0;

@@ -20,7 +20,7 @@ function errorHandler(e){
 }
 
 
-module.exports = {
+export {
   addActiveClass,
   removeActiveClass,
   errorHandler

@@ -2,69 +2,37 @@
    * Retrieve track data from Spotify
    */
 
-const SpotifyWebApi = require('spotify-web-api-js');
-const removeActiveClass = require('./helpers.js').removeActiveClass;
-const addActiveClass = require('./helpers.js').addActiveClass;
-const errorHandler = require('./helpers.js').errorHandler;
-
-const spotifyApi = new SpotifyWebApi();
-let playlistTracks = [];
+import { getPlaylistItems } from './spotify.js';
+import { removeActiveClass, addActiveClass, errorHandler } from './helpers.js';
 
 
 // either retrieves or removes tracks
 
-const getOrRemoveTracks = (playlistID, owner, numTracks) => {
-  const hasTracks = document.getElementsByClassName(`tracks-${playlistID}`);
-  if (hasTracks.length > 0){
-    document.getElementById(`track-info-${playlistID}`).innerHTML = '';
+const getOrRemoveTracks = (playlistID, token) => {
+  const trackInfo = document.getElementById(`track-info-${playlistID}`);
+  if (trackInfo.innerHTML !== ''){
+    trackInfo.innerHTML = '';
     removeActiveClass(`#track-info-${playlistID}`);
   } else {
     addActiveClass(`#track-info-${playlistID}`);
-    document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
-    showTracks(playlistID, owner, numTracks);
+    trackInfo.innerHTML = `<p class="loading"><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i></p>`;
+    showTracks(playlistID, token);
   }
 }
 
 // retrieves then displays tracks
 
-const showTracks = (playlistID, owner, numTracks) => {
-  playlistTracks = [];
-  return retrieveTracks(playlistID, owner, numTracks)
-  .then(function (result) {
-    return displayUserTracks(playlistID, playlistTracks)
-  })
-  .catch((e) => {
+const showTracks = async (playlistID, token) => {
+  try {
+    const tracks = await getPlaylistItems(playlistID, token);
+    if (tracks === null) {
+      document.getElementById(`track-info-${playlistID}`).innerHTML = `<p class="tracks-unavailable">Tracks are not available. Spotify only shares the tracks of playlists you own or collaborate on.</p>`;
+    } else {
+      displayUserTracks(playlistID, tracks);
+    }
+  } catch (e) {
     errorHandler(e);
-  })
-}
-
-// retrieve the tracks from Spotify
-
-const retrieveTracks = (playlistID, owner, numTracks) => {
-  let promises = [];
-
-  console.log('== start retrieving tracks ==');
-  for(let i = 0; i < numTracks; i += 100){
-    promises.push(spotifyApi.getPlaylistTracks(playlistID, {offset: i})
-    .then(function(data){
-      const tracks = data.items;
-      tracks.forEach((track) => {
-        // using destructured assignment
-        const {track: {id}, track: {name}, track: {album: {name: album}}} = track;
-        const artists = track.track.artists.map((artist) => artist.name);
-        playlistTracks.push({id: id, name: name, album: album, artists: artists});
-      });
-    })
-    .catch((e) => {
-      return Promise.reject(e);
-    })
-    )
   }
-  return Promise.all(promises)
-  .then(console.log('== finished retrieving tracks =='))
-  .catch((e) => {
-    return Promise.reject(e);
-  });
 }
 
 
@@ -129,6 +97,6 @@ function downloadTracks(playlistCombo) {
 
 }
 
-module.exports = {
+export {
   getOrRemoveTracks
 }

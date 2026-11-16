@@ -53,6 +53,11 @@ Then open the browser and go to http://127.0.0.1:8888/
 
 The source folder is mounted into the container. Any file change rebuilds the bundle (`webpack`) and restarts the server (`nodemon`) automatically.
 
+To run the tests:
+```
+$ docker compose run --rm app npm test
+```
+
 To add or update a package, run npm inside the container and then rebuild the image:
 ```
 $ docker compose run --rm app npm install <package>
@@ -81,6 +86,7 @@ src/
   |- authentication.js
   |- helpers.js
   |- playlist.js
+  |- spotify.js
   |- tracks.js
 ```
 
@@ -105,7 +111,7 @@ There is no way to log out from spotify's web api and redirect to the app, the `
 
 ### Retrieving Data from Spotify
 
-I used the helper wrapper module https://github.com/jmperez/spotify-web-api-js to assist with retrieving data from Spotify.
+I originally used the helper wrapper module https://github.com/jmperez/spotify-web-api-js to assist with retrieving data from Spotify. It is no longer maintained and does not know about Spotify's February 2026 API changes, so `src/spotify.js` now calls the three endpoints the app needs with `fetch`. Since those changes, Spotify only shares the tracks of playlists you own or collaborate on.
 One of the challenges was working out how to retrieve the data from Spotify, wait until it had all been retrieved, and then display the result. Javascript is asynchronous in that functions may finishing executing out of order (non-blocking) and fetching data will usually take the longest time (compared to other functions). This can result in the displaying function being executed and finished before data retrieval. 
 
 Rather than using callbacks (and resulting in very ugly code), I decided to implement "function ordering" using Promises. I'm still grappling with using them, but a lot of searching and experimenting got me able to make my functions run in order and wait for loops to completely finish before moving on. These loops were required as Spotify has limits on the amount of data returned and multiple calls were often required to retrieve chunks of data, which then needed to be pieced together.

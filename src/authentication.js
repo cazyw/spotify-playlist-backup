@@ -1,7 +1,5 @@
-const accessPlaylist = require('./playlist.js').accessPlaylist;
-const removeActiveClass = require('./helpers.js').removeActiveClass;
-const addActiveClass = require('./helpers.js').addActiveClass;
-const errorHandler = require('./helpers.js').errorHandler;
+import { accessPlaylist } from './playlist.js';
+import { removeActiveClass, addActiveClass } from './helpers.js';
 
 /**
  * The code here was from Spotify's authentication workflow and then modified
