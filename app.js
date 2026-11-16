@@ -8,48 +8,61 @@
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
  */
 
+import { randomBytes } from 'node:crypto';
 import express from 'express'; // Express web server framework
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 const stateKey = 'spotify_auth_state';
 
-/**
- * Generates a random string containing numbers and letters
- * @param  {number} length The length of the string
- * @return {string} The generated string
- */
-
-// this is used for verification
-const generateRandomString = (length) => {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+// helmet's default policy is not used because it adds upgrade-insecure-requests,
+// which breaks the page when it is served over http on 127.0.0.1
+const contentSecurityPolicy = {
+  useDefaults: false,
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'"],
+    styleSrc: ["'self'", 'https://cdnjs.cloudflare.com', 'https://maxcdn.bootstrapcdn.com'],
+    fontSrc: ['https://cdnjs.cloudflare.com'],
+    imgSrc: ["'self'", 'data:'],
+    connectSrc: ['https://api.spotify.com'],
+    objectSrc: ["'none'"],
+    baseUri: ["'self'"],
+    formAction: ["'self'"],
+    frameAncestors: ["'none'"]
   }
-  return text;
 };
-
-// function for when there's an error linking with Spotify
-const errorAction = (res, msg) => {
-  res.clearCookie(stateKey);
-  console.error(msg);
-  res.redirect('/');
-}
 
 // `fetch` can be replaced so tests do not call Spotify
 export const createApp = ({ clientId, clientSecret, redirectUri, fetch: fetchFn = fetch }) => {
   const app = express();
 
+  // the browser sends the state cookie back on the redirect from Spotify
+  // because that is a top-level navigation, which sameSite 'lax' allows
+  const cookieOptions = {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: redirectUri.startsWith('https:')
+  };
+
+  // function for when there's an error linking with Spotify
+  const errorAction = (res, msg, err) => {
+    res.clearCookie(stateKey, cookieOptions);
+    console.error(msg);
+    if (err) console.error(err);
+    res.redirect('/');
+  }
+
   // the static files are in the public folder
-  app.use(express.static(import.meta.dirname + '/public'))
+  app.use(helmet({ contentSecurityPolicy }))
+     .use(express.static(import.meta.dirname + '/public'))
      .use(cookieParser());
 
   // redirects to Spotify's login and authorisation page
   const authorise = (res, showDialog) => {
-    // set cookie
-    const state = generateRandomString(16);
-    res.cookie(stateKey, state);
+    // set cookie; the state is used for verification
+    const state = randomBytes(16).toString('hex');
+    res.cookie(stateKey, state, { ...cookieOptions, maxAge: 10 * 60 * 1000 });
 
     // your application requests authorization
     // scope has been set to 'playlist-read-private playlist-read-collaborative'
@@ -100,7 +113,7 @@ export const createApp = ({ clientId, clientSecret, redirectUri, fetch: fetchFn 
     }
 
     // success - therefore exchange the authorisation code for an access token
-    res.clearCookie(stateKey);
+    res.clearCookie(stateKey, cookieOptions);
 
     try {
       const response = await fetchFn('https://accounts.spotify.com/api/token', {

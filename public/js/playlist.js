@@ -4,7 +4,7 @@
 
 import { getMe, getPlaylists } from './spotify.js';
 import { getOrRemoveTracks } from './tracks.js';
-import { removeActiveClass, addActiveClass, errorHandler } from './helpers.js';
+import { removeActiveClass, addActiveClass, errorHandler, escapeHtml } from './helpers.js';
 
 let userPlaylists = [];
 let accessToken;
@@ -47,14 +47,14 @@ const addPlaylistBody = (playlists) => {
   // loop through to create LI for each playlist  
   let displayLI = playlists.map((playlist) => {
     // Spotify gives no track count for playlists the user does not own
-    const numTracks = playlist.totalTracks === null ? '' : `<span class="playlist-num-tracks"> [${playlist.totalTracks} tracks]</span>`;
+    const numTracks = playlist.totalTracks === null ? '' : `<span class="playlist-num-tracks"> [${escapeHtml(playlist.totalTracks)} tracks]</span>`;
     return `
-      <li id="${playlist.id}" class="playlist">
+      <li id="${escapeHtml(playlist.id)}" class="playlist">
         <div class="playlist-info">
-          <div class="playlist-name">${playlist.name}${numTracks}</div>
-          <div class="playlist-owner">Owned by ${playlist.owner}</div>  
+          <div class="playlist-name">${escapeHtml(playlist.name)}${numTracks}</div>
+          <div class="playlist-owner">Owned by ${escapeHtml(playlist.owner)}</div>  
         </div>
-        <div id="track-info-${playlist.id}" class="tracks"></div>
+        <div id="track-info-${escapeHtml(playlist.id)}" class="tracks"></div>
       </li>
     `;
   }).join('');

@@ -19,9 +19,32 @@ function errorHandler(e){
   removeActiveClass('#loggedin', addActiveClass, '#login');
 }
 
+const htmlEscapes = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+// Playlist and track names are written by other Spotify users, so they must
+// be escaped before they go into innerHTML
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g, (character) => htmlEscapes[character]);
+}
+
+function csvField(value){
+  let text = String(value);
+  // a spreadsheet runs a cell that starts with one of these as a formula
+  if (/^[=+\-@\t\r]/.test(text)) {
+    text = `'${text}`;
+  }
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function toCsv(rows){
+  return rows.map((row) => row.map(csvField).join(',')).join('\n') + '\n';
+}
+
 
 export {
   addActiveClass,
   removeActiveClass,
-  errorHandler
+  errorHandler,
+  escapeHtml,
+  toCsv
 }

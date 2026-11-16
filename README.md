@@ -61,8 +61,9 @@ $ docker compose run --rm app npm test
 To add or update a package, run npm inside the container and then rebuild the image:
 ```
 $ docker compose run --rm app npm install <package>
-$ docker compose up --build
+$ docker compose up --build --renew-anon-volumes
 ```
+`--renew-anon-volumes` makes the container use the newly installed packages instead of the `node_modules` kept from the last run.
 
 ~~Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done.~~
 

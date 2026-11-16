@@ -16,9 +16,9 @@ const fakeTokenFetch = ({ status = 200, body = {} } = {}) => {
 };
 
 // Starts the app on a free port; redirects are returned, not followed
-const start = async (t, fetchFn) => {
+const start = async (t, fetchFn, config = {}) => {
   t.mock.method(console, 'error', () => {});
-  const app = createApp({ clientId: 'id', clientSecret: 'secret', redirectUri, fetch: fetchFn });
+  const app = createApp({ clientId: 'id', clientSecret: 'secret', redirectUri, fetch: fetchFn, ...config });
   const server = app.listen(0);
   await once(server, 'listening');
   t.after(() => {
@@ -49,6 +49,40 @@ for (const [path, showDialog] of [['/login', 'false'], ['/logout', 'true']]) {
     assert.equal(stateCookie(response), `spotify_auth_state=${location.searchParams.get('state')}`);
   });
 }
+
+test('/login sets a random, short-lived state cookie that scripts cannot read', async (t) => {
+  const request = await start(t);
+
+  const first = (await request('/login')).headers.getSetCookie()[0];
+  const second = (await request('/login')).headers.getSetCookie()[0];
+
+  assert.match(first, /^spotify_auth_state=[0-9a-f]{32}; Max-Age=600; /);
+  assert.match(first, /; HttpOnly/);
+  assert.match(first, /; SameSite=Lax/);
+  assert.doesNotMatch(first, /; Secure/);
+  assert.notEqual(first, second);
+});
+
+test('/login marks the state cookie Secure when the app is served over https', async (t) => {
+  const request = await start(t, undefined, { redirectUri: 'https://example.com/callback' });
+
+  const response = await request('/login');
+
+  assert.match(response.headers.getSetCookie()[0], /; Secure/);
+});
+
+test('pages are served with a content security policy', async (t) => {
+  const request = await start(t);
+
+  const response = await request('/');
+
+  const policy = response.headers.get('content-security-policy');
+  assert.equal(response.status, 200);
+  assert.match(policy, /script-src 'self'(;|$)/);
+  assert.match(policy, /connect-src https:\/\/api\.spotify\.com(;|$)/);
+  assert.doesNotMatch(policy, /unsafe-inline|upgrade-insecure-requests/);
+  assert.equal(response.headers.get('x-powered-by'), null);
+});
 
 test('/callback without a code redirects to the start page', async (t) => {
   const { fetchFn, calls } = fakeTokenFetch();
@@ -101,4 +135,6 @@ test('/callback redirects to the start page when Spotify refuses the code', asyn
 
   assert.equal(response.status, 302);
   assert.equal(response.headers.get('location'), '/');
+  const logged = console.error.mock.calls.map((call) => String(call.arguments[0]));
+  assert.ok(logged.some((line) => line.includes('response was status 400')));
 });

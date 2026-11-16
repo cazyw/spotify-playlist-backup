@@ -3,7 +3,7 @@
    */
 
 import { getPlaylistItems } from './spotify.js';
-import { removeActiveClass, addActiveClass, errorHandler } from './helpers.js';
+import { removeActiveClass, addActiveClass, errorHandler, escapeHtml, toCsv } from './helpers.js';
 
 
 // either retrieves or removes tracks
@@ -39,10 +39,10 @@ const showTracks = async (playlistID, token) => {
 // formats the track details
 const getTrackBody = (playlist, tracks) => {
   let displayLI = tracks.map((track) => {
-    return `<tr class="tracks-${playlist}">
-      <td class="track-name">${track.name}</td> 
-      <td class="track-album">${track.album}</td> 
-      <td class="track-artists">${track.artists.join('; ')}</td>
+    return `<tr class="tracks-${escapeHtml(playlist)}">
+      <td class="track-name">${escapeHtml(track.name)}</td> 
+      <td class="track-album">${escapeHtml(track.album)}</td> 
+      <td class="track-artists">${escapeHtml(track.artists.join('; '))}</td>
     </tr>`;
   }).join('');
 
@@ -58,7 +58,7 @@ const displayUserTracks = (playlist, tracks) => {
       <tr class="track-heading">
         <th class="track-name">Name</th>
         <th class="track-album">Album</th>
-        <th class="track-artists">Artists <span id="dl-${playlist}" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>
+        <th class="track-artists">Artists <span id="dl-${escapeHtml(playlist)}" class="download"><i class="fa fa-download" aria-hidden="true"></i></span></th>
       </tr>
       ${getTrackBody(playlist, tracks)} 
     </table>`;
@@ -79,21 +79,24 @@ function downloadTracks(playlistCombo) {
   console.log(`== downloading tracks ==`);
   const owner = getTrackInfo(playlistCombo, '.playlist-owner');
   const nameAndNum = getTrackInfo(playlistCombo, '.playlist-name');
-  let csv = `${owner}, Playlist Name: ${nameAndNum}\n`;
-  csv += "Name,Album,Artists\n";
+  const rows = [
+    [owner, `Playlist Name: ${nameAndNum}`],
+    ['Name', 'Album', 'Artists']
+  ];
 
   const playlist = document.querySelectorAll(`.tracks-${playlistCombo}`);
 
   playlist.forEach((track) => {
-    csv += `${Array.from(track.children)[0].textContent},${Array.from(track.children)[1].textContent},${Array.from(track.children)[2].textContent}`;
-    csv += `\n`;
+    rows.push(Array.from(track.children).map((cell) => cell.textContent));
   });
 
+  // a Blob keeps characters such as # that cut a data: URI short
+  const url = URL.createObjectURL(new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8' }));
   const hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-  hiddenElement.target = '_blank';
+  hiddenElement.href = url;
   hiddenElement.download = 'playlist.csv';
   hiddenElement.click();
+  URL.revokeObjectURL(url);
 
 }
 

@@ -21,7 +21,8 @@
   "homepage": "https://github.com/cazyw/spotify-playlist-backup#readme",
   "dependencies": {
     "cookie-parser": "^1.4.7",
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "helmet": "^8.3.0"
   },
   "engines": {
     "node": ">=26"
