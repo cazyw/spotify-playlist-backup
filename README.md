@@ -23,8 +23,7 @@ The project is hosted on Render but can also be run locally.
 
 ###  Project Requirements
 
-* node (version 16.14.2)
-* npm (version 8.6.0)
+* Docker (with Docker Compose). Node 26 runs inside the container, so no local node or npm is needed
 * Spotify accounts (a normal user account and a developer account)
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
@@ -32,40 +31,32 @@ An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
 ### Steps
 
-Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to a platform (e.g. in my case `https://spotify-playlist-backup.onrender.com/callback/`)
+Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://127.0.0.1:8888/callback` (Spotify no longer accepts `localhost`). You will need to (later) add additional entries if deploying to a platform (e.g. in my case `https://spotify-playlist-backup.onrender.com/callback/`)
 
 Clone the repository.
 
-Install node and npm.
+Install Docker.
 
-Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to a platform. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address on the deployed platform. In the `.env` file include:
+Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to a platform. Docker Compose passes the file to the container. The `REDIRECT_URI` will have a different address on the deployed platform. In the `.env` file include:
 
 ```
 CLIENT_ID=<value in your Spotify app account>
 CLIENT_SECRET=<value in your Spotify app account>
-REDIRECT_URI=http://localhost:8888/callback/
+REDIRECT_URI=http://127.0.0.1:8888/callback
 ```
 
+Build the image and start the app:
+```
+$ docker compose up --build
+```
+Then open the browser and go to http://127.0.0.1:8888/
 
-To install the required packages (see package.json), run:
-```
-$ npm install
-```
+The source folder is mounted into the container. Any file change rebuilds the bundle (`webpack`) and restarts the server (`nodemon`) automatically.
 
-Start the server locally:
+To add or update a package, run npm inside the container and then rebuild the image:
 ```
-$ npm start
-```
-Then open the browser and go to http://localhost:8888/
-
-To rebuild (after any file changes), run:
-```
-$ npm run build
-```
-
-Or to watch for and rebuild automatically after any changes (`webpack`) AND automatically re-start the server if there are changes there as well (`nodemon`), run:
-```
-$ npm run watch
+$ docker compose run --rm app npm install <package>
+$ docker compose up --build
 ```
 
 ~~Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done.~~
