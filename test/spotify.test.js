@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getMe, getPlaylists, getPlaylistItems } from '../src/spotify.js';
+import { getMe, getPlaylists, getPlaylistItems } from '../public/js/spotify.js';
 
 // Answers each call with the next response in the list and records the call
 const fakeFetch = (...responses) => {

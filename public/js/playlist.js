@@ -12,6 +12,7 @@ let accessToken;
 // After authentication, get and display the user's playlists
 const accessPlaylist = async (token) => {
   accessToken = token;
+  document.querySelector('input').addEventListener('keyup', getInput);
   try {
     const user = await getMe(token);
     removeActiveClass('#loading', addActiveClass, '#loggedin');
@@ -95,9 +96,6 @@ function getInput() {
     displayUserPlaylists(filterPlaylist(this.value.toLowerCase()));
   }
 }
-
-const input = document.querySelector('input');
-input.addEventListener('keyup', getInput);
 
 export {
   accessPlaylist

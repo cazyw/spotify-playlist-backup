@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test",
-    "build": "webpack --progress --mode=\"production\"",
-    "watch:webpack": "webpack --progress --watch --mode=\"development\"",
-    "watch:server": "nodemon server.js",
-    "watch": "npm run watch:webpack & npm run watch:server"
+    "dev": "node --watch server.js"
   },
   "repository": {
     "type": "git",
@@ -26,14 +23,6 @@
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
     "node-fetch": "^2.7.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^8.1.2",
-    "@babel/preset-env": "^8.0.7",
-    "babel-loader": "^10.1.1",
-    "nodemon": "3.1.11",
-    "webpack": "^5.112.2",
-    "webpack-cli": "^7.3.1"
   },
   "engines": {
     "node": ">=26"
