@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    command: npm run dev
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - .:/app
+      # keep the image's node_modules instead of the (absent) host copy
+      - /app/node_modules

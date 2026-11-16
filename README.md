@@ -23,8 +23,7 @@ The project is hosted on Render but can also be run locally.
 
 ###  Project Requirements
 
-* node (version 16.14.2)
-* npm (version 8.6.0)
+* Docker (with Docker Compose). Node 26 runs inside the container, so no local node or npm is needed
 * Spotify accounts (a normal user account and a developer account)
 
 An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
@@ -32,41 +31,39 @@ An overview of Spotify Web API setup: https://developer.spotify.com/web-api/
 
 ### Steps
 
-Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://localhost:8888/callback/`. You will need to (later) add additional entries if deploying to a platform (e.g. in my case `https://spotify-playlist-backup.onrender.com/callback/`)
+Setup your Spotify Developer account and in the Dashboard create an App. Edit the settings so the `Redirect URIs` section includes `http://127.0.0.1:8888/callback` (Spotify no longer accepts `localhost`). You will need to (later) add additional entries if deploying to a platform (e.g. in my case `https://spotify-playlist-backup.onrender.com/callback/`)
 
 Clone the repository.
 
-Install node and npm.
+Install Docker.
 
-Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to a platform. If running locally, the `dotenv` module will load the file into `process.env`. The `REDIRECT_URI` will have a different address on the deployed platform. In the `.env` file include:
+Using the Authorization Code Flow to access Spotify, the following configuration variables must be set as environment variables in a `.env` file in the project root directory (if running locally) and/or as config variables if deploying to a platform. Docker Compose passes the file to the container. The `REDIRECT_URI` will have a different address on the deployed platform. In the `.env` file include:
 
 ```
 CLIENT_ID=<value in your Spotify app account>
 CLIENT_SECRET=<value in your Spotify app account>
-REDIRECT_URI=http://localhost:8888/callback/
+REDIRECT_URI=http://127.0.0.1:8888/callback
 ```
 
+Build the image and start the app:
+```
+$ docker compose up --build
+```
+Then open the browser and go to http://127.0.0.1:8888/
 
-To install the required packages (see package.json), run:
-```
-$ npm install
-```
+The source folder is mounted into the container. There is no build step. A change to `server.js` restarts the server automatically (`node --watch`); a change to a file in `public/` shows up on the next browser refresh.
 
-Start the server locally:
+To run the tests:
 ```
-$ npm start
-```
-Then open the browser and go to http://localhost:8888/
-
-To rebuild (after any file changes), run:
-```
-$ npm run build
+$ docker compose run --rm app npm test
 ```
 
-Or to watch for and rebuild automatically after any changes (`webpack`) AND automatically re-start the server if there are changes there as well (`nodemon`), run:
+To add or update a package, run npm inside the container and then rebuild the image:
 ```
-$ npm run watch
+$ docker compose run --rm app npm install <package>
+$ docker compose up --build --renew-anon-volumes
 ```
+`--renew-anon-volumes` makes the container use the newly installed packages instead of the `node_modules` kept from the last run.
 
 ~~Deploying to Heroku requires some additional setup such as installing Heroku and creating an app and setting config variables (see https://devcenter.heroku.com/articles/deploying-nodejs) however the settings in `package.json` are already done.~~
 
@@ -74,23 +71,22 @@ The site is now deployed to Render.
 
 ### Project file structure
 
-The project uses webpack.js to build the final Javascript file. The following are the final project files:
+The browser loads the Javascript files directly as ES modules, starting from `authentication.js`. The following are the project files:
 ```
-server.js
+server.js (starts the server)
+app.js (the routes for logging in with Spotify)
 public/
   |- index.html
-  |- bundle.js
   |- style.css
-
-```
-
-The `bundle.js` file is built using webpack from the files in
-```
-src/
-  |- authentication.js
-  |- helpers.js
-  |- playlist.js
-  |- tracks.js
+  |- js/
+      |- authentication.js
+      |- helpers.js
+      |- playlist.js
+      |- spotify.js
+      |- tracks.js
+test/
+  |- app.test.js
+  |- spotify.test.js
 ```
 
 ## Status
@@ -114,7 +110,7 @@ There is no way to log out from spotify's web api and redirect to the app, the `
 
 ### Retrieving Data from Spotify
 
-I used the helper wrapper module https://github.com/jmperez/spotify-web-api-js to assist with retrieving data from Spotify.
+I originally used the helper wrapper module https://github.com/jmperez/spotify-web-api-js to assist with retrieving data from Spotify. It is no longer maintained and does not know about Spotify's February 2026 API changes, so `public/js/spotify.js` now calls the three endpoints the app needs with `fetch`. Since those changes, Spotify only shares the tracks of playlists you own or collaborate on.
 One of the challenges was working out how to retrieve the data from Spotify, wait until it had all been retrieved, and then display the result. Javascript is asynchronous in that functions may finishing executing out of order (non-blocking) and fetching data will usually take the longest time (compared to other functions). This can result in the displaying function being executed and finished before data retrieval. 
 
 Rather than using callbacks (and resulting in very ugly code), I decided to implement "function ordering" using Promises. I'm still grappling with using them, but a lot of searching and experimenting got me able to make my functions run in order and wait for loops to completely finish before moving on. These loops were required as Spotify has limits on the amount of data returned and multiple calls were often required to retrieve chunks of data, which then needed to be pieced together.
@@ -127,6 +123,8 @@ One new item I had never touched on was downloading/saving information from a we
 I used `webpack` for the module bundler. As the project progressed I began separating my code out into smaller modules that tackled one aspect of the app. This made it both easier to manage and a good way to explore how to use webpack and how to break code up into chunks and then refer to functions in different files. It was useful to set up scripts so that webpack automatically rebuilt my javascript file each time one of the working files was updated.
 
 I also included the `babel-core` (core) `babel-preset-env` (settings) `babel-loader` (work with webpack) modules which compiles/transpiles javascript that is using new features into code that can run in older browsers that do not support the features yet.
+
+Browsers have since caught up: they all load ES modules natively and support the Javascript features used here, so `webpack` and `babel` were removed and the files are now served as they are.
 
 ### Design
 

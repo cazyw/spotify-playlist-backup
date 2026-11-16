@@ -1,31 +1,17 @@
-const accessPlaylist = require('./playlist.js').accessPlaylist;
-const removeActiveClass = require('./helpers.js').removeActiveClass;
-const addActiveClass = require('./helpers.js').addActiveClass;
-const errorHandler = require('./helpers.js').errorHandler;
+import { accessPlaylist } from './playlist.js';
+import { removeActiveClass, addActiveClass } from './helpers.js';
 
 /**
  * The code here was from Spotify's authentication workflow and then modified
  */
 
-/**
-   * Obtains parameters from the hash of the URL
-   * @return Object
-   */
-
-
-// gets the has (part from # onwards)
+// gets the hash (part from # onwards)
 // theoretically should be only access_token
 const getHashParams = () => {
-  let hashParams = {};
-  let result = [], 
-      pattern = /#([^&;=]+)=?([^&;]*)/g,
-      anchor = window.location.hash;
-
-  if (anchor !== '') {
-    result = pattern.exec(anchor);
-    hashParams[result[1]] = decodeURIComponent(result[2]);
-  }
-  return hashParams;
+  const params = new URLSearchParams(window.location.hash.slice(1));
+  // take the token out of the address bar and the browser history
+  history.replaceState(null, '', window.location.pathname);
+  return { access_token: params.get('access_token'), error: params.get('error') };
 }
 
 /**
